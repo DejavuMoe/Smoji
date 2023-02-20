@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "baseUrl": ".",
+    "paths": {
+      "smoji": ["packages/smoji/src/index.ts"],
+      "smoji/manifest": ["packages/smoji/src/manifest.ts"],
+      "smoji/marker": ["packages/smoji/src/marker.ts"]
+    },
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "types": ["node", "vite/client", "vitest/globals"]
+  },
+  "include": [
+    "packages/smoji/src/**/*.ts",
+    "packages/smoji/test/**/*.ts",
+    "demo/src/**/*.ts",
+    "scripts/**/*.mjs",
+    "vite.*.config.ts"
+  ]
+}
