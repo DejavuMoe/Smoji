@@ -6,6 +6,7 @@ Smoji 🫣
 <div align=center>
 <strong>Smoji = Social + Emoji</strong>
 </div>
+
 ## Introduction
 
 Smoji is an emoji project that includes many default emoji packs built into applications, itl also include some funny little emojis. 😎
