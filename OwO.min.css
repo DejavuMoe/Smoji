@@ -77,7 +77,7 @@
   border-radius: 5px;
   display: inline-block;
   font-size: 12px;
-  line-height: 14px;
+  line-height: 12px;
   margin: 0 10px 12px 0;
   cursor: pointer;
   -webkit-transition: 0.3s;
@@ -99,7 +99,7 @@
   box-sizing: border-box;
 }
 .OwO .OwO-body .OwO-items-image .OwO-item img {
-  max-width: 34px;
+  max-width: 29px;
 }
 .OwO .OwO-body .OwO-items-show {
   display: block;
