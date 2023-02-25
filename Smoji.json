@@ -1,5 +1,5 @@
 {
-  "weibo": {
+  "微博": {
     "type": "image",
     "container": [
       {
@@ -392,7 +392,7 @@
       }
     ]
   },
-  "coolapk": {
+  "酷安": {
     "type": "image",
     "container": [
       {
@@ -1001,7 +1001,7 @@
       }
     ]
   },
-  "bilibili": {
+  "B 站": {
     "type": "image",
     "container": [
       {
@@ -1590,7 +1590,7 @@
       }
     ]
   },
-  "qq": {
+  "QQ": {
     "type": "image",
     "container": [
       {
@@ -2675,7 +2675,7 @@
       }
     ]
   },
-  "eveonecat": {
+  "EveOneCat": {
     "type": "image",
     "container": [
       {
@@ -2880,7 +2880,7 @@
       }
     ]
   },
-  "wechat": {
+  "微信": {
     "type": "image",
     "container": [
       {
@@ -3285,7 +3285,7 @@
       }
     ]
   },
-  "xiaodianshi": {
+  "小电视": {
     "type": "image",
     "container": [
       {
@@ -3466,7 +3466,7 @@
       }
     ]
   },
-  "ding": {
+  "钉钉": {
     "type": "image",
     "container": [
       {
