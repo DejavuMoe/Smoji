@@ -1,0 +1,31 @@
+{
+  "name": "smoji",
+  "version": "0.0.0-private",
+  "private": true,
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./manifest": {
+      "types": "./dist/manifest.d.ts",
+      "import": "./dist/manifest.js"
+    },
+    "./marker": {
+      "types": "./dist/marker.d.ts",
+      "import": "./dist/marker.js"
+    },
+    "./style.css": "./dist/style.css",
+    "./data.schema.json": "./data.schema.json"
+  },
+  "files": [
+    "dist",
+    "data.schema.json"
+  ],
+  "license": "MIT",
+  "description": "A lightweight image emoji picker for the web"
+}

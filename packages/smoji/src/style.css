@@ -1,0 +1,101 @@
+.smoji {
+  --smoji-width: 22rem;
+  --smoji-max-height: 18rem;
+  --smoji-item-size: 3.25rem;
+  --smoji-radius: .9rem;
+  --smoji-surface: #fff;
+  --smoji-focus: #6750e8;
+  --smoji-accent: #6750e8;
+  --smoji-ink: #202124;
+  --smoji-mute: #71717a;
+  --smoji-border: #e4e4e7;
+  --smoji-subtle: #eee;
+  --smoji-shadow: 0 16px 48px #18181b24;
+  --smoji-hover: #f4f4f5;
+  --smoji-tab-bg: #f1f1f3;
+  --smoji-tab-ink: #18181b;
+  position: fixed;
+  z-index: 1000;
+  box-sizing: border-box;
+  width: min(var(--smoji-width), calc(100vw - 1rem));
+  overflow: hidden;
+  color: var(--smoji-ink);
+  background: var(--smoji-surface);
+  border: 1px solid var(--smoji-border);
+  border-radius: var(--smoji-radius);
+  box-shadow: var(--smoji-shadow);
+  font: 14px/1.4 system-ui, sans-serif;
+}
+
+.smoji__tabs {
+  display: flex;
+  align-items: center;
+  gap: .25rem;
+  padding: .55rem;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--smoji-subtle);
+  scrollbar-width: thin;
+}
+
+.smoji__tab,
+.smoji__item {
+  box-sizing: border-box;
+  border: 0;
+  outline: none;
+  cursor: pointer;
+}
+
+.smoji__tab {
+  flex: none;
+  padding: .4rem .65rem;
+  color: var(--smoji-mute);
+  background: transparent;
+  border-radius: .5rem;
+}
+
+.smoji__tab[aria-selected="true"] {
+  color: var(--smoji-tab-ink);
+  background: var(--smoji-tab-bg);
+}
+
+.smoji__grid {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--smoji-item-size), 1fr));
+  gap: .5rem;
+  max-height: var(--smoji-max-height);
+  padding: .75rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.smoji__item {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  padding: .35rem;
+  background: transparent;
+  border-radius: .6rem;
+}
+
+.smoji__item:hover,
+.smoji__item:focus-visible { background: var(--smoji-hover); }
+
+.smoji__item:focus-visible,
+.smoji__tab:focus-visible { outline: 2px solid var(--smoji-focus); outline-offset: -2px; }
+
+.smoji__item img { width: 100%; height: 100%; object-fit: contain; }
+
+@media (prefers-color-scheme: dark) {
+  .smoji {
+    --smoji-surface: #202023;
+    --smoji-ink: #fafafa;
+    --smoji-mute: #a1a1aa;
+    --smoji-border: #3f3f46;
+    --smoji-subtle: #3f3f46;
+    --smoji-shadow: 0 16px 48px #0008;
+    --smoji-hover: #36363b;
+    --smoji-tab-bg: #36363b;
+    --smoji-tab-ink: #fff;
+  }
+}
