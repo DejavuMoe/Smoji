@@ -15,16 +15,17 @@ You can use these emoji packs on your Mastodon,  Pleroma,  Misskey, and other fe
 
 You can browse in **Playground** https://smoji.dejavu.moe and take a look. 👀
 
-| Name        | Description   |
-| ----------- | ------------- |
-| weibo       | 新浪微博      |
-| coolapk     | 酷安社区      |
-| bilibili    | 哔哩哔哩      |
-| qq          | 腾讯 QQ       |
-| eveonecat   | Every One Cat |
-| wechat      | 微信          |
-| xiaodianshi | 小电视        |
-| ding        | 钉钉          |
+| Name                        | Description   |
+| --------------------------- | ------------- |
+| [weibo](/weibo)             | 新浪微博      |
+| [coolapk](/coolapk)         | 酷安社区      |
+| [bilibili](/bilibili)       | 哔哩哔哩      |
+| [qq](/qq)                   | 腾讯 QQ       |
+| [eveonecat](/eveonecat)     | Every One Cat |
+| [wechat](/wechat)           | 微信          |
+| [xiaodianshi](/xiaodianshi) | 小电视        |
+| [ding](/ding)               | 钉钉          |
+| [tiktok](/tiktok)           | 抖音          |
 
 ## Usage
 
