@@ -15,17 +15,17 @@ You can use these emoji packs on your Mastodon,  Pleroma,  Misskey, and other fe
 
 You can browse in **Playground** https://smoji.dejavu.moe and take a look. 👀
 
-| Name                        | Description   |
-| --------------------------- | ------------- |
-| [weibo](/weibo)             | 新浪微博      |
-| [coolapk](/coolapk)         | 酷安社区      |
-| [bilibili](/bilibili)       | 哔哩哔哩      |
-| [qq](/qq)                   | 腾讯 QQ       |
-| [eveonecat](/eveonecat)     | Every One Cat |
-| [wechat](/wechat)           | 微信          |
-| [xiaodianshi](/xiaodianshi) | 小电视        |
-| [ding](/ding)               | 钉钉          |
-| [tiktok](/tiktok)           | 抖音          |
+| Name                        | Description                           |
+| :-------------------------- | :------------------------------------ |
+| [weibo](/weibo)             | [新浪微博](https://weibo.com/)        |
+| [coolapk](/coolapk)         | [酷安社区](https://www.coolapk.com)   |
+| [bilibili](/bilibili)       | [哔哩哔哩](https://www.bilibili.com/) |
+| [qq](/qq)                   | [腾讯 QQ](https://im.qq.com/)         |
+| [eveonecat](/eveonecat)     | [Every One Cat](http://motions.cat/)  |
+| [wechat](/wechat)           | [微信](https://weixin.qq.com/)        |
+| [xiaodianshi](/xiaodianshi) | [小电视](https://www.bilibili.com/)   |
+| [ding](/ding)               | [钉钉](https://www.dingtalk.com/)     |
+| [tiktok](/tiktok)           | [抖音](https://www.douyin.com/)       |
 
 ## Usage
 
