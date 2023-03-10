@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="system">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Smoji 表情库 — 轻量图片表情管理、多格式导出与配置工作台" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Smoji 表情库与配置工作台</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <a class="skip-link" href="#grid">跳到表情图库</a>
+    <!-- Top Navigation Header -->
+    <header class="top">
+      <div class="top__left">
+        <a class="brand" href="/" aria-label="Smoji 首页">
+          <svg class="brand__mark" width="30" height="30" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="brand-grad" x1="4" y1="4" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#0f766e"/>
+                <stop offset="100%" stop-color="#14b8a6"/>
+              </linearGradient>
+            </defs>
+            <rect x="4" y="4" width="56" height="56" rx="16" fill="url(#brand-grad)"/>
+            <rect x="4" y="4" width="56" height="56" rx="16" stroke="rgba(255,255,255,0.25)" stroke-width="2"/>
+            <path d="M23 18c0 3.5-2.5 6-6 6 3.5 0 6 2.5 6 6 0-3.5 2.5-6 6-6-3.5 0-6-2.5-6-6z" fill="#ffffff"/>
+            <path d="M37 25c2-3 8-3 10 0" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
+            <path d="M21 35c2.5 8 19.5 8 22 0" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
+          </svg>
+          <div class="brand__title-group">
+            <span class="brand__text">Smoji</span>
+            <span class="brand__badge">v1.0</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Header Actions -->
+      <div class="top__actions">
+        <button id="btn-open-code" class="btn-ghost" type="button" title="预览导出数据 (⌘/Ctrl+Shift+P)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="16 18 22 12 16 6"></polyline>
+            <polyline points="8 6 2 12 8 18"></polyline>
+          </svg>
+          <span>数据预览</span>
+        </button>
+
+        <button id="btn-open-guide" class="btn-ghost" type="button" title="查看接入说明与规范">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          <span>规范说明</span>
+        </button>
+
+        <button id="theme-toggle" class="btn-ghost btn-icon" type="button" aria-label="切换主题模式 (浅色/深色/跟随系统)" title="切换主题">
+          <svg class="theme-icon theme-icon--sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="theme-icon theme-icon--moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg class="theme-icon theme-icon--auto" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </button>
+
+        <a class="github" href="https://github.com/DejavuMoe/Smoji" target="_blank" rel="noopener noreferrer" title="查看 GitHub 仓库" aria-label="查看 GitHub 仓库（在新标签页中打开）">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+          </svg>
+          <span class="github__text">GitHub</span>
+        </a>
+
+        <button id="menu-toggle" class="menu-toggle" type="button" aria-expanded="false" aria-controls="sidebar" aria-label="打开侧边栏菜单">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+          <span>分类</span>
+        </button>
+
+
+        <button id="mobile-guide-toggle" class="menu-toggle mobile-guide-toggle" type="button" aria-label="打开规范说明">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          <span>说明</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace Shell -->
+    <div class="shell">
+      <!-- Left Sidebar: Modes & Navigation -->
+      <aside id="sidebar" class="sidebar">
+        <div class="sidebar__mobile-header">
+          <strong>分类与分组</strong>
+          <button id="sidebar-close" class="btn-ghost" type="button" aria-label="关闭分类与分组">关闭 ×</button>
+        </div>
+        <!-- Mode Switcher Tabs -->
+        <div class="mode-tabs" role="tablist" aria-label="导出模式">
+          <button id="tab-packs" class="mode-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="source-packs-section">
+            <svg class="mode-tab__icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            <span class="mode-tab__label">整包导出</span>
+          </button>
+          <button id="tab-custom" class="mode-tab" type="button" role="tab" aria-selected="false" aria-controls="custom-builder">
+            <svg class="mode-tab__icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7-6.3-4.6L5.7 21l2.3-7-6-4.6h7.6z"/></svg>
+            <span class="mode-tab__label">自选分组</span>
+          </button>
+        </div>
+
+        <!-- Custom Curated Groups Builder (Only shown in custom mode) -->
+        <section id="custom-builder" class="custom-builder" role="tabpanel" aria-labelledby="tab-custom" hidden>
+          <div class="sidebar__header-row">
+            <p class="sidebar__label">自选分组管理</p>
+            <span id="custom-pack-count-badge" class="sidebar__badge">0/—</span>
+          </div>
+          <div id="custom-capacity" class="custom-capacity" hidden>
+            <div class="custom-capacity__track">
+              <div id="custom-capacity-bar" class="custom-capacity__bar"></div>
+            </div>
+            <span id="custom-capacity-label" class="custom-capacity__label">0 / — 项</span>
+          </div>
+
+          <form id="custom-add-form" class="custom-add-form" autocomplete="off">
+            <div class="custom-inputs">
+              <label for="custom-name-input">分组名称</label>
+              <input id="custom-name-input" class="custom-input" placeholder="例如：常用" maxlength="40" required />
+              <label for="custom-id-input">分组 ID <span class="muted">（选填）</span></label>
+              <input id="custom-id-input" class="custom-input" placeholder="留空自动生成" maxlength="64" autocapitalize="none" spellcheck="false" />
+            </div>
+            <p id="custom-form-error" class="custom-error" role="alert" hidden></p>
+            <button class="btn-primary custom-submit" type="submit">+ 新建自选分组</button>
+          </form>
+
+          <div class="custom-io-row">
+            <button id="btn-export-groups" class="btn-ghost btn-sm" type="button" title="导出自选分组为可移植 JSON，便于备份与后续扩展">导出分组</button>
+            <button id="btn-import-groups" class="btn-ghost btn-sm" type="button" title="从 JSON 导入自选分组">导入分组</button>
+            <button id="btn-clear-groups" class="btn-ghost btn-sm btn-danger-ghost" type="button" title="清空全部自选分组">清空分组</button>
+            <input id="import-groups-file" class="sr-only" type="file" accept="application/json,.json" />
+          </div>
+          <label class="bundle-note-field" for="bundle-notes-input">
+            <span class="bundle-note-field__label">备注（选填）</span>
+            <input id="bundle-notes-input" class="custom-input" type="text" maxlength="240" placeholder="例如：博客常用表情" autocomplete="off" />
+          </label>
+
+          <div id="custom-pack-list" class="custom-pack-list" role="list" aria-label="自选分组列表"></div>
+          <div id="custom-pack-status" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+        </section>
+
+        <!-- Source Packs Section -->
+        <div class="source-packs-section" id="source-packs-section" role="tabpanel" aria-labelledby="tab-packs">
+          <div class="sidebar__header-row">
+            <p id="source-packs-label" class="sidebar__label">表情分类</p>
+            <!-- Batch select/invert actions for packs mode -->
+            <div id="packs-batch-actions" class="packs-batch-actions">
+              <button id="btn-select-all-packs" class="action-link" type="button" title="全选所有表情包">全选</button>
+              <span class="action-sep">/</span>
+              <button id="btn-invert-packs" class="action-link" type="button" title="反选表情包">反选</button>
+              <span class="action-sep">/</span>
+              <button id="btn-clear-packs" class="action-link" type="button" title="清空选择">清空</button>
+            </div>
+          </div>
+          <div id="pack-nav-status" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+          <nav id="pack-nav" class="pack-nav" aria-label="表情分类">
+            <div class="sidebar-loading">
+              <span class="loading-spinner"></span>
+              <span class="muted">正在加载表情清单…</span>
+            </div>
+          </nav>
+        </div>
+
+        <div class="sidebar-foot" id="sidebar-foot" hidden></div>
+      </aside>
+
+      <!-- Main Emoji Gallery -->
+      <main id="gallery-main" class="gallery" tabindex="-1">
+        <header class="gallery__header">
+          <div class="gallery__header-top">
+            <div class="gallery__title-wrap">
+              <div class="gallery__title-row">
+                <span id="gallery-pack-icon" class="gallery__pack-icon" aria-hidden="true"></span>
+                <h1 id="gallery-title" class="gallery__title">加载中…</h1>
+              </div>
+              <span id="gallery-export-count" class="gallery__export-count" aria-live="polite" aria-atomic="true">已选择 0 个表情包 / 0 个表情</span>
+            </div>
+
+            <!-- View Controls & Batch Toolbar -->
+            <div class="gallery__view-controls">
+              <div class="gallery-view" role="radiogroup" aria-label="图库视图" hidden>
+                <button id="gallery-view-active" class="gallery-view-chip is-active" type="button" role="radio" aria-checked="true" data-gallery-view="active" title="浏览源分类" tabindex="0">源分类</button>
+                <button id="gallery-view-picked" class="gallery-view-chip" type="button" role="radio" aria-checked="false" data-gallery-view="picked" title="仅显示当前自选分组已入组表情" hidden tabindex="-1">已入组</button>
+              </div>
+              <!-- Density Toggle -->
+              <button id="density-toggle" class="btn-ghost btn-sm" type="button" title="切换视图密度 (紧凑 / 舒适 · ⌘/Ctrl+D)" aria-pressed="false">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span id="density-label">紧凑</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Secondary Toolbar: Batch Actions & Export Buttons -->
+          <div class="gallery__actions">
+            <!-- Contextual Batch Action for Current Pack -->
+            <div class="gallery__pack-batch">
+              <button id="btn-batch-pack-action" class="btn-ghost btn-sm" type="button" title="快速批量操作当前表情包">
+                <span id="batch-pack-action-icon">✓</span>
+                <span id="batch-pack-action-text">本包全部勾选</span>
+              </button>
+            </div>
+
+            <!-- Export Toolbar Group -->
+            <div class="export-toolbar" role="group" aria-label="导出表情包清单">
+              <span class="export-toolbar__label">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span>导出</span>
+              </span>
+              <button id="gallery-export-btn" type="button" class="export-btn" data-format="smoji" disabled aria-label="导出为 Smoji">Smoji</button>
+              <button id="export-btn-artalk" type="button" class="export-btn" data-format="artalk" disabled aria-label="导出为 Artalk">Artalk</button>
+              <button id="export-btn-twikoo" type="button" class="export-btn" data-format="twikoo" disabled aria-label="导出为 Twikoo">Twikoo</button>
+              <button id="export-btn-owo" type="button" class="export-btn" data-format="owo" disabled aria-label="导出为 OwO">OwO</button>
+            </div>
+
+            <p id="gallery-export-error" class="gallery__export-error" role="alert" hidden></p>
+          </div>
+        </header>
+
+        <!-- Recent strip + Emoji Cards Grid -->
+        <div id="gallery-empty-cta" class="gallery-empty-cta" role="status" aria-live="polite" hidden>
+          <strong>开始配置：</strong>
+          <span>勾选左侧分类，或切换「自选分组」精选表情，即可导出多平台清单。</span>
+          <button id="btn-cta-select-current" class="btn-ghost btn-sm" type="button">勾选当前分类</button>
+          <button id="btn-cta-custom" class="btn-ghost btn-sm" type="button">进入自选分组</button>
+        </div>
+        <section id="recent-strip" class="recent-strip" aria-label="最近使用" hidden>
+          <div class="recent-strip__header">
+            <span class="recent-strip__label">最近使用</span>
+            <button id="btn-clear-recent" class="action-link" type="button" aria-label="清空最近使用记录">清空</button>
+          </div>
+          <div id="recent-strip-list" class="recent-strip__list"></div>
+        </section>
+        <div id="grid-status" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+        <div id="grid" class="grid" tabindex="0" aria-label="表情网格，方向键浏览" aria-describedby="grid-status"></div>
+      </main>
+    </div>
+
+    <!-- Backdrop Overlay -->
+    <div id="backdrop" class="backdrop" hidden></div>
+
+    <!-- Emoji Detail & Quick Copy Modal ("Pop") -->
+    <div id="pop" class="pop" role="dialog" aria-modal="true" aria-labelledby="pop-name" hidden>
+      <div class="pop__header">
+        <div class="pop__title-group">
+          <h2 id="pop-name" class="pop__name">—</h2>
+          <div class="pop__badges">
+            <span id="pop-pack-badge" class="pop__tag">分类</span>
+            <span id="pop-format-badge" class="pop__tag pop__tag--format">WEBP</span>
+          </div>
+        </div>
+        <button id="pop-close-btn" class="pop__close-btn" type="button" aria-label="关闭详情窗口">×</button>
+      </div>
+
+      <!-- Compact Preview Stage with Background Switcher and Navigation -->
+      <div class="pop__stage-wrap">
+        <button id="pop-prev-btn" class="pop__nav-btn pop__nav-btn--prev" type="button" title="上一个表情 (快捷键 ←)" aria-label="上一个表情">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+
+        <div id="pop-stage" class="pop__preview is-checkered">
+          <img id="pop-image" alt="" />
+          <span id="pop-loading" class="pop__loading" role="status" hidden>正在加载…</span>
+        </div>
+
+        <button id="pop-next-btn" class="pop__nav-btn pop__nav-btn--next" type="button" title="下一个表情 (快捷键 →)" aria-label="下一个表情">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+
+      <div class="pop__media-actions">
+        <button id="pop-retry" class="btn-ghost btn-sm" type="button" hidden>重试加载</button>
+      </div>
+
+      <!-- Compact Stage Controls (Meta & Background Switcher) -->
+      <div class="pop__stage-controls">
+        <span id="pop-meta" class="muted pop__meta" aria-live="polite">分类 · 格式</span>
+        <div class="bg-toggle-group" role="group" aria-label="切换预览背景">
+          <button class="bg-toggle-btn is-active" type="button" data-bg="checkered" title="棋盘格透明背景" aria-pressed="true">透明</button>
+          <button class="bg-toggle-btn" type="button" data-bg="light" title="浅色纯白背景" aria-pressed="false">浅底</button>
+          <button class="bg-toggle-btn" type="button" data-bg="dark" title="深色纯黑背景" aria-pressed="false">深底</button>
+        </div>
+      </div>
+
+      <!-- Compact Unified Copy Console (Zero Vertical Overflow) -->
+      <div class="pop__copy-console">
+        <div class="copy-tabs" role="tablist" aria-label="复制格式">
+          <button id="copy-tab-md" class="copy-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="copy-active-panel" data-copy-format="md" title="Ecoku Smoji 标记语法 (快捷键 1)">Markdown</button>
+          <button id="copy-tab-url" class="copy-tab" type="button" role="tab" aria-selected="false" aria-controls="copy-active-panel" data-copy-format="url" title="图片绝对链接 (快捷键 2)">URL</button>
+          <button id="copy-tab-html" class="copy-tab" type="button" role="tab" aria-selected="false" aria-controls="copy-active-panel" data-copy-format="html" title="HTML 标签 (快捷键 3)">HTML</button>
+          <button id="copy-tab-bbcode" class="copy-tab" type="button" role="tab" aria-selected="false" aria-controls="copy-active-panel" data-copy-format="bbcode" title="论坛常用 BBCode (快捷键 4)">BBCode</button>
+        </div>
+
+        <div class="copy-field-wrap" role="tabpanel" id="copy-active-panel" aria-labelledby="copy-tab-md">
+          <label class="sr-only" for="copy-active-input">当前复制内容</label>
+          <input id="copy-active-input" class="copy-field-input" readonly spellcheck="false" />
+          <button id="btn-copy-active" class="btn-primary copy-action-btn" type="button" title="复制当前格式到剪贴板">
+            <span>复制</span>
+          </button>
+        </div>
+
+        <!-- Hidden inputs preserving DOM references and contract compliance -->
+        <div class="sr-only" aria-hidden="true" style="display:none;">
+          <input id="copy-md" readonly tabindex="-1" />
+          <input id="copy-url" readonly tabindex="-1" />
+          <input id="copy-html" readonly tabindex="-1" />
+          <input id="copy-bbcode" readonly tabindex="-1" />
+        </div>
+      </div>
+
+      <!-- Group / Pack Action Toggle -->
+      <div id="pop-group-action" class="pop__group-action" hidden>
+        <label id="pop-target-wrap" class="pop__target-wrap" hidden>
+          <span class="sr-only">目标自选分组</span>
+          <select id="pop-target-group" class="pop__target-group" aria-label="目标自选分组"></select>
+        </label>
+        <button id="pop-toggle-group-btn" class="pop__group-btn" type="button">+ 加入当前分组</button>
+      </div>
+
+      <div class="pop__footer">
+        <p id="copy-feedback" class="pop__feedback muted" role="status" aria-live="polite" hidden></p>
+        <span id="pop-shortcuts-hint" class="pop__shortcuts-hint">←/→ 翻页 • 1-4 选格式 • Space 选包 • Esc 关闭</span>
+      </div>
+    </div>
+
+    <!-- Live JSON / Code Preview Modal -->
+    <div id="code-modal" class="code-modal" role="dialog" aria-modal="true" aria-labelledby="code-modal-title" hidden>
+      <div class="code-modal__dialog">
+        <div class="code-modal__header">
+          <div class="code-modal__title-wrap">
+            <h2 id="code-modal-title" class="code-modal__title">导出数据实时预览</h2>
+            <span id="code-modal-meta" class="code-modal__meta" aria-live="polite">准备就绪</span>
+          </div>
+          <button id="code-modal-close" class="pop__close-btn" type="button" aria-label="关闭预览窗口">×</button>
+        </div>
+
+        <!-- Data Scope Bar -->
+        <div class="code-modal__scope-bar">
+          <span class="code-modal__scope-label">数据范围:</span>
+          <div class="scope-chips" role="radiogroup" aria-label="预览数据范围">
+            <button class="scope-chip is-active" type="button" data-scope="active" role="radio" aria-checked="true" tabindex="0">当前分类</button>
+            <button class="scope-chip" type="button" data-scope="selected" role="radio" aria-checked="false" tabindex="-1">已勾选项目</button>
+            <button id="scope-chip-all" class="scope-chip" type="button" data-scope="all" role="radio" aria-checked="false" tabindex="-1">全部表情</button>
+          </div>
+        </div>
+
+        <!-- Format Tabs -->
+        <div class="code-modal__tabs" role="tablist" aria-label="代码格式"></div>
+
+        <div class="code-modal__body" id="code-preview-panel" role="tabpanel">
+          <pre id="code-preview-content" class="code-preview-content" tabindex="-1" aria-label="导出代码预览，可复制内容"><code>// 暂无数据</code></pre>
+          <div id="code-preview-empty" class="code-preview-empty" role="status" hidden>
+            <p id="code-preview-empty-msg" class="code-preview-empty__msg">当前范围暂无导出数据</p>
+            <div class="code-preview-empty__actions">
+              <button id="btn-preview-cta-primary" class="btn-ghost btn-sm" type="button">勾选当前分类</button>
+              <button id="btn-preview-cta-scope" class="btn-ghost btn-sm" type="button">切换全部表情</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-modal__footer">
+          <span id="code-modal-stats" class="code-modal__stats">0 个表情包 · 0 个表情</span>
+          <div class="code-modal__actions">
+            <button id="btn-copy-code" class="btn-ghost" type="button">
+              <span>复制完整代码</span>
+            </button>
+            <button id="btn-download-current-code" class="btn-primary" type="button">
+              <span>下载此格式</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Guide & Specification Modal -->
+    <div id="guide-modal" class="code-modal" role="dialog" aria-modal="true" aria-labelledby="guide-modal-title" hidden>
+      <div class="code-modal__dialog guide-dialog">
+        <div class="code-modal__header">
+          <div class="code-modal__title-wrap">
+            <h2 id="guide-modal-title" class="code-modal__title">Smoji 接入与规范指南</h2>
+            <span class="code-modal__meta">Ecoku Smoji v1 Specification</span>
+          </div>
+          <button id="guide-modal-close" class="pop__close-btn" type="button" aria-label="关闭指南窗口">×</button>
+        </div>
+
+        <div class="guide-content">
+          <section class="guide-section">
+            <h3>工作台能力（Demo）</h3>
+            <ul>
+              <li><strong>整包 / 自选双模式</strong>：勾选源分类整包导出，或创建最多 <span data-guide-limit="packs-n">32</span> 个自选分组精选表情。</li>
+              <li><strong>本地持久化</strong>：自选分组、勾选状态、主题、密度与最近使用会自动保存在浏览器本地。</li>
+              <li><strong>分组可移植</strong>：自选分组支持导入/导出 JSON（<code>smoji-custom-groups</code>）。桌面端可从网格拖入托盘、拖拽排序与跨组投放；触控端用分组 ↑↓、托盘 ◀▶（边缘可跨组）与 Alt 快捷键。展开空分组可点选为目标或拖入表情。</li>
+              <li><strong>浏览与预览</strong>：按分类浏览，自选分组可切换「源分类 / 已入组」。点击图片查看原图和动图，使用底部导出栏保存配置。</li>
+            </ul>
+          </section>
+
+          <section class="guide-section">
+            <h3>快捷键</h3>
+            <ul class="guide-shortcuts">
+              <li><kbd data-mod-kbd>Ctrl</kbd>+<kbd>1</kbd>/<kbd>2</kbd> — 切换整包导出 / 自选分组</li>
+              <li><kbd data-mod-kbd>Ctrl</kbd>+<kbd>E</kbd> — 导出当前配置（底部 Dock）</li>
+              <li><kbd data-mod-kbd>Ctrl</kbd>+<kbd>.</kbd> — 聚焦导出格式选择</li>
+              <li><kbd data-mod-kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> — 打开数据预览</li>
+              <li><kbd data-mod-kbd>Ctrl</kbd>+<kbd>D</kbd> — 切换紧凑 / 舒适密度</li>
+              <li><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> — 网格内移动；<kbd>Enter</kbd>/<kbd>Space</kbd> 打开详情</li>
+              <li><kbd data-mod-kbd>Ctrl</kbd>+<kbd>Z</kbd> — 撤销最近移出 / 删除 / 清空分组</li>
+              <li>详情弹层：<kbd>←</kbd><kbd>→</kbd> 切换；<kbd>1</kbd>–<kbd>4</kbd> 选格式；<kbd>Esc</kbd> 关闭</li>
+              <li><kbd>Alt</kbd>+<kbd>↑</kbd>/<kbd>↓</kbd> — 自选分组列表上移/下移</li>
+              <li><kbd>Alt</kbd>+<kbd>←</kbd>/<kbd>→</kbd> — 托盘内调序；触控 ◀/▶ 在首/末项可跨到相邻分组</li>
+              <li><kbd>?</kbd> — 打开本指南</li>
+            </ul>
+          </section>
+
+          <section class="guide-section">
+            <h3>核心特点与边界</h3>
+            <ul>
+              <li><strong>零运行时依赖</strong>：仅消费轻量 ES2020+ 标准 API，体积严格控制在预算内。</li>
+              <li><strong>单文件清单规范</strong>：唯一数据契约 <code>smoji.json</code>，格式为 <code>{ version: 1, packs: [...] }</code>。</li>
+              <li><strong>严格防注入安全设计</strong>：标签仅用 <code>textContent</code> 绑定，安全渲染器避免 <code>innerHTML</code>。</li>
+              <li><strong>可扩展分组包</strong>：导出自选分组 JSON 可携带 <code>extensions</code>；内置 <code>smoji.workbench</code> 会同步导出格式与备注。第三方可通过 <code>registerPackGroupExtension</code> / <code>registerExportFormat</code> 接入。</li>
+              <li><strong>历史内容永续性</strong>：标记序列化为绝对图片地址 <code>![smoji:标签](https://...)</code>，未来清单增删不影响历史评论。</li>
+            </ul>
+          </section>
+
+          <section class="guide-section">
+            <h3>规范约束限制</h3>
+            <div class="guide-grid">
+              <div class="guide-card">
+                <span class="guide-card__num" data-guide-limit="packs">1 ~ 64</span>
+                <span class="guide-card__label">最大表情包分组数</span>
+              </div>
+              <div class="guide-card">
+                <span class="guide-card__num" data-guide-limit="items-per-pack">1 ~ 600</span>
+                <span class="guide-card__label">每分组最多表情项</span>
+              </div>
+              <div class="guide-card">
+                <span class="guide-card__num" data-guide-limit="items">≤ 6000</span>
+                <span class="guide-card__label">单清单总表情数上限</span>
+              </div>
+              <div class="guide-card">
+                <span class="guide-card__num" data-guide-limit="bytes">≤ 1024 KB</span>
+                <span class="guide-card__label">清单文件体积上限</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="guide-section">
+            <h3>多平台导出格式对照</h3>
+            <table class="guide-table">
+              <thead>
+                <tr>
+                  <th>格式</th>
+                  <th>目标应用 / 插件</th>
+                  <th>文件名</th>
+                </tr>
+              </thead>
+              <tbody id="guide-export-tbody">
+                <tr>
+                  <td><strong>Smoji v1</strong></td>
+                  <td>Ecoku 原生评论系统、Smoji Picker 官方核心库</td>
+                  <td><code>smoji.json</code></td>
+                </tr>
+                <tr>
+                  <td><strong>Artalk</strong></td>
+                  <td>Artalk 自托管评论系统 v2+</td>
+                  <td><code>artalk.json</code></td>
+                </tr>
+                <tr>
+                  <td><strong>Twikoo</strong></td>
+                  <td>Twikoo 无服务器评论系统</td>
+                  <td><code>twikoo.json</code></td>
+                </tr>
+                <tr>
+                  <td><strong>OwO</strong></td>
+                  <td>Valine、Waline 及各类兼容 OwO 规范的独立博客</td>
+                  <td><code>OwO.json</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+        </div>
+
+        <div class="code-modal__footer">
+          <span class="muted">Smoji © 2026 • Private Repository</span>
+          <button id="guide-modal-confirm" class="btn-primary" type="button">我知道了</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- App confirm dialog (replaces window.confirm) -->
+    <div id="confirm-modal" class="code-modal confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-message" hidden>
+      <div class="confirm-modal__dialog">
+        <h2 id="confirm-title" class="confirm-modal__title">确认操作</h2>
+        <p id="confirm-message" class="confirm-modal__message"></p>
+        <div class="confirm-modal__actions">
+          <button id="confirm-cancel" class="btn-ghost" type="button">取消</button>
+          <button id="confirm-ok" class="btn-primary" type="button">确定</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Global Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Selection status dock -->
+    <div id="selection-dock" class="selection-dock" role="region" aria-label="导出状态" aria-describedby="selection-dock-count selection-dock-hint" hidden>
+      <div class="selection-dock__info">
+        <span id="selection-dock-count" class="selection-dock__count" aria-live="polite" aria-atomic="true">未选择</span>
+        <span id="selection-dock-hint" class="selection-dock__hint">勾选分类或加入自选分组后可导出</span>
+        <div id="selection-dock-meter" class="selection-dock__meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden>
+          <div id="selection-dock-meter-bar" class="selection-dock__meter-bar"></div>
+        </div>
+      </div>
+      <div class="selection-dock__actions">
+        <label class="selection-dock__format-wrap">
+          <span class="sr-only">导出格式</span>
+          <select id="selection-dock-format" class="selection-dock__format" aria-label="导出格式"></select>
+        </label>
+        <button id="selection-dock-preview" class="btn-ghost btn-sm" type="button" title="预览导出数据 (⌘/Ctrl+Shift+P)" aria-keyshortcuts="Control+Shift+P Meta+Shift+P">预览数据</button>
+        <button id="selection-dock-export" class="btn-primary btn-sm" type="button" title="导出当前配置 (⌘/Ctrl+E)" aria-keyshortcuts="Control+E Meta+E" disabled>导出</button>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
