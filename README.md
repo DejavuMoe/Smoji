@@ -15,19 +15,19 @@ You can use these emoji packs on your Mastodon,  Pleroma,  Misskey, and other fe
 
 You can browse it in **Playground** https://smoji.dejavu.moe and take a look. [![npm (tag)](https://img.shields.io/npm/v/dejavu-smoji/latest?color=fc7b14&label=latest)](https://www.npmjs.com/package/dejavu-smoji)
 
-| Name                        | Copyright                                           | Releases                                                     | Update     |
-| :-------------------------- | :-------------------------------------------------- | ------------------------------------------------------------ | ---------- |
-| [weibo](/weibo)             | [新浪微博](https://weibo.com/)                      | [2023.02.20](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.20) | 2023.02.20 |
-| [coolapk](/coolapk)         | [酷安社区](https://www.coolapk.com)                 | [2023.02.20](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.20) | 2023.02.20 |
-| [qq](/qq)                   | [腾讯 QQ](https://im.qq.com/)                       | [2023.02.21](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.21) | 2023.02.21 |
-| [wechat](/wechat)           | [微信](https://weixin.qq.com/)                      | [2023.02.21](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.21) | 2023.02.21 |
-| [eveonecat](/eveonecat)     | [Every One Cat](http://motions.cat/)                | [2023.02.22](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.22) | 2023.02.22 |
-| [ding](/ding)               | [钉钉](https://www.dingtalk.com/)                   | [2023.02.22](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.22) | 2023.02.22 |
-| [bilibili](/bilibili)       | [哔哩哔哩](https://www.bilibili.com/)               | [2023.02.23](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.23) | 2023.02.23 |
-| [xiaodianshi](/xiaodianshi) | [小电视](https://www.bilibili.com/)                 | [2023.02.23](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.23) | 2023.02.23 |
-| [tiktok](/tiktok)           | [抖音](https://www.douyin.com/)                     | [2023.03.04](https://github.com/DejavuMoe/Smoji/releases/tag/2023.03.04) | 2023.03.04 |
-| [ithome](/ithome)           | [IT 之家](https://www.ithome.com/)                  | [2023.03.10](https://github.com/DejavuMoe/Smoji/releases/tag/2023.03.10) | 2023.03.10 |
-| [heo](/heo)                 | [Heo Sticker](https://github.com/zhheo/Sticker-Heo) | [2023.03.10](https://github.com/DejavuMoe/Smoji/releases/tag/2023.03.10) | 2022.07.31 |
+|            Name             |                      Copyright                      |                           Releases                           |   Update   |
+| :-------------------------: | :-------------------------------------------------: | :----------------------------------------------------------: | :--------: |
+|       [weibo](/weibo)       |           [新浪微博](https://weibo.com/)            | [2023.02.20](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.20) | 2023.02.20 |
+|     [coolapk](/coolapk)     |         [酷安社区](https://www.coolapk.com)         | [2023.02.20](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.20) | 2023.02.20 |
+|          [qq](/qq)          |            [腾讯 QQ](https://im.qq.com/)            | [2023.02.21](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.21) | 2023.02.21 |
+|      [wechat](/wechat)      |           [微信](https://weixin.qq.com/)            | [2023.02.21](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.21) | 2023.02.21 |
+|   [eveonecat](/eveonecat)   |        [Every One Cat](http://motions.cat/)         | [2023.02.22](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.22) | 2023.02.22 |
+|        [ding](/ding)        |          [钉钉](https://www.dingtalk.com/)          | [2023.02.22](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.22) | 2023.02.22 |
+|    [bilibili](/bilibili)    |        [哔哩哔哩](https://www.bilibili.com/)        | [2023.02.23](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.23) | 2023.02.23 |
+| [xiaodianshi](/xiaodianshi) |         [小电视](https://www.bilibili.com/)         | [2023.02.23](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.23) | 2023.02.23 |
+|      [tiktok](/tiktok)      |           [抖音](https://www.douyin.com/)           | [2023.03.04](https://github.com/DejavuMoe/Smoji/releases/tag/2023.03.04) | 2023.03.04 |
+|      [ithome](/ithome)      |         [IT 之家](https://www.ithome.com/)          | [2023.03.10](https://github.com/DejavuMoe/Smoji/releases/tag/2023.03.10) | 2023.03.10 |
+|         [heo](/heo)         | [Heo Sticker](https://github.com/zhheo/Sticker-Heo) | [2023.03.10](https://github.com/DejavuMoe/Smoji/releases/tag/2023.03.10) | 2022.07.31 |
 
 ## Usage
 
