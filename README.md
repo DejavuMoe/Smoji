@@ -11,23 +11,23 @@ Smoji 🫣
 
 Smoji is an emoji project that includes many default emoji packs built into applications, itl also include some funny little emojis. 😎
 
-You can use these emoji packs on your Mastodon,  Pleroma,  Misskey, and other federated social applications, as well as on your website and comment systems. 😉
+You can use these emoji packs on your Mastodon,  Pleroma,  Misskey, and other federated social applications, as well as on your website and comment systems. [![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hw/dejavu-smoji?color=%23f97c49&label=jsDelivr)](https://www.jsdelivr.com/package/npm/dejavu-smoji)
 
-You can browse in **Playground** https://smoji.dejavu.moe and take a look. 👀
+You can browse it in **Playground** https://smoji.dejavu.moe and take a look. [![npm (tag)](https://img.shields.io/npm/v/dejavu-smoji/latest?color=fc7b14&label=latest)](https://www.npmjs.com/package/dejavu-smoji)
 
-| Name                        | Description/Copyright                               |
-| :-------------------------- | :-------------------------------------------------- |
-| [weibo](/weibo)             | [新浪微博](https://weibo.com/)                      |
-| [coolapk](/coolapk)         | [酷安社区](https://www.coolapk.com)                 |
-| [bilibili](/bilibili)       | [哔哩哔哩](https://www.bilibili.com/)               |
-| [qq](/qq)                   | [腾讯 QQ](https://im.qq.com/)                       |
-| [eveonecat](/eveonecat)     | [Every One Cat](http://motions.cat/)                |
-| [wechat](/wechat)           | [微信](https://weixin.qq.com/)                      |
-| [xiaodianshi](/xiaodianshi) | [小电视](https://www.bilibili.com/)                 |
-| [ding](/ding)               | [钉钉](https://www.dingtalk.com/)                   |
-| [tiktok](/tiktok)           | [抖音](https://www.douyin.com/)                     |
-| [ithome](/ithome)           | [IT 之家](https://www.ithome.com/)                  |
-| [heo](/heo)                 | [Heo Sticker](https://github.com/zhheo/Sticker-Heo) |
+| Name                        | Copyright                                           | Releases                                                     | Update     |
+| :-------------------------- | :-------------------------------------------------- | ------------------------------------------------------------ | ---------- |
+| [weibo](/weibo)             | [新浪微博](https://weibo.com/)                      | [2023.02.20](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.20) | 2023.02.20 |
+| [coolapk](/coolapk)         | [酷安社区](https://www.coolapk.com)                 | [2023.02.20](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.20) | 2023.02.20 |
+| [qq](/qq)                   | [腾讯 QQ](https://im.qq.com/)                       | [2023.02.21](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.21) | 2023.02.21 |
+| [wechat](/wechat)           | [微信](https://weixin.qq.com/)                      | [2023.02.21](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.21) | 2023.02.21 |
+| [eveonecat](/eveonecat)     | [Every One Cat](http://motions.cat/)                | [2023.02.22](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.22) | 2023.02.22 |
+| [ding](/ding)               | [钉钉](https://www.dingtalk.com/)                   | [2023.02.22](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.22) | 2023.02.22 |
+| [bilibili](/bilibili)       | [哔哩哔哩](https://www.bilibili.com/)               | [2023.02.23](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.23) | 2023.02.23 |
+| [xiaodianshi](/xiaodianshi) | [小电视](https://www.bilibili.com/)                 | [2023.02.23](https://github.com/DejavuMoe/Smoji/releases/tag/2023.02.23) | 2023.02.23 |
+| [tiktok](/tiktok)           | [抖音](https://www.douyin.com/)                     | [2023.03.04](https://github.com/DejavuMoe/Smoji/releases/tag/2023.03.04) | 2023.03.04 |
+| [ithome](/ithome)           | [IT 之家](https://www.ithome.com/)                  | [2023.03.10](https://github.com/DejavuMoe/Smoji/releases/tag/2023.03.10) | 2023.03.10 |
+| [heo](/heo)                 | [Heo Sticker](https://github.com/zhheo/Sticker-Heo) | [2023.03.10](https://github.com/DejavuMoe/Smoji/releases/tag/2023.03.10) | 2022.07.31 |
 
 ## Usage
 
@@ -66,4 +66,3 @@ https://smoji.dejavu.moe/Smoji.json
 ---
 
 **Attention:** emoji collected by Smoji is only for learning and communication. The original author of the emoji is copyrighted. Please do not use them for any commercial purpose.
-
