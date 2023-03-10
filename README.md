@@ -15,23 +15,25 @@ You can use these emoji packs on your Mastodon,  Pleroma,  Misskey, and other fe
 
 You can browse in **Playground** https://smoji.dejavu.moe and take a look. 👀
 
-| Name                        | Description                           |
-| :-------------------------- | :------------------------------------ |
-| [weibo](/weibo)             | [新浪微博](https://weibo.com/)        |
-| [coolapk](/coolapk)         | [酷安社区](https://www.coolapk.com)   |
-| [bilibili](/bilibili)       | [哔哩哔哩](https://www.bilibili.com/) |
-| [qq](/qq)                   | [腾讯 QQ](https://im.qq.com/)         |
-| [eveonecat](/eveonecat)     | [Every One Cat](http://motions.cat/)  |
-| [wechat](/wechat)           | [微信](https://weixin.qq.com/)        |
-| [xiaodianshi](/xiaodianshi) | [小电视](https://www.bilibili.com/)   |
-| [ding](/ding)               | [钉钉](https://www.dingtalk.com/)     |
-| [tiktok](/tiktok)           | [抖音](https://www.douyin.com/)       |
+| Name                        | Description/Copyright                               |
+| :-------------------------- | :-------------------------------------------------- |
+| [weibo](/weibo)             | [新浪微博](https://weibo.com/)                      |
+| [coolapk](/coolapk)         | [酷安社区](https://www.coolapk.com)                 |
+| [bilibili](/bilibili)       | [哔哩哔哩](https://www.bilibili.com/)               |
+| [qq](/qq)                   | [腾讯 QQ](https://im.qq.com/)                       |
+| [eveonecat](/eveonecat)     | [Every One Cat](http://motions.cat/)                |
+| [wechat](/wechat)           | [微信](https://weixin.qq.com/)                      |
+| [xiaodianshi](/xiaodianshi) | [小电视](https://www.bilibili.com/)                 |
+| [ding](/ding)               | [钉钉](https://www.dingtalk.com/)                   |
+| [tiktok](/tiktok)           | [抖音](https://www.douyin.com/)                     |
+| [ithome](/ithome)           | [IT 之家](https://www.ithome.com/)                  |
+| [heo](/heo)                 | [Heo Sticker](https://github.com/zhheo/Sticker-Heo) |
 
 ## Usage
 
 ### Mastodon
 
-You can check the use of Mastodon import emoji on the [Releases](https://github.com/DejavuMoe/Smoji/releases) Page, for example:
+You can check the use of Mastodon import emoji on the [releases](https://github.com/DejavuMoe/Smoji/releases) page, for example:
 
 ```bash
 wget https://github.com/DejavuMoe/Smoji/releases/download/2023.02.20/coolapk.tar.gz
@@ -47,11 +49,11 @@ sudo docker exec mastodon-web tootctl emoji import --category coolapk /mastodon/
 
 ### Pleroma
 
-On your pleroma server, pull the latest source code for the master branch, and then import it in the backend on a per-file shelf
+On your pleroma server, pull the latest source code for the master branch, and then import it in the backend on a per-file shelf.
 
 ### OwO
 
-We provide an out of the box [OwO](https://github.com/DIYgod/OwO) format, which means you can use it directly on the OwO-compatible emoji system. Here are some links to their documentation, please enjoy 🤤
+We provide an out of the box [OwO](https://github.com/DIYgod/OwO) format, which means you can use it directly on the OwO-compatible emoji system. Here are some links to their documentation, please enjoy 🤤.
 
 ```
 https://smoji.dejavu.moe/Smoji.json
