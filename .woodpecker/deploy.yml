@@ -1,0 +1,34 @@
+labels:
+  platform: linux/amd64
+  backend: docker
+  role: netcup-nano
+  server: netcup-nano
+
+when:
+  - event: push
+    branch: master
+
+steps:
+  - name: build-site
+    image: node:24.19.0-alpine3.24
+    commands:
+      - apk add --no-cache git imagemagick imagemagick-webp coreutils util-linux
+      - npm install --global pnpm@11.24.0
+      - pnpm install --frozen-lockfile
+      - pnpm check
+      - node --experimental-strip-types scripts/verify-site-output.mjs demo/dist
+      - node scripts/test-publish-site.mjs
+
+  - name: publish-site
+    image: node:24.19.0-alpine3.24
+    environment:
+      SMOJI_DEPLOY_SITE: smoji.zsh.moe
+    volumes:
+      - /var/www:/deploy
+    commands:
+      - apk add --no-cache coreutils util-linux
+      - reruns="$CI_PIPELINE_RERUNS"; test -n "$reruns" || reruns=0; release_id="$CI_COMMIT_SHA-$CI_PIPELINE_NUMBER-$reruns"; sh scripts/publish-site.sh demo/dist "$release_id"
+
+concurrency:
+  limit: 1
+  group: smoji-production
