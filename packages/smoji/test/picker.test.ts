@@ -161,3 +161,17 @@ describe('smoji picker', () => {
     delete (document as unknown as { execCommand?: typeof execFn }).execCommand
   })
 })
+
+it('keeps ARIA references local to each picker instance', () => {
+  const { trigger, picker } = setup()
+  const second = createSmoji({ trigger, packs, target: { insert() {} } })
+  const ids = [...document.querySelectorAll('[id]')].map((node) => node.id)
+  expect(new Set(ids).size).toBe(ids.length)
+  for (const panel of document.querySelectorAll('.smoji')) {
+    const grid = panel.querySelector('.smoji__grid')!
+    expect(panel.querySelector(`[id="${grid.getAttribute('aria-labelledby')}"]`)).not.toBeNull()
+    expect(panel.querySelector('[aria-controls]')!.getAttribute('aria-controls')).toBe(grid.id)
+  }
+  picker.destroy()
+  second.destroy()
+})

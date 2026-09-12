@@ -171,3 +171,42 @@ describe('generated data/smoji.json', () => {
     expect(text).not.toMatch(/schemaVersion|"type"\s*:\s*"image"|"keywords"|"catalog"/)
   })
 })
+
+it('stops oversized streamed bodies without waiting for the end', async () => {
+  let signal: AbortSignal | undefined
+  const read = vi.fn().mockResolvedValue({ done: false, value: new Uint8Array(1024 * 1024 + 1) })
+  const releaseLock = vi.fn()
+  vi.stubGlobal('fetch', vi.fn(async (_url, init: RequestInit) => {
+    signal = init.signal!
+    return { ok: true, headers: new Headers({ 'content-type': 'application/json' }), body: { getReader: () => ({ read, releaseLock }) } }
+  }))
+  await expect(loadSmojiManifest('https://static.example.test/smoji.json')).rejects.toThrow('manifest-too-large')
+  expect(read).toHaveBeenCalledTimes(1)
+  expect(signal!.aborted).toBe(true)
+  expect(releaseLock).toHaveBeenCalledOnce()
+})
+
+describe('compact Smoji compatibility', () => {
+
+  it('expands compact templates and preserves explicit src for custom groups', async () => {
+    const value = { version: 1, base: 'https://static.example.test/{pack}/{id}.webp', packs: [
+      { id: 'cats', label: '猫', items: [{ id: 'wave', label: '挥手' }, { id: 'other', label: '动图', src: './original/other.gif' }] },
+    ] }
+    const manifest = parseSmojiManifest(value, 'https://static.example.test/smoji.json')
+    expect(manifest.packs[0]!.items.map(i => i.src)).toEqual(['https://static.example.test/cats/wave.webp', 'https://static.example.test/original/other.gif'])
+    for (const base of ['https://other.example/{pack}/{id}.webp', './{pack}/{unknown}.webp', './{pack}/{id}.webp?token=x']) {
+      expect(() => parseSmojiManifest({ ...value, base }, 'https://static.example.test/smoji.json')).toThrow('invalid-manifest')
+    }
+  })
+
+})
+
+it('accepts 6000 items and rejects total and per-pack overflow', () => {
+  const value = { version: 1, base: './{pack}/{id}.webp', packs: Array.from({ length: 10 }, (_, p) => ({
+    id: `p${p}`, label: '包', items: Array.from({ length: 600 }, (_, i) => ({ id: `i${i}`, label: '图' })),
+  })) }
+  const url = 'https://static.example.test/smoji.json'
+  expect(parseSmojiManifest(value, url).packs.flatMap(p => p.items)).toHaveLength(6000)
+  expect(() => parseSmojiManifest({ ...value, packs: [...value.packs, { id: 'extra', label: '包', items: [{ id: 'x', label: '图' }] }] }, url)).toThrow('invalid-manifest')
+  expect(() => parseSmojiManifest({ ...value, packs: [{ ...value.packs[0], items: [...value.packs[0]!.items, { id: 'extra', label: '图' }] }] }, url)).toThrow('invalid-manifest')
+})

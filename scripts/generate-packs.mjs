@@ -89,7 +89,8 @@ for (const [from, target] of [
   const to = currentPath(target)
   if (to && !Object.hasOwn(assets, from)) aliases[from] = to
 }
-packs.sort((a, b) => a.id.localeCompare(b.id))
+// Bilibili is the workbench entry pack; keep the remaining catalog in stable ID order.
+packs.sort((a, b) => Number(b.id === 'bilibili') - Number(a.id === 'bilibili') || a.id.localeCompare(b.id))
 const manifest = { version: 1, packs: packs.map((pack) => ({
   id: pack.id, label: pack.label,
   items: pack.items.map((item) => ({ id: basename(item.file, extname(item.file)), label: item.label, src: `./${pack.id}/${item.file}` })),

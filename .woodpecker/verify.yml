@@ -1,0 +1,20 @@
+labels:
+  platform: linux/amd64
+  backend: docker
+  role: netcup-vps1000
+  server: netcup-vps1000
+
+when:
+  - event: push
+    branch: master
+
+steps:
+  - name: verify
+    image: node:24.19.0-alpine3.24
+    commands:
+      - apk add --no-cache git imagemagick imagemagick-webp coreutils util-linux
+      - npm install --global pnpm@11.24.0
+      - pnpm install --frozen-lockfile
+      - pnpm check
+      - node --experimental-strip-types scripts/verify-site-output.mjs demo/dist
+      - node scripts/test-publish-site.mjs

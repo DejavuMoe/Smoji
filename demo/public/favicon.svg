@@ -1,13 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <defs>
-    <linearGradient id="fav-grad" x1="6" y1="6" x2="58" y2="58" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#0f766e"/>
-      <stop offset="100%" stop-color="#14b8a6"/>
-    </linearGradient>
-  </defs>
-  <rect x="4" y="4" width="56" height="56" rx="16" fill="url(#fav-grad)"/>
-  <rect x="4" y="4" width="56" height="56" rx="16" stroke="rgba(255,255,255,0.25)" stroke-width="2"/>
-  <path d="M23 18c0 3.5-2.5 6-6 6 3.5 0 6 2.5 6 6 0-3.5 2.5-6 6-6-3.5 0-6-2.5-6-6z" fill="#ffffff"/>
-  <path d="M37 25c2-3 8-3 10 0" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
-  <path d="M21 35c2.5 8 19.5 8 22 0" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
+  <title>Smoji</title>
+  <path d="M18 0h28a18 18 0 0 1 18 18v28L46 64H18A18 18 0 0 1 0 46V18A18 18 0 0 1 18 0Z" fill="#0f766e"/>
+  <path d="M46 64V54a8 8 0 0 1 8-8h10Z" fill="#58c4ab"/>
+  <path d="M44 18c-3.5-3.5-7.8-5-13-5-7.6 0-13 4.2-13 10 0 5.4 4.3 8.2 13.5 10.5C40.2 35.7 44 38.6 44 43.6 44 49.4 38.6 53 31.5 53c-6.1 0-11.2-2.1-14.5-5.5" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
 </svg>

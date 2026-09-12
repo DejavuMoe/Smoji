@@ -16,5 +16,3 @@ packs/
 *.orig
 *~
 .DS_Store
-
-/demo/public/_previews/

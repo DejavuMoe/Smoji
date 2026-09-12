@@ -4,7 +4,7 @@ import type { ExportTargetFormat } from './export'
 export type WorkbenchMode = 'packs' | 'custom'
 export type PreviewScope = 'active' | 'selected' | 'all'
 export type ThemeMode = 'system' | 'light' | 'dark'
-export type CopyFormat = 'md' | 'url' | 'html' | 'bbcode'
+export type CopyFormat = 'md' | 'url' | 'hugo' | 'html' | 'bbcode'
 
 export interface EditableCustomPack {
   id: string

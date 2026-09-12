@@ -24,7 +24,7 @@ async function files(directory) {
   return result
 }
 
-const allowed = new Set(['index.html', 'favicon.svg', 'smoji.json', 'assets', '_previews', 'LICENSE', 'OFL-ibm-plex-sans.txt', 'OFL-ibm-plex-mono.txt'])
+const allowed = new Set(['.vite', 'index.html', 'favicon.svg', 'smoji.json', 'assets', '_previews', 'LICENSE', 'OFL-ibm-plex-sans.txt', 'OFL-ibm-plex-mono.txt'])
 for (const entry of await readdir(root)) assert(allowed.has(entry), `Unexpected published path: ${entry}`)
 await files(root)
 await requireFile(resolve(root, 'index.html'))
@@ -36,6 +36,18 @@ const html = await readFile(resolve(root, 'index.html'), 'utf8')
 const assets = [...html.matchAll(/\b(?:src|href)="(\/assets\/[^"?#]+)"/g)].map((match) => match[1].slice(1))
 assert(assets.some((path) => path.endsWith('.js')) && assets.some((path) => path.endsWith('.css')), 'Missing built JS/CSS')
 for (const path of assets) await requireFile(resolve(root, path))
+
+const chunks = await json(resolve(root, '.vite/manifest.json'))
+assert(Object.values(chunks).some((chunk) => chunk.isEntry), 'Missing Vite entry')
+for (const chunk of Object.values(chunks)) {
+  for (const path of [chunk.file, ...(chunk.css ?? []), ...(chunk.assets ?? [])]) {
+    assert(typeof path === 'string' && !path.startsWith('/') && !path.split('/').includes('..'), 'Invalid asset path')
+    await requireFile(resolve(root, path))
+  }
+  for (const dependency of [...(chunk.imports ?? []), ...(chunk.dynamicImports ?? [])]) {
+    assert(Object.hasOwn(chunks, dependency), `Missing chunk dependency: ${dependency}`)
+  }
+}
 
 const manifestText = await readFile(resolve(root, 'smoji.json'), 'utf8')
 assertManifestSize(manifestText)

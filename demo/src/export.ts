@@ -1,10 +1,17 @@
-import type { SmojiItem, SmojiManifest, SmojiPack } from '../../packages/smoji/src/types'
+import hosting from '../../data/hosting.json'
+import type { SmojiItem, SmojiManifest, SmojiManifestInput, SmojiPack } from '../../packages/smoji/src/types'
 import { assertManifestSize, parseSmojiManifest } from '../../packages/smoji/src/manifest'
 
 export interface CustomPackInput {
   readonly id: string
   readonly label: string
   readonly items: readonly SmojiItem[]
+}
+
+function exportManifestUrl(manifestUrl: string): string {
+  const url = new URL(manifestUrl)
+  return ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname)
+    ? new URL('smoji.json', hosting.assetBaseUrl).href : url.href
 }
 
 export function toExportItemSrc(itemSrc: string, manifestUrl: string): string {
@@ -36,6 +43,13 @@ export function toExportItemSrc(itemSrc: string, manifestUrl: string): string {
     throw new Error(`表情资源相对路径非法: "${itemSrc}"`)
   }
 
+  const published = exportManifestUrl(manifestUrl)
+  const original = new URL(manifestUrl)
+  if (published !== original.href && itemUrl.origin === original.origin) {
+    const directory = new URL('./', original).pathname
+    if (!itemUrl.pathname.startsWith(directory)) throw new Error('表情图片不在清单目录内')
+    return new URL(itemUrl.pathname.slice(directory.length), new URL('./', published)).href
+  }
   return itemUrl.href
 }
 
@@ -171,9 +185,10 @@ export function buildTwikooExport(
     throw new Error('未选择任何表情包')
   }
 
-  const result: TwikooManifest = {}
+  const result: TwikooManifest = Object.create(null)
   for (const pack of validPacks) {
     const key = pack.label.trim() || pack.id
+    if (Object.prototype.hasOwnProperty.call(result, key)) throw new Error(`分组名称重复：${key}，请重命名后导出`)
     result[key] = {
       type: 'image',
       container: pack.items.map((item) => ({
@@ -205,9 +220,10 @@ export function buildOwOExport(
     throw new Error('未选择任何表情包')
   }
 
-  const result: OwOManifest = {}
+  const result: OwOManifest = Object.create(null)
   for (const pack of validPacks) {
     const key = pack.label.trim() || pack.id
+    if (Object.prototype.hasOwnProperty.call(result, key)) throw new Error(`分组名称重复：${key}，请重命名后导出`)
     result[key] = {
       type: 'image',
       name: pack.id,
@@ -220,12 +236,51 @@ export function buildOwOExport(
   return result
 }
 
+/** Waline joins folder + "/" + item; keep extensions in keys for mixed formats. */
+export function buildWalineExport(packs: readonly CustomPackInput[], manifestUrl: string) {
+  const groups: Array<{ name: string; folder: string; prefix: string; type: string; icon: string; items: string[] }> = []
+  const urlsByKey = new Map<string, string>()
+  for (const pack of packs) {
+    let group: typeof groups[number] | undefined
+    for (const item of pack.items) {
+      const url = new URL(toExportItemSrc(item.src, manifestUrl))
+      const key = url.pathname.slice(1)
+      // Waline's :key: parser cannot round-trip a literal colon in a path.
+      if (key.includes(':')) throw new Error('Waline 表情路径不能包含冒号')
+      const previous = urlsByKey.get(key)
+      if (previous && previous !== url.href) throw new Error(`Waline 表情键冲突：${key}`)
+      urlsByKey.set(key, url.href)
+      if (!group || group.folder !== url.origin) {
+        group = { name: pack.label.trim() || pack.id, folder: url.origin, prefix: '', type: '', icon: key, items: [] }
+        groups.push(group)
+      }
+      group.items.push(key)
+    }
+  }
+  if (!groups.length) throw new Error('未选择任何表情包')
+  return groups
+}
+
+export function compactExportManifest(manifest: SmojiManifest, manifestUrl: string): SmojiManifestInput {
+  const directory = new URL('./', exportManifestUrl(manifestUrl)).href
+  return {
+    version: 1,
+    base: directory + '{pack}/{id}.webp',
+    packs: manifest.packs.map((pack) => ({
+      id: pack.id, label: pack.label,
+      items: pack.items.map(({ id, label, src }) => src === `${directory}${pack.id}/${id}.webp`
+        ? { id, label } : { id, label, src }),
+    })),
+  }
+}
+
 export function serializeAndValidateManifest(
   manifest: SmojiManifest,
   manifestUrl: string,
 ): string {
-  parseSmojiManifest(manifest, manifestUrl)
-  const json = JSON.stringify(manifest, null, 2) + '\n'
+  const compact = compactExportManifest(manifest, manifestUrl)
+  parseSmojiManifest(compact, exportManifestUrl(manifestUrl))
+  const json = JSON.stringify(compact, null, 2) + '\n'
   assertManifestSize(json)
   return json
 }
@@ -265,12 +320,12 @@ export function downloadCustomExportManifest(
   URL.revokeObjectURL(url)
 }
 
-export type BuiltInExportFormat = 'smoji' | 'artalk' | 'twikoo' | 'owo' | 'ecoku' | 'markdown'
+export type BuiltInExportFormat = 'smoji' | 'artalk' | 'twikoo' | 'owo' | 'waline' | 'ecoku' | 'markdown'
 /** Built-in ids plus any runtime-registered format plugins. */
 export type ExportTargetFormat = BuiltInExportFormat | (string & {})
 
 /** Dock-visible export targets (subset of registered formats). */
-export const DOCK_EXPORT_FORMAT_IDS = ['smoji', 'artalk', 'twikoo', 'owo'] as const
+export const DOCK_EXPORT_FORMAT_IDS = ['smoji', 'artalk', 'twikoo', 'owo', 'waline'] as const
 export type DockExportFormat = string
 
 export type ExportFormatDescriptor = {
@@ -331,8 +386,17 @@ export const EXPORT_FORMAT_REGISTRY: readonly ExportFormatDescriptor[] = [
     dock: true,
     toolbar: true,
     preview: true,
-    guideTarget: 'Valine、Waline 及各类兼容 OwO 规范的独立博客',
+    guideTarget: 'Valine 及各类兼容 OwO 规范的独立博客',
     guideFilename: 'OwO.json',
+  },
+  {
+    id: 'waline',
+    label: 'Waline',
+    dock: true,
+    toolbar: true,
+    preview: true,
+    guideTarget: 'Waline emoji 配置对象数组',
+    guideFilename: 'waline.json',
   },
   {
     id: 'ecoku',
@@ -437,12 +501,17 @@ export function generateFormattedExport(
       filename = 'OwO.json'
       break
     }
+    case 'waline': {
+      content = JSON.stringify(buildWalineExport(packs, manifestUrl), null, 2) + '\n'
+      filename = 'waline.json'
+      break
+    }
     case 'ecoku': {
       const ecokuConfig = {
         formConfig: {
           smoji: {
             enabled: true,
-            manifestUrl,
+            manifestUrl: exportManifestUrl(manifestUrl),
           },
         },
       }

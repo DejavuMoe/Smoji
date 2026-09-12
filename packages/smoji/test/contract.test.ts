@@ -39,7 +39,23 @@ describe('demo and schema contracts', () => {
     expect(schema.$defs.item.additionalProperties).toBe(false)
     expect(schema.$defs.pack.properties.items.maxItems).toBe(600)
     expect(schema.$defs.pack.required).toEqual(['id', 'label', 'items'])
-    expect(schema.$defs.item.required).toEqual(['id', 'label', 'src'])
+    expect(schema.$defs.item.required).toEqual(['id', 'label'])
+    expect(schema.properties.base.type).toBe('string')
+    expect(schema.allOf[0].then.properties.packs.items.properties.items.items.required).toEqual(['src'])
+  })
+
+  it('schema label and template patterns match runtime constraints', () => {
+    const labelPattern = new RegExp(schema.$defs.label.pattern, 'u')
+    for (const label of ['猫', '  ' + '😀'.repeat(40) + '  ', 'a b']) {
+      expect(labelPattern.test(label)).toBe(true)
+    }
+    for (const label of ['', '   ', '😀'.repeat(41), '坏]', '坏\u0085', '坏\n']) {
+      expect(labelPattern.test(label)).toBe(false)
+    }
+    const basePattern = new RegExp(schema.properties.base.pattern, 'u')
+    expect(basePattern.test('./{pack}/{id}.webp')).toBe(true)
+    expect(basePattern.test('./{pack}/{id}/{unknown}.webp')).toBe(false)
+    expect(basePattern.test('./{id}.webp')).toBe(false)
   })
 
   it('schema sample matches the runtime validator', () => {
@@ -320,10 +336,10 @@ describe('demo and schema contracts', () => {
     expect(html).toContain('id="custom-builder"')
     expect(html).toContain('id="custom-pack-list"')
     expect(html).toContain('id="gallery-export-count"')
-    expect(html).toContain('id="gallery-export-btn"')
-    expect(html).toContain('id="export-btn-artalk"')
-    expect(html).toContain('id="export-btn-twikoo"')
-    expect(html).toContain('id="export-btn-owo"')
+    expect(html).toContain('id="quick-export"')
+    expect(html).toContain('id="selection-dock-format"')
+    expect(html).toContain('id="selection-dock-export"')
+    expect(main).toContain('for (const fmt of toolbarExportFormats())')
     expect(html).toContain('class="export-toolbar"')
     expect(html).not.toContain('class="sidebar__github"')
     expect(html).not.toContain('class="export-box"')
@@ -331,7 +347,8 @@ describe('demo and schema contracts', () => {
     expect(main).toContain('row.className = \'pack-row\'')
     expect(main).toContain('checkbox.type = \'checkbox\'')
     expect(main).toContain('checkbox.className = \'pack-check\'')
-    expect(main).toContain('row.append(checkbox, button)')
+    expect(main).toContain('selectLabel.append(checkbox)')
+    expect(main).toContain('row.append(selectLabel, button)')
     expect(main).not.toMatch(/button\.append\([^)]*checkbox/)
     expect(main).toContain('handleCustomItemClick')
     expect(main).toContain('handlePackItemToggle')
@@ -351,7 +368,7 @@ describe('demo and schema contracts', () => {
     expect(css).toContain('.gallery__header')
     expect(css).toContain('.export-toolbar')
     expect(css).toContain('.pop__group-btn')
-    expect(css).toContain('@media (max-width: 720px)')
+    expect(css).toContain('@media (max-width: 900px)')
 
     // Enhanced UI/UX feature contracts
     expect(html).not.toContain('type="search"')

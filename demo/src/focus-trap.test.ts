@@ -110,4 +110,23 @@ describe('trapFocus', () => {
     trapFocus(dialog, { initialFocus: second })
     expect(document.activeElement).toBe(second)
   })
+
+  it('skips closed disclosures and hidden ancestors, and cancels deferred focus on release', () => {
+    const outside = document.createElement('button')
+    const dialog = document.createElement('div')
+    dialog.innerHTML = '<button>first</button><details><summary>options</summary><button>hidden option</button></details><div style="display:none"><button>hidden ancestor</button></div>'
+    document.body.append(outside, dialog)
+    outside.focus()
+    let deferred: FrameRequestCallback | undefined
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => { deferred = cb; return 42 })
+    const cancel = vi.spyOn(window, 'cancelAnimationFrame')
+    const release = trapFocus(dialog)
+    deferred?.(0)
+    dialog.querySelector('summary')!.focus()
+    dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true }))
+    expect(document.activeElement).toBe(dialog.querySelector('button'))
+    release()
+    expect(cancel).toHaveBeenCalledWith(42)
+    expect(document.activeElement).toBe(outside)
+  })
 })

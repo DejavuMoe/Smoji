@@ -9,11 +9,12 @@ afterEach(() => {
 })
 
 it('keeps the mobile drawer out of focus order, restores desktop access, and shows plain notifications', async () => {
+  vi.stubGlobal('scrollTo', vi.fn())
   Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', { configurable: true, value: vi.fn() })
   const html = await readFile('demo/index.html', 'utf8')
   document.body.innerHTML = html.split('<body>')[1]!.split('</body>')[0]!
   const mobile = Object.assign(new EventTarget(), { matches: true })
-  vi.stubGlobal('matchMedia', (query: string) => query === '(max-width: 720px)'
+  vi.stubGlobal('matchMedia', (query: string) => query === '(max-width: 900px)'
     ? mobile : Object.assign(new EventTarget(), { matches: false }))
   vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
     ok: true,
@@ -42,14 +43,10 @@ it('keeps the mobile drawer out of focus order, restores desktop access, and sho
   expect(document.activeElement).toBe(toggle)
   document.querySelector<HTMLElement>('.card')!.click()
   document.querySelector<HTMLButtonElement>('#pop-close-btn')!.click()
-  document.querySelector<HTMLButtonElement>('#btn-clear-recent')!.click()
-  expect(document.querySelector<HTMLElement>('#confirm-modal')!.hidden).toBe(false)
-  expect(document.activeElement).toBe(document.querySelector('#confirm-cancel'))
-  document.querySelector<HTMLButtonElement>('#confirm-cancel')!.click()
-  expect(document.querySelector<HTMLElement>('#confirm-modal')!.hidden).toBe(true)
-  expect(document.querySelector('#recent-strip-list')!.children).toHaveLength(1)
-  showToast('已清空最近使用', 'info')
-  expect(document.querySelector('.toast__text')!.textContent).toBe('已清空最近使用')
+  expect(document.querySelector('#recent-strip')).toBeNull()
+  expect(localStorage.getItem('smoji-workbench:recent-srcs')).toBeNull()
+  showToast('操作完成', 'info')
+  expect(document.querySelector('.toast__text')!.textContent).toBe('操作完成')
   expect(document.querySelector('.toast__icon')).toBeNull()
   expect(document.querySelector('.toast__dismiss')!.getAttribute('aria-label')).toBe('关闭通知')
 })

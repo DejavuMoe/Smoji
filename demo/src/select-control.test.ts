@@ -1,0 +1,51 @@
+import { expect, it, vi } from 'vitest'
+import { createSelectControl } from './select-control'
+
+it('keeps a themed picker in sync with native state and supports keyboard, dismissal and updated options', () => {
+  document.body.innerHTML = '<select id="format" aria-label="导出格式"><option value="smoji">Smoji</option><option value="artalk">Artalk</option><option value="twikoo">Twikoo</option><option value="owo" disabled>OwO</option></select>'
+  const select = document.querySelector('select')!
+  const change = vi.fn()
+  select.addEventListener('change', change)
+  const control = createSelectControl(select)
+  const trigger = document.querySelector<HTMLButtonElement>('[role="combobox"]')!
+  const menu = document.querySelector<HTMLElement>('[role="listbox"]')!
+  const key = (value: string) => document.activeElement!.dispatchEvent(new KeyboardEvent('keydown', { key: value, bubbles: true, cancelable: true }))
+  expect(select.hidden).toBe(true)
+  expect(trigger.textContent).toBe('Smoji')
+  trigger.click()
+  expect(menu.hidden).toBe(false)
+  key('ArrowDown')
+  expect(document.activeElement!.textContent).toBe('Artalk')
+  expect(select.value).toBe('smoji')
+  key('Enter')
+  expect(select.value).toBe('artalk')
+  expect(trigger.textContent).toBe('Artalk')
+  expect(change).toHaveBeenCalledTimes(1)
+  expect(menu.hidden).toBe(true)
+  expect(document.activeElement).toBe(trigger)
+  trigger.click()
+  key('t')
+  expect(document.activeElement!.textContent).toBe('Twikoo')
+  const escaped = vi.fn()
+  document.addEventListener('keydown', escaped)
+  key('Escape')
+  expect(escaped).not.toHaveBeenCalled()
+  document.removeEventListener('keydown', escaped)
+  expect(select.value).toBe('artalk')
+  trigger.click()
+  document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+  expect(menu.hidden).toBe(true)
+  select.append(new Option('Custom', 'custom'))
+  select.value = 'custom'
+  control.sync()
+  expect(trigger.textContent).toBe('Custom')
+  control.focus()
+  key('ArrowDown')
+  key('Home')
+  expect(document.activeElement!.textContent).toBe('Smoji')
+  key('End')
+  expect(document.activeElement!.textContent).toBe('Custom')
+  key('Tab')
+  expect(menu.hidden).toBe(true)
+  document.body.replaceChildren()
+})

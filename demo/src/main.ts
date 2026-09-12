@@ -8,6 +8,9 @@ import {
 import { smojiMarker } from 'smoji/marker'
 import type { SmojiItem, SmojiPack } from 'smoji'
 import {
+  buildCustomExportManifest,
+  compactExportManifest,
+  toExportItemSrc,
   downloadFormattedExport,
   dockExportFormats,
   generateFormattedExport,
@@ -19,8 +22,8 @@ import {
   type ExportTargetFormat,
 } from './export'
 import {
+  safeStorage,
   type EditableCustomPack,
-  type RecentEntry,
   buildCustomGroupBundle,
   loadCopyFormat,
   loadCustomGroupExtensions,
@@ -29,11 +32,9 @@ import {
   loadExcludedSrcs,
   loadExportFormat,
   loadMode,
-  loadRecentEntries,
   loadSelectedPackIds,
   parseCustomGroupBundle,
   parseCustomGroupExtensions,
-  pushRecentEntry,
   saveCopyFormat,
   saveCustomGroupExtensions,
   saveCustomPacks,
@@ -56,8 +57,9 @@ import {
 } from './workbench-extension'
 import { canonicalAssetSrc, migratePackSelection, loadAssetAliases } from './asset-paths'
 import { trapFocus } from './focus-trap'
+import { createSelectControl } from './select-control'
 import { HistoryStack } from './history'
-import { WorkbenchStore, type WorkbenchState } from './state'
+import { isValidSmojiLabel } from '../../packages/smoji/src/validate'
 import { imagePreview, thumbnailSrc, loadImage } from './images'
 import hosting from '../../data/hosting.json'
 import publishedManifest from '../../data/smoji.json'
@@ -80,10 +82,12 @@ const galleryExportCount = document.querySelector<HTMLElement>('#gallery-export-
 const galleryExportError = document.querySelector<HTMLElement>('#gallery-export-error')!
 const exportToolbar = document.querySelector<HTMLElement>('.export-toolbar')!
 let exportButtons: HTMLButtonElement[] = []
-const galleryPackIcon = document.querySelector<HTMLElement>('#gallery-pack-icon')!
 
 const menuToggle = document.querySelector<HTMLButtonElement>('#menu-toggle')!
-const mobileGuideToggle = document.querySelector<HTMLButtonElement>('#mobile-guide-toggle')!
+const globalTools = document.querySelector<HTMLDetailsElement>('#global-tools')!
+const customCreate = document.querySelector<HTMLDetailsElement>('#custom-create')!
+const customOptions = document.querySelector<HTMLDetailsElement>('#custom-options')!
+const quickExport = document.querySelector<HTMLDetailsElement>('#quick-export')!
 const backdrop = document.querySelector<HTMLElement>('#backdrop')!
 const pop = document.querySelector<HTMLElement>('#pop')!
 const popImage = document.querySelector<HTMLImageElement>('#pop-image')!
@@ -106,6 +110,7 @@ const copyFeedback = document.querySelector<HTMLElement>('#copy-feedback')!
 const copyUrl = document.querySelector<HTMLInputElement>('#copy-url')!
 const copyHtml = document.querySelector<HTMLInputElement>('#copy-html')!
 const copyMd = document.querySelector<HTMLInputElement>('#copy-md')!
+const copyHugo = document.querySelector<HTMLInputElement>('#copy-hugo')!
 const copyBbcode = document.querySelector<HTMLInputElement>('#copy-bbcode')!
 
 const copyActiveInput = document.querySelector<HTMLInputElement>('#copy-active-input')!
@@ -135,7 +140,6 @@ const densityLabel = document.querySelector<HTMLElement>('#density-label')!
 
 // Batch Controls
 const btnSelectAllPacks = document.querySelector<HTMLButtonElement>('#btn-select-all-packs')!
-const btnInvertPacks = document.querySelector<HTMLButtonElement>('#btn-invert-packs')!
 const btnClearPacks = document.querySelector<HTMLButtonElement>('#btn-clear-packs')!
 const btnBatchPackAction = document.querySelector<HTMLButtonElement>('#btn-batch-pack-action')!
 const batchPackActionIcon = document.querySelector<HTMLElement>('#batch-pack-action-icon')!
@@ -173,9 +177,6 @@ const confirmMessage = document.querySelector<HTMLElement>('#confirm-message')!
 const confirmOk = document.querySelector<HTMLButtonElement>('#confirm-ok')!
 const confirmCancel = document.querySelector<HTMLButtonElement>('#confirm-cancel')!
 const toastContainer = document.querySelector<HTMLElement>('#toast-container')!
-const recentStrip = document.querySelector<HTMLElement>('#recent-strip')!
-const recentStripList = document.querySelector<HTMLElement>('#recent-strip-list')!
-const btnClearRecent = document.querySelector<HTMLButtonElement>('#btn-clear-recent')!
 const btnExportGroups = document.querySelector<HTMLButtonElement>('#btn-export-groups')!
 const btnImportGroups = document.querySelector<HTMLButtonElement>('#btn-import-groups')!
 const btnClearGroups = document.querySelector<HTMLButtonElement>('#btn-clear-groups')!
@@ -189,7 +190,6 @@ const sidebarFoot = document.querySelector<HTMLElement>('#sidebar-foot')!
 const packNavStatus = document.querySelector<HTMLElement>('#pack-nav-status')!
 const galleryEmptyCta = document.querySelector<HTMLElement>('#gallery-empty-cta')!
 const btnCtaSelectCurrent = document.querySelector<HTMLButtonElement>('#btn-cta-select-current')!
-const btnCtaCustom = document.querySelector<HTMLButtonElement>('#btn-cta-custom')!
 const selectionDock = document.querySelector<HTMLElement>('#selection-dock')!
 const selectionDockCount = document.querySelector<HTMLElement>('#selection-dock-count')!
 const selectionDockHint = document.querySelector<HTMLElement>('#selection-dock-hint')!
@@ -198,6 +198,8 @@ const selectionDockMeterBar = document.querySelector<HTMLElement>('#selection-do
 const selectionDockFormat = document.querySelector<HTMLSelectElement>('#selection-dock-format')!
 const selectionDockPreview = document.querySelector<HTMLButtonElement>('#selection-dock-preview')!
 const selectionDockExport = document.querySelector<HTMLButtonElement>('#selection-dock-export')!
+const dockFormatControl = createSelectControl(selectionDockFormat)
+const groupTargetControl = createSelectControl(popTargetGroup)
 
 /** Extensible custom-group architecture limits (from smoji.json contract). */
 const CUSTOM_PACK_LIMIT = SMOJI_MAX_PACKS
@@ -260,20 +262,13 @@ function extensionContext() {
 }
 
 let workbenchBundleNotes = ''
-let announceExtensionApply = false
 
 function syncWorkbenchExtensionPrefs(): void {
-  const prev = customGroupExtensions[WORKBENCH_EXTENSION_ID]
-  const notes =
-    workbenchBundleNotes ||
-    (prev && typeof prev === 'object' && !Array.isArray(prev) && typeof (prev as { notes?: unknown }).notes === 'string'
-      ? (prev as { notes: string }).notes
-      : undefined)
   customGroupExtensions = {
     ...customGroupExtensions,
     [WORKBENCH_EXTENSION_ID]: buildWorkbenchExtensionPayload({
       preferredDockFormat: selectionDockFormat.value,
-      notes,
+      notes: workbenchBundleNotes || undefined,
     }),
   }
 }
@@ -281,13 +276,11 @@ function syncWorkbenchExtensionPrefs(): void {
 function applyWorkbenchExtensionPayload(payload: WorkbenchExtensionPayload): void {
   if (payload.preferredDockFormat) {
     selectionDockFormat.value = payload.preferredDockFormat
+    dockFormatControl.sync()
     saveExportFormat(payload.preferredDockFormat)
   }
   workbenchBundleNotes = payload.notes?.trim() ?? ''
   if (bundleNotesInput) bundleNotesInput.value = workbenchBundleNotes
-  if (announceExtensionApply && workbenchBundleNotes) {
-    showToast(`分组备注：${workbenchBundleNotes}`, 'info')
-  }
   updateSidebarFoot()
 }
 
@@ -296,38 +289,11 @@ registerWorkbenchExtension({
 })
 
 function applyLoadedExtensions(silent = true): void {
-  announceExtensionApply = !silent
-  try {
-    const errors = applyPackGroupExtensions(customGroupExtensions, extensionContext())
-    if (!silent && errors.length) {
-      showToast(`扩展校验：${errors[0]}`, 'error')
-    }
-  } finally {
-    announceExtensionApply = false
-  }
+  const errors = applyPackGroupExtensions(customGroupExtensions, extensionContext())
+  if (!silent && errors.length) showToast(`扩展校验：${errors[0]}`, 'error')
   updateSidebarFoot()
 }
 
-type UndoAction =
-  | {
-      type: 'custom-remove'
-      packIndex: number
-      item: SmojiItem
-      itemIndex: number
-    }
-  | {
-      type: 'custom-clear'
-      packs: EditableCustomPack[]
-      activeIndex: number
-    }
-  | {
-      type: 'custom-delete'
-      pack: EditableCustomPack
-      packIndex: number
-      activeIndex: number
-    }
-
-let lastUndo: UndoAction | null = null
 const historyStack = new HistoryStack(50)
 
 // Gallery & Preview State
@@ -336,23 +302,8 @@ let isComfortableDensity = loadDensity()
 let currentCodeFormat: ExportTargetFormat = 'smoji'
 let previewScope: 'active' | 'selected' | 'all' = 'active'
 type ThemeMode = 'system' | 'light' | 'dark'
-let currentTheme: ThemeMode = (localStorage.getItem('smoji-theme') as ThemeMode) || 'system'
-let activeCopyFormat: 'md' | 'url' | 'html' | 'bbcode' = loadCopyFormat()
-let recentEntries: RecentEntry[] = loadRecentEntries()
-
-export const store = new WorkbenchStore({
-  mode,
-  activePack,
-  selectedPackIds,
-  excludedItemSrcs,
-  customPacks,
-  activeCustomPackIndex,
-  previewScope,
-  theme: currentTheme,
-  comfortableDensity: isComfortableDensity,
-  activeCopyFormat,
-  currentCodeFormat,
-})
+let currentTheme: ThemeMode = (safeStorage.getItem('smoji-theme') as ThemeMode) || 'system'
+let activeCopyFormat: 'md' | 'url' | 'hugo' | 'html' | 'bbcode' = loadCopyFormat()
 
 let keyboardFocusIndex = -1
 let gridRenderGen = 0
@@ -391,9 +342,6 @@ function syncPlatformShortcutHints(): void {
   btnOpenGuide.title = '查看接入说明与规范 (?)'
   btnOpenGuide.setAttribute('aria-label', '查看接入说明与规范 (?)')
   btnOpenGuide.setAttribute('aria-keyshortcuts', '?')
-  mobileGuideToggle.title = '查看接入说明与规范 (?)'
-  mobileGuideToggle.setAttribute('aria-label', '查看接入说明与规范 (?)')
-  mobileGuideToggle.setAttribute('aria-keyshortcuts', '?')
   selectionDockPreview.title = `预览导出数据 (${preview})`
   selectionDockPreview.setAttribute('aria-label', `预览导出数据 (${preview})`)
   selectionDockExport.title = `导出当前配置 (${exportHint})`
@@ -402,7 +350,7 @@ function syncPlatformShortcutHints(): void {
   selectionDockFormat.setAttribute('aria-keyshortcuts', 'Control+. Meta+.')
   tabPacks.setAttribute('aria-keyshortcuts', 'Control+1 Meta+1')
   tabCustom.setAttribute('aria-keyshortcuts', 'Control+2 Meta+2')
-  for (const btn of [btnSelectAllPacks, btnInvertPacks, btnClearPacks]) {
+  for (const btn of [btnSelectAllPacks, btnClearPacks]) {
     if (btn.title) btn.setAttribute('aria-label', btn.title)
   }
   for (const btn of [btnExportGroups, btnImportGroups, btnClearGroups]) {
@@ -432,13 +380,50 @@ function syncPopShortcutHint(): void {
     }
   }
   const spacePart = spaceHint ? ` • ${spaceHint}` : ''
-  popShortcutsHint.textContent = `←/→ 翻页 • 1-4 选格式${spacePart} • Esc 关闭`
+  popShortcutsHint.textContent = `←/→ 翻页 • 1-5 选格式${spacePart} • Esc 关闭`
 }
 const galleryMain = document.querySelector<HTMLElement>('#gallery-main')!
 const sidebar = document.querySelector<HTMLElement>('#sidebar')!
 
+type GroupSnapshot = ReturnType<typeof groupSnapshot>
+let savedGroupSnapshot: GroupSnapshot | null = null
+
+function groupSnapshot() {
+  return {
+    packs: customPacks.map(({ id, label, items }) => ({ id, label, items: items.slice() })),
+    activeIndex: activeCustomPackIndex,
+    extensions: structuredClone(customGroupExtensions),
+  }
+}
+
+function restoreGroupSnapshot(snapshot: GroupSnapshot): void {
+  customPacks.splice(0, customPacks.length, ...snapshot.packs.map((pack) => ({ ...pack, items: pack.items.slice() })))
+  activeCustomPackIndex = snapshot.activeIndex
+  customGroupExtensions = structuredClone(snapshot.extensions)
+  applyLoadedExtensions(true)
+  savedGroupSnapshot = groupSnapshot()
+  renderCustomPackList()
+  renderGrid()
+  updateExportState()
+  updatePopGroupBtn()
+}
+
+function recordGroupHistory(): void {
+  const next = groupSnapshot()
+  const previous = savedGroupSnapshot
+  savedGroupSnapshot = next
+  if (previous && JSON.stringify(previous.packs) !== JSON.stringify(next.packs)) {
+    historyStack.push({
+      description: '修改自选分组',
+      undo: () => restoreGroupSnapshot(previous),
+      redo: () => restoreGroupSnapshot(next),
+    })
+  }
+}
+
 function persistWorkbenchState(): void {
   if (!workbenchReady) return
+  recordGroupHistory()
   const ok =
     saveSelectedPackIds(selectedPackIds) &&
     saveExcludedSrcs(excludedItemSrcs) &&
@@ -461,9 +446,30 @@ function anyModalOpen(): boolean {
   return !pop.hidden || !codeModal.hidden || !guideModal.hidden || !confirmModal.hidden
 }
 
+let lockedPageScroll: number | null = null
+function syncPageScrollLock(locked: boolean): void {
+  if (locked && lockedPageScroll === null) {
+    lockedPageScroll = window.scrollY
+    document.body.style.setProperty('--page-scroll-top', `${-lockedPageScroll}px`)
+    document.body.classList.add('overlay-open')
+  } else if (!locked && lockedPageScroll !== null) {
+    const scrollY = lockedPageScroll
+    lockedPageScroll = null
+    document.body.classList.remove('overlay-open')
+    document.body.style.removeProperty('--page-scroll-top')
+    window.scrollTo({ top: scrollY, behavior: 'instant' })
+  }
+}
+
 function syncOverlayInert(): void {
   const modalOpen = anyModalOpen()
+  document.body.classList.toggle('modal-open', modalOpen)
+  const topDialog = [confirmModal, codeModal, guideModal, pop].find((dialog) => !dialog.hidden)
+  for (const dialog of [confirmModal, codeModal, guideModal, pop]) {
+    dialog.toggleAttribute('inert', Boolean(topDialog && dialog !== topDialog))
+  }
   const menuOpen = document.body.classList.contains('menu-open')
+  syncPageScrollLock(mobileViewportMq.matches && (modalOpen || menuOpen))
   const sidebarBlocked = modalOpen || (mobileViewportMq.matches && !menuOpen)
   sidebar.toggleAttribute('inert', sidebarBlocked)
   sidebar.setAttribute('aria-hidden', String(sidebarBlocked))
@@ -497,12 +503,15 @@ function syncOverlayInert(): void {
     const dockBlocked = modalOpen || menuOpen
     selectionDock.toggleAttribute('inert', dockBlocked)
     selectionDock.setAttribute('aria-hidden', dockBlocked ? 'true' : 'false')
+    if (dockBlocked) dockFormatControl.close(false)
   }
   if (skipLink) {
     const skipBlocked = modalOpen || (menuOpen && mobileViewportMq.matches)
     skipLink.toggleAttribute('inert', skipBlocked)
     skipLink.setAttribute('aria-hidden', skipBlocked ? 'true' : 'false')
   }
+
+  if (pop.hidden || pop.hasAttribute('inert')) groupTargetControl.close(false)
 
   // Mobile drawer overlays the gallery — inert gallery while the drawer is open.
   if (galleryMain) {
@@ -523,6 +532,7 @@ function resolveBackdrop(): void {
 function closeConfirmModal(result: boolean): void {
   if (confirmModal.hidden) return
   confirmModal.hidden = true
+  syncOverlayInert()
   releaseConfirmFocus?.()
   releaseConfirmFocus = null
   const resolve = confirmResolver
@@ -532,7 +542,11 @@ function closeConfirmModal(result: boolean): void {
   const trigger = confirmModalTrigger
   confirmModalTrigger = null
   resolve?.(result)
-  if (trigger?.isConnected) trigger.focus({ preventScroll: true })
+  if (trigger?.isConnected) {
+    const target = mobileViewportMq.matches && globalTools.contains(trigger)
+      ? globalTools.querySelector<HTMLElement>('summary') : trigger
+    target?.focus({ preventScroll: true })
+  }
 }
 
 function showConfirm(
@@ -556,12 +570,11 @@ function showConfirm(
     backdrop.hidden = false
     releaseConfirmFocus?.()
     releaseConfirmFocus = trapFocus(confirmModal.querySelector('.confirm-modal__dialog') ?? confirmModal, {
-      initialFocus: options.danger ? confirmCancel : confirmOk,
+      initialFocus: confirmCancel,
     })
     syncOverlayInert()
     // Destructive confirms: land on Cancel first so Enter isn't an accidental wipe.
-    if (options.danger) confirmCancel.focus()
-    else confirmOk.focus()
+    confirmCancel.focus()
   })
 }
 
@@ -585,15 +598,20 @@ export function showToast(
   action?: { label: string; run: () => void },
 ): void {
   if (!toastContainer) return
+  if (!codeModal.hidden) {
+    codeModalMeta.textContent = message
+    return
+  }
+  if (!pop.hidden) {
+    showPopFeedback(message, type, action)
+    return
+  }
 
   const existing = [...toastContainer.querySelectorAll<HTMLElement>('.toast:not(.is-fading)')].find(
     (el) => el.dataset.toastKey === `${type}:${message}` && !el.querySelector('.toast__action'),
   )
   if (existing && !action) {
     bumpToastTimer(existing, type === 'error' ? 4200 : 2400)
-    existing.classList.remove('is-pulse')
-    void existing.offsetWidth
-    existing.classList.add('is-pulse')
     return
   }
 
@@ -695,7 +713,7 @@ const THEME_ARIA_LABEL: Record<ThemeMode, string> = {
 
 export function applyTheme(theme: ThemeMode): void {
   currentTheme = theme
-  localStorage.setItem('smoji-theme', theme)
+  safeStorage.setItem('smoji-theme', theme)
   document.documentElement.dataset.theme = theme
   themeToggle.setAttribute('aria-label', THEME_ARIA_LABEL[theme])
   themeToggle.title = THEME_ARIA_LABEL[theme]
@@ -706,19 +724,13 @@ systemThemeMq.addEventListener('change', () => {
   if (currentTheme === 'system') {
     // Re-apply so CSS [data-theme=system] + media query stays in sync visually for icons
     applyTheme('system')
-    showToast(systemThemeMq.matches ? '系统已切换为深色' : '系统已切换为浅色', 'info')
   }
 })
 
 function cycleTheme(): void {
   const next: ThemeMode = currentTheme === 'system' ? 'light' : currentTheme === 'light' ? 'dark' : 'system'
   applyTheme(next)
-  const labels: Record<ThemeMode, string> = {
-    system: '已跟随系统外观',
-    light: '已切换为浅色模式',
-    dark: '已切换为深色模式',
-  }
-  showToast(labels[next], 'info')
+
 }
 
 function fileStem(item: SmojiItem): string {
@@ -758,60 +770,38 @@ function packsForWorkbenchExport(): Array<{ id: string; label: string; items: re
     .filter((pack) => pack.items.length > 0)
 }
 
-let exportSizeCacheKey = ''
-let exportSizeCacheBytes = 0
-
 function estimateExportBytes(exportPacks: Array<{ id: string; label: string; items: readonly SmojiItem[] }>): number {
-  const key = exportPacks
-    .map((p) => `${p.id}:${p.items.length}:${p.items[0]?.src ?? ''}:${p.items[p.items.length - 1]?.src ?? ''}`)
-    .join('|')
-  if (key === exportSizeCacheKey) return exportSizeCacheBytes
-  try {
-    const { content } = generateFormattedExport('smoji', exportPacks, manifestUrl)
-    exportSizeCacheBytes = new TextEncoder().encode(content).length
-  } catch {
-    exportSizeCacheBytes = -1
-  }
-  exportSizeCacheKey = key
-  return exportSizeCacheBytes
+  if (!exportPacks.length) return 0
+  // Measure before validation so an oversized manifest still has a useful error and size.
+  const manifest = buildCustomExportManifest(exportPacks, manifestUrl)
+  return new TextEncoder().encode(JSON.stringify(compactExportManifest(manifest, manifestUrl)) + '\n').length
 }
 
 function updateExportState(): void {
+  const batchLabel = selectedPackIds.size ? '反选' : '全选'
+  btnSelectAllPacks.textContent = batchLabel
+  btnSelectAllPacks.title = `${batchLabel}表情包`
+  btnSelectAllPacks.setAttribute('aria-label', `${batchLabel}表情包`)
+  btnClearPacks.disabled = selectedPackIds.size === 0
+  dockFormatControl.sync()
   let disabled = false
   const exportPacks = packsForWorkbenchExport()
   const totalItems = exportPacks.reduce((acc, p) => acc + p.items.length, 0)
   const packCount = exportPacks.length
-  exportToolbar.hidden = packCount === 0
+  quickExport.hidden = packCount === 0
   const bytes = exportPacks.length ? estimateExportBytes(exportPacks) : 0
   const kb = bytes > 0 ? bytes / 1024 : 0
   const overBudget = bytes > SMOJI_MANIFEST_MAX_BYTES
   const nearBudget = bytes > SMOJI_MANIFEST_MAX_BYTES * MANIFEST_NEAR_BUDGET_RATIO
 
   if (mode === 'custom') {
-    galleryExportCount.textContent =
-      packCount === customPacks.length
-        ? `已配置 ${packCount} 个自选分组 / 共 ${totalItems} 个表情 (上限 ${CUSTOM_TOTAL_ITEM_LIMIT})`
-        : `已配置 ${customPacks.length} 个分组 · 可导出 ${packCount} 个非空 / 共 ${totalItems} 个表情 (上限 ${CUSTOM_TOTAL_ITEM_LIMIT})`
-    customPackCountBadge.textContent = `${customPacks.length}/${CUSTOM_PACK_LIMIT}`
+    customPackCountBadge.textContent = String(customPacks.length)
     customPackCountBadge.classList.toggle('is-near-full', customPacks.length >= CUSTOM_PACK_NEAR_FULL)
     customPackCountBadge.classList.toggle('is-full', customPacks.length >= CUSTOM_PACK_LIMIT)
     updateCustomCapacityMeter(totalItems)
     disabled = packCount === 0 || overBudget || totalItems > CUSTOM_TOTAL_ITEM_LIMIT
   } else {
     customCapacity.hidden = true
-    let excludedCount = 0
-    for (const pack of packs) {
-      if (selectedPackIds.has(pack.id)) {
-        for (const item of pack.items) {
-          if (excludedItemSrcs.has(item.src)) excludedCount++
-        }
-      }
-    }
-    if (excludedCount > 0) {
-      galleryExportCount.textContent = `已选择 ${selectedPackIds.size} 个表情包 / ${totalItems} 个表情 (已剔除 ${excludedCount} 个)`
-    } else {
-      galleryExportCount.textContent = `已选择 ${selectedPackIds.size} 个表情包 / ${totalItems} 个表情`
-    }
     disabled = totalItems === 0 || overBudget
   }
 
@@ -861,63 +851,24 @@ function updateExportState(): void {
     }
   })
 
-  // First-run guidance when nothing is selected
-  const showCta =
-    packs.length > 0 &&
-    guideModal.hidden &&
-    ((mode === 'packs' && selectedPackIds.size === 0) ||
-      (mode === 'custom' && customPacks.every((p) => p.items.length === 0)))
-  const ctaWasHidden = galleryEmptyCta.hidden
-  galleryEmptyCta.hidden = !showCta
-  if (showCta) {
-    const strong = galleryEmptyCta.querySelector('strong')
-    const span = galleryEmptyCta.querySelector('span')
-    if (mode === 'custom') {
-      if (strong) strong.textContent = '精选分组：'
-      if (span) span.textContent = '点击图片预览，使用「加入」整理自选分组。'
-      btnCtaSelectCurrent.hidden = false
-      btnCtaSelectCurrent.textContent = '去新建分组'
-      btnCtaSelectCurrent.setAttribute('aria-label', '去新建分组')
-      btnCtaCustom.hidden = true
-    } else {
-      if (strong) strong.textContent = '开始配置：'
-      if (span) span.textContent = '点击图片预览；勾选分类后即可导出。'
-      btnCtaSelectCurrent.hidden = false
-      btnCtaSelectCurrent.hidden = true
-      btnCtaSelectCurrent.textContent = '勾选当前分类'
-      btnCtaSelectCurrent.setAttribute('aria-label', '勾选当前分类')
-      btnCtaCustom.hidden = false
-      btnCtaCustom.setAttribute('aria-label', btnCtaCustom.textContent?.trim() || '切换到自选分组')
-    }
-    if (ctaWasHidden) {
-      galleryEmptyCta.classList.remove('gallery-empty-cta--enter')
-      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        void galleryEmptyCta.offsetWidth
-        galleryEmptyCta.classList.add('gallery-empty-cta--enter')
-      }
-      if (gridStatus) {
-        gridStatus.textContent =
-          mode === 'custom'
-            ? '尚未配置自选表情，可使用页内引导开始'
-            : '尚未选择分类，可使用页内引导开始配置'
-      }
-    }
-  } else {
-    galleryEmptyCta.classList.remove('gallery-empty-cta--enter')
-  }
+  // Browsing needs no selection. Only an absent custom destination needs a next step.
+  galleryEmptyCta.hidden = !(packs.length && mode === 'custom' && !customPacks.length && galleryView === 'active')
 
   // Floating selection dock for export readiness
-  if (!packs.length || showCta) {
+  if (!packs.length || (mode === 'custom' ? totalItems === 0 : selectedPackIds.size === 0)) {
     hideSelectionDock()
   } else {
     showSelectionDock()
-    selectionDockCount.textContent = galleryExportCount.textContent || ''
+    selectionDockCount.textContent = mode === 'custom'
+      ? `${packCount} 个分组 · ${totalItems} 张表情`
+      : `已选 ${selectedPackIds.size} 个分类 · ${totalItems} 张表情`
+    selectionDockHint.hidden = !disabled && !nearBudget
     if (bytes > 0) {
       const pct = Math.min(100, Math.round((bytes / SMOJI_MANIFEST_MAX_BYTES) * 100))
       selectionDockHint.textContent = overBudget
         ? `约 ${kb.toFixed(1)} KB · 已超 ${manifestLimitLabel()} 上限，无法导出`
         : `约 ${kb.toFixed(1)} KB / ${manifestLimitLabel()} · ${selectionDockFormat?.selectedOptions[0]?.text ?? 'Smoji'} 可导出`
-      selectionDockMeter.hidden = false
+      selectionDockMeter.hidden = !nearBudget
       selectionDockMeterBar.style.width = `${pct}%`
       selectionDockMeterBar.classList.toggle('is-warn', nearBudget && !overBudget)
       selectionDockMeterBar.classList.toggle('is-danger', overBudget)
@@ -938,7 +889,7 @@ function updateExportState(): void {
     }
     selectionDockExport.disabled = disabled
     const fmtName = selectionDockFormat?.selectedOptions[0]?.text ?? 'Smoji'
-    selectionDockExport.textContent = `导出 ${fmtName}`
+    selectionDockExport.textContent = '导出'
     if (linkExportError) {
       selectionDockExport.setAttribute('aria-describedby', galleryExportError.id)
       const errTitle = galleryExportError.textContent || `导出 ${fmtName} (${modKeyLabel}+E)`
@@ -965,29 +916,31 @@ function syncSelectionDockOffset(): void {
   }
   const rect = selectionDock.getBoundingClientRect()
   if (!rect.height) return
-  const gap = 12
-  const bottom = Number.parseFloat(getComputedStyle(selectionDock).bottom) || 12
-  const offset = Math.ceil(rect.height + bottom + gap)
+  const gap = Number.parseFloat(getComputedStyle(selectionDock).getPropertyValue('--dock-gap')) || 0
+  const offset = Math.ceil(rect.height + gap * 2)
   document.documentElement.style.setProperty('--selection-dock-offset', `${offset}px`)
 }
 
 function syncKeyboardInset(): void {
   const vv = window.visualViewport
-  if (!vv) {
-    document.documentElement.style.setProperty('--keyboard-inset', '0px')
-    return
-  }
-  const inset = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop))
-  document.documentElement.style.setProperty('--keyboard-inset', `${inset}px`)
+  const height = vv?.height ?? window.innerHeight
+  const top = vv?.offsetTop ?? 0
+  const inset = Math.max(0, window.innerHeight - height - top)
+  const style = document.documentElement.style
+  style.setProperty('--viewport-height', `${height}px`)
+  style.setProperty('--viewport-top', `${top}px`)
+  style.setProperty('--keyboard-inset', `${inset}px`)
   syncSelectionDockOffset()
 }
 
 let dockOffsetObserver: ResizeObserver | null = null
 function ensureDockOffsetObserver(): void {
-  if (dockOffsetObserver || typeof ResizeObserver === 'undefined') return
-  dockOffsetObserver = new ResizeObserver(() => syncSelectionDockOffset())
-  dockOffsetObserver.observe(selectionDock)
-  window.addEventListener('resize', syncSelectionDockOffset, { passive: true })
+  if (dockOffsetObserver) return
+  if (typeof ResizeObserver !== 'undefined') {
+    dockOffsetObserver = new ResizeObserver(syncSelectionDockOffset)
+    dockOffsetObserver.observe(selectionDock)
+  }
+  window.addEventListener('resize', syncKeyboardInset, { passive: true })
   syncKeyboardInset()
   window.visualViewport?.addEventListener('resize', syncKeyboardInset, { passive: true })
   window.visualViewport?.addEventListener('scroll', syncKeyboardInset, { passive: true })
@@ -1018,16 +971,16 @@ function updateBatchPackActionButton(): void {
     if (activeCustom) {
       batchPackActionText.textContent = atCap
         ? `「${activeCustom.label}」已达上限，无法批量加入`
-        : `将「${packTitle(pack)}」全部加入「${activeCustom.label}」`
+        : '本分类全部加入'
     } else {
-      batchPackActionText.textContent = `将「${packTitle(pack)}」全部加入新分组`
+      batchPackActionText.textContent = '从当前分类创建分组'
     }
     btnBatchPackAction.disabled = atCap
   } else {
     const isSelected = selectedPackIds.has(pack.id)
     if (!isSelected) {
       batchPackActionIcon.textContent = '✓'
-      batchPackActionText.textContent = `选择整包「${packTitle(pack)}」`
+      batchPackActionText.textContent = '选择整包'
     } else {
       let packExcluded = 0
       for (const item of pack.items) {
@@ -1035,10 +988,10 @@ function updateBatchPackActionButton(): void {
       }
       if (packExcluded === pack.items.length) {
         batchPackActionIcon.textContent = '↺'
-        batchPackActionText.textContent = `恢复「${packTitle(pack)}」全部表情`
+        batchPackActionText.textContent = '恢复本包全部表情'
       } else {
         batchPackActionIcon.textContent = '✕'
-        batchPackActionText.textContent = `剔除「${packTitle(pack)}」全部表情`
+        batchPackActionText.textContent = '排除本包全部表情'
       }
     }
   }
@@ -1086,52 +1039,25 @@ function syncCustomGroupIoButtons(): void {
   }
 }
 
+function focusCustomName(): void {
+  if (mobileViewportMq.matches) setMenuOpen(true)
+  customCreate.open = true
+  requestAnimationFrame(() => customNameInput.focus())
+}
+
 function renderCustomPackList(): void {
   const prevListScroll = customPackList.scrollTop
+  const openTools = new Set([...customPackList.querySelectorAll<HTMLDetailsElement>('details[open]')].map((el) => el.dataset.groupId))
+  const focused = document.activeElement instanceof HTMLElement && customPackList.contains(document.activeElement) ? document.activeElement : null
+  const focusAttrs = focused ? [...focused.attributes].filter((attr) => attr.name.startsWith('data-')).map((attr) => `[${attr.name}=${JSON.stringify(attr.value)}]`).join('') : ''
   customPackList.replaceChildren()
-  customPackCountBadge.textContent = `${customPacks.length}/${CUSTOM_PACK_LIMIT}`
+  customPackCountBadge.textContent = String(customPacks.length)
   const totalItems = customPacks.reduce((acc, p) => acc + p.items.length, 0)
   updateCustomCapacityMeter(totalItems)
   syncCustomGroupIoButtons()
 
   if (!customPacks.length) {
-    const empty = document.createElement('div')
-    empty.className = 'custom-pack-empty custom-pack-empty--cta'
-    const title = document.createElement('p')
-    title.className = 'custom-pack-empty__title'
-    title.textContent = '还没有自选分组'
-    const tip = document.createElement('p')
-    tip.className = 'custom-pack-empty__tip'
-    tip.textContent = packs[activePack]
-      ? `也可直接收集「${packTitle(packs[activePack]!)}」的 ${packs[activePack]!.items.length} 张表情。`
-      : '在上方填写名称，新建一个分组。'
-    const actions = document.createElement('div')
-    actions.className = 'custom-pack-empty__actions'
-    const fromPack = document.createElement('button')
-    fromPack.type = 'button'
-    fromPack.className = 'btn-primary btn-sm'
-    const fromLabel = packs[activePack] ? `从「${packTitle(packs[activePack]!)}」创建` : '从当前分类创建'
-    fromPack.textContent = '从当前分类创建'
-    fromPack.disabled = customPacks.length >= CUSTOM_PACK_LIMIT || !packs[activePack]
-    if (fromPack.disabled) {
-      const reason =
-        customPacks.length >= CUSTOM_PACK_LIMIT
-          ? `已达 ${CUSTOM_PACK_LIMIT} 组上限`
-          : '暂无可用分类'
-      fromPack.title = reason
-      fromPack.setAttribute('aria-label', `${fromLabel}（${reason}）`)
-    } else {
-      fromPack.title = fromLabel
-      fromPack.setAttribute('aria-label', fromLabel)
-    }
-    fromPack.addEventListener('click', () => {
-      const pack = packs[activePack]
-      if (!pack) return
-      createCustomPack(pack)
-    })
-    actions.append(fromPack)
-    empty.append(title, tip, actions)
-    customPackList.append(empty)
+    customCreate.open = true
     if (customPackStatus) customPackStatus.textContent = '暂无自选分组'
     return
   }
@@ -1186,9 +1112,9 @@ function renderCustomPackList(): void {
       saveBtn.addEventListener('click', () => {
         const newLabel = nameInput.value.trim()
         const newId = idInput.value.trim()
-        if (!newLabel) {
+        if (!isValidSmojiLabel(newLabel)) {
           errText.hidden = false
-          errText.textContent = '名称不能为空'
+          errText.textContent = '名称需为 1–40 字且不能含 ] 或控制字符'
           return
         }
         if (!newId || !/^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/.test(newId)) {
@@ -1204,10 +1130,10 @@ function renderCustomPackList(): void {
         pack.label = newLabel
         pack.id = newId
         pack.isEditing = false
+        persistWorkbenchState()
         renderCustomPackList()
         renderGrid()
         updatePopGroupBtn()
-        showToast(`已重命名分组为「${newLabel}」`, 'success')
       })
 
       actions.append(cancelBtn, saveBtn)
@@ -1238,7 +1164,7 @@ function renderCustomPackList(): void {
     const indicator = document.createElement('span')
     indicator.className = 'custom-pack-indicator'
     indicator.setAttribute('aria-hidden', 'true')
-    indicator.textContent = index === activeCustomPackIndex ? '●' : '○'
+    indicator.textContent = index === activeCustomPackIndex ? '当前' : ''
     indicator.title = index === activeCustomPackIndex ? '当前目标分组' : '点击设为当前添加目标'
 
     const name = document.createElement('span')
@@ -1343,11 +1269,9 @@ function renderCustomPackList(): void {
       `${pack.isExpanded ? '折叠' : '展开'}「${pack.label}」缩略图，${pack.items.length} 项`,
     )
     count.title = pack.isExpanded ? '折叠缩略图' : '展开缩略图'
-    const countPct = Math.min(100, Math.round((pack.items.length / CUSTOM_PACK_ITEM_LIMIT) * 100))
-    count.style.setProperty('--pack-fill', `${countPct}%`)
     count.classList.toggle('is-near-full', pack.items.length >= CUSTOM_ITEM_NEAR_FULL)
     count.classList.toggle('is-full', pack.items.length >= CUSTOM_PACK_ITEM_LIMIT)
-    count.textContent = `${pack.items.length}/${CUSTOM_PACK_ITEM_LIMIT}${pack.isExpanded ? ' ▴' : ' ▾'}`
+    count.textContent = `${pack.items.length} 张${pack.isExpanded ? ' ▴' : ' ▾'}`
 
     const delBtn = document.createElement('button')
     delBtn.type = 'button'
@@ -1362,13 +1286,22 @@ function renderCustomPackList(): void {
     mainRow.append(handle, indicator, name)
     const metaRow = document.createElement('div')
     metaRow.className = 'custom-pack-meta'
-    metaRow.append(count, delBtn)
+    metaRow.append(count)
 
     const tools = document.createElement('div')
     tools.className = 'custom-pack-tools'
-    tools.append(editBtn, dupBtn, mergeBtn, upBtn, downBtn, splitBtn)
+    tools.append(editBtn, dupBtn, mergeBtn, upBtn, downBtn, splitBtn, delBtn)
+    const management = document.createElement('details')
+    management.className = 'group-tools'
+    management.dataset.groupId = pack.id
+    management.open = openTools.has(pack.id)
+    const summary = document.createElement('summary')
+    summary.textContent = '管理'
+    summary.setAttribute('aria-label', `管理分组「${pack.label}」`)
+    management.append(summary, tools)
+    metaRow.append(management)
 
-    item.append(mainRow, metaRow, tools)
+    item.append(mainRow, metaRow)
     fragment.append(item)
 
     if (pack.isExpanded) {
@@ -1391,7 +1324,7 @@ function renderCustomPackList(): void {
           ? '拖入表情到此分组'
           : '点此设为目标分组，再从网格加入'
         tray.append(hint)
-        fragment.append(tray)
+        item.append(tray)
       } else {
       const TRAY_CAP = TRAY_VISIBLE_CAP
       const visible = pack.items.slice(0, TRAY_CAP)
@@ -1489,18 +1422,19 @@ function renderCustomPackList(): void {
             p.isExpanded = i === index
           })
           renderCustomPackList()
+          persistWorkbenchState()
           setGalleryView('picked')
-          showToast(`已切换到「${pack.label}」已入组视图`, 'info')
         })
         tray.append(more)
       }
-      fragment.append(tray)
+      item.append(tray)
       }
     }
   })
 
   customPackList.append(fragment)
   customPackList.scrollTop = prevListScroll
+  if (focusAttrs) customPackList.querySelector<HTMLElement>(focusAttrs)?.focus({ preventScroll: true })
   const active = activeCustomPackIndex >= 0 ? customPacks[activeCustomPackIndex] : customPacks[0]
   if (customPackStatus && active) {
     customPackStatus.textContent = `当前目标分组：${active.label}，${active.items.length} 项`
@@ -1526,7 +1460,6 @@ function reorderCustomPack(fromIndex: number, toIndex: number): void {
   renderCustomPackList()
   updateExportState()
   updatePopGroupBtn()
-  showToast('已调整自选分组顺序', 'success')
 }
 
 function reorderTrayItem(packIndex: number, fromItem: number, toItem: number): void {
@@ -1548,7 +1481,6 @@ function reorderTrayItem(packIndex: number, fromItem: number, toItem: number): v
   renderGrid()
   updateExportState()
   updatePopGroupBtn()
-  showToast('已调整分组内表情顺序', 'success')
 }
 
 function moveTrayItemAcrossPacks(
@@ -1593,10 +1525,14 @@ function duplicateCustomPack(index: number): void {
     showToast(`最多创建 ${CUSTOM_PACK_LIMIT} 个分组`, 'error')
     return
   }
-  let id = `${source.id}_copy`
+  if (customPacks.reduce((total, pack) => total + pack.items.length, 0) + source.items.length > CUSTOM_TOTAL_ITEM_LIMIT) {
+    showToast('复制后将超出总表情容量', 'error')
+    return
+  }
+  let id = `${source.id.slice(0, 52)}_copy`
   let n = 1
   while (customPacks.some((p) => p.id === id)) {
-    id = `${source.id}_copy${n++}`
+    id = `${source.id.slice(0, 52)}_copy${n++}`
   }
   const label = `${source.label} 副本`
   customPacks.splice(index + 1, 0, {
@@ -1618,27 +1554,15 @@ function mergeCustomPackIntoPrevious(index: number): void {
   const target = customPacks[index - 1]
   if (!source || !target) return
 
-  const seen = new Set(target.items.map((i) => i.src))
-  let added = 0
-  let skipped = 0
-  const totalWithoutSource = customPacks.reduce(
-    (acc, p, i) => (i === index ? acc : acc + p.items.length),
-    0,
-  )
-
-  for (const item of source.items) {
-    if (seen.has(item.src)) {
-      skipped++
-      continue
-    }
-    if (target.items.length >= CUSTOM_PACK_ITEM_LIMIT || totalWithoutSource + added >= CUSTOM_TOTAL_ITEM_LIMIT) {
-      skipped++
-      continue
-    }
-    target.items.push(item)
-    seen.add(item.src)
-    added++
+  const seen = new Set(target.items.map((item) => item.src))
+  const additions = source.items.filter((item) => !seen.has(item.src))
+  if (target.items.length + additions.length > CUSTOM_PACK_ITEM_LIMIT) {
+    showToast('目标分组容量不足，未合并；源分组已保留', 'error')
+    return
   }
+  const added = additions.length
+  const skipped = source.items.length - added
+  target.items.push(...additions)
 
   customPacks.splice(index, 1)
   if (activeCustomPackIndex === index) activeCustomPackIndex = index - 1
@@ -1664,10 +1588,10 @@ function splitCustomPack(index: number): void {
   }
   const mid = Math.ceil(source.items.length / 2)
   const moved = source.items.splice(mid)
-  let id = `${source.id}_part`
+  let id = `${source.id.slice(0, 52)}_part`
   let n = 1
   while (customPacks.some((p) => p.id === id)) {
-    id = `${source.id}_part${n++}`
+    id = `${source.id.slice(0, 52)}_part${n++}`
   }
   const label = `${source.label} · 下半`.slice(0, 40)
   customPacks.splice(index + 1, 0, {
@@ -1697,7 +1621,7 @@ function syncSourcePacksTabpanel(): void {
   }
 }
 
-function setMode(newMode: ExportMode, options: { silent?: boolean } = {}): void {
+function setMode(newMode: ExportMode): void {
   mode = newMode
   document.body.classList.toggle('mode-custom', mode === 'custom')
   tabPacks.classList.toggle('is-active', mode === 'packs')
@@ -1709,8 +1633,9 @@ function setMode(newMode: ExportMode, options: { silent?: boolean } = {}): void 
   customBuilder.hidden = mode !== 'custom'
   galleryViewPicked.hidden = mode !== 'custom'
   syncSourcePacksTabpanel()
+  renderPackNav()
   if (mode !== 'custom' && galleryView === 'picked') {
-    setGalleryView('active', { silent: true })
+    setGalleryView('active')
   } else {
     syncGalleryViewChips()
   }
@@ -1720,6 +1645,7 @@ function setMode(newMode: ExportMode, options: { silent?: boolean } = {}): void 
   closePop()
   keyboardFocusIndex = -1
   grid.scrollTop = 0
+  if (mobileViewportMq.matches && !anyModalOpen() && !document.body.classList.contains('menu-open')) window.scrollTo({ top: 0, behavior: 'instant' })
   renderGrid()
   updateSidebarFoot()
   updateExportState()
@@ -1727,9 +1653,6 @@ function setMode(newMode: ExportMode, options: { silent?: boolean } = {}): void 
   if (!codeModal.hidden) {
     syncPreviewScopeChipLabels()
     updateCodePreview(currentCodeFormat)
-  }
-  if (!options.silent) {
-    showToast(`已切换至「${mode === 'custom' ? '自选分组' : '整包导出'}」模式`, 'info')
   }
 }
 
@@ -1751,71 +1674,14 @@ function syncGalleryViewChips(): void {
   }
 }
 
-function setGalleryView(scope: 'active' | 'picked', options: { silent?: boolean } = {}): void {
+function setGalleryView(scope: 'active' | 'picked'): void {
   if (scope === 'picked' && mode !== 'custom') scope = 'active'
   galleryView = scope
   syncGalleryViewChips()
   keyboardFocusIndex = -1
   grid.scrollTop = 0
+  if (mobileViewportMq.matches && !anyModalOpen() && !document.body.classList.contains('menu-open')) window.scrollTo({ top: 0, behavior: 'instant' })
   renderGrid()
-  if (!options.silent) {
-    if (scope === 'picked') showToast('已切换为仅看当前自选分组', 'info')
-  }
-}
-
-function renderRecentStrip(): void {
-  recentStripList.replaceChildren()
-  const valid = recentEntries.filter((e) => itemBySrc.has(e.src))
-  recentEntries = valid
-  if (!valid.length) {
-    recentStrip.hidden = true
-    return
-  }
-  recentStrip.hidden = false
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  const fragment = document.createDocumentFragment()
-  valid.forEach((entry, index) => {
-    const btn = document.createElement('button')
-    btn.type = 'button'
-    btn.className = 'recent-thumb'
-    if (!reduceMotion) btn.classList.add('recent-thumb--enter')
-    btn.tabIndex = index === 0 ? 0 : -1
-    const packLabel = itemBySrc.get(entry.src)?.pack.label ?? entry.packId
-    btn.title = `${entry.label} · ${packLabel}`
-    btn.setAttribute('aria-label', `${entry.label}，来自 ${packLabel}`)
-    btn.dataset.recentSrc = entry.src
-    const img = document.createElement('img')
-    img.alt = entry.label
-    img.loading = 'lazy'
-    loadImage(img, thumbnailSrc(entry.src))
-    img.decoding = 'async'
-    img.referrerPolicy = 'no-referrer'
-    img.addEventListener(
-      'error',
-      () => {
-        btn.classList.add('is-broken')
-        img.alt = ''
-        img.setAttribute('aria-hidden', 'true')
-        btn.setAttribute('aria-label', `${entry.label}，来自 ${packLabel}，图片加载失败`)
-      },
-      { once: true },
-    )
-    const badge = document.createElement('span')
-    badge.className = 'recent-thumb__pack'
-    badge.textContent = packLabel
-    btn.append(img, badge)
-    fragment.append(btn)
-  })
-  recentStripList.append(fragment)
-}
-
-function rememberRecent(item: SmojiItem, pack: SmojiPack): void {
-  recentEntries = pushRecentEntry({
-    src: item.src,
-    packId: pack.id,
-    label: item.label || fileStem(item),
-  })
-  renderRecentStrip()
 }
 
 function updateCustomCapacityMeter(totalItems: number): void {
@@ -1890,34 +1756,14 @@ function updateSidebarFoot(): void {
   const statSpan = document.createElement('span')
   statSpan.className = 'sidebar-foot__stat'
 
-  const limitRow = document.createElement('div')
-  limitRow.className = 'sidebar-foot__row'
-  const limitSpan = document.createElement('span')
-  limitSpan.className = 'sidebar-foot__limit'
-
   if (mode === 'custom') {
-    const customTotal = customPacks.reduce((acc, p) => acc + p.items.length, 0)
     statSpan.textContent = `源库 ${packs.length} 组 · ${total} 表情`
-    limitSpan.textContent = `自选 ${customPacks.length}/${CUSTOM_PACK_LIMIT} 组 · ${customTotal}/${CUSTOM_TOTAL_ITEM_LIMIT} 项`
   } else {
     statSpan.textContent = `${packs.length} 组 · ${total} 表情`
-    limitSpan.textContent = `可扩展至 ${CUSTOM_PACK_LIMIT} 组 / ${CUSTOM_TOTAL_ITEM_LIMIT} 项`
   }
 
   statRow.append(statSpan)
-  limitRow.append(limitSpan)
-  sidebarFoot.append(statRow, limitRow)
-
-  if (workbenchBundleNotes) {
-    const noteRow = document.createElement('div')
-    noteRow.className = 'sidebar-foot__row'
-    const noteSpan = document.createElement('span')
-    noteSpan.className = 'sidebar-foot__note'
-    noteSpan.title = workbenchBundleNotes
-    noteSpan.textContent = `备注：${workbenchBundleNotes}`
-    noteRow.append(noteSpan)
-    sidebarFoot.append(noteRow)
-  }
+  sidebarFoot.append(statRow)
 
   if (scopeChipAll) {
     scopeChipAll.textContent = `全部表情 (${packs.length}包)`
@@ -1928,44 +1774,7 @@ export function handleCustomItemClick(item: SmojiItem): void {
   const activeCustom = ensureActiveCustomPack()
   const existingIndex = activeCustom.items.findIndex((i) => i.src === item.src)
   if (existingIndex !== -1) {
-    const [removed] = activeCustom.items.splice(existingIndex, 1)
-    if (removed) {
-      const packIdx = activeCustomPackIndex
-      const removedIndex = existingIndex
-      const removedItem = removed
-      historyStack.push({
-        description: `从「${activeCustom.label}」移出表情「${removed.label}」`,
-        undo: () => {
-          const targetPack = customPacks[packIdx]
-          if (targetPack && !targetPack.items.some((i) => i.src === removedItem.src)) {
-            targetPack.items.splice(Math.min(removedIndex, targetPack.items.length), 0, removedItem)
-            activeCustomPackIndex = packIdx
-            renderCustomPackList()
-            renderGrid()
-            updateExportState()
-            updatePopGroupBtn()
-          }
-        },
-        redo: () => {
-          const targetPack = customPacks[packIdx]
-          if (targetPack) {
-            const idx = targetPack.items.findIndex((i) => i.src === removedItem.src)
-            if (idx !== -1) targetPack.items.splice(idx, 1)
-            activeCustomPackIndex = packIdx
-            renderCustomPackList()
-            renderGrid()
-            updateExportState()
-            updatePopGroupBtn()
-          }
-        },
-      })
-      lastUndo = {
-        type: 'custom-remove',
-        packIndex: activeCustomPackIndex,
-        item: removed,
-        itemIndex: existingIndex,
-      }
-    }
+    activeCustom.items.splice(existingIndex, 1)
     if (!pop.hidden) {
       showPopFeedback(`已从「${activeCustom.label}」移出`, 'info', {
         label: '撤销',
@@ -2053,41 +1862,7 @@ function addItemToCustomPackAt(
     return false
   }
   pack.items.push(item)
-  pack.isExpanded = true
   activeCustomPackIndex = packIndex
-  const addedItem = item
-  const packIdx = packIndex
-  historyStack.push({
-    description: `表情加入「${pack.label}」`,
-    undo: () => {
-      const targetPack = customPacks[packIdx]
-      if (targetPack) {
-        const idx = targetPack.items.findIndex((i) => i.src === addedItem.src)
-        if (idx !== -1) targetPack.items.splice(idx, 1)
-        activeCustomPackIndex = packIdx
-        renderCustomPackList()
-        renderGrid()
-        updateExportState()
-        updatePopGroupBtn()
-      }
-    },
-    redo: () => {
-      const targetPack = customPacks[packIdx]
-      if (targetPack && !targetPack.items.some((i) => i.src === addedItem.src)) {
-        targetPack.items.push(addedItem)
-        activeCustomPackIndex = packIdx
-        renderCustomPackList()
-        renderGrid()
-        updateExportState()
-        updatePopGroupBtn()
-      }
-    },
-  })
-  lastUndo = null
-  if (!options.silentToast) {
-    if (!pop.hidden) showPopFeedback(`已将表情加入「${pack.label}」(#${pack.items.length})`, 'success')
-    else showToast(`已将表情加入「${pack.label}」(#${pack.items.length})`, 'success')
-  }
   renderCustomPackList()
   renderGrid()
   updateExportState()
@@ -2103,74 +1878,6 @@ function undoLastAction(): boolean {
       return true
     }
   }
-  if (!lastUndo) return false
-  const action = lastUndo
-  lastUndo = null
-
-  if (action.type === 'custom-remove') {
-    const pack = customPacks[action.packIndex]
-    if (!pack) {
-      showToast('无法撤销：分组已不存在', 'error')
-      return false
-    }
-    if (pack.items.some((i) => i.src === action.item.src)) {
-      showToast('表情已在分组中，无需撤销', 'info')
-      return false
-    }
-    if (pack.items.length >= CUSTOM_PACK_ITEM_LIMIT) {
-      showToast('撤销失败：分组已满', 'error')
-      return false
-    }
-    const insertAt = Math.min(action.itemIndex, pack.items.length)
-    pack.items.splice(insertAt, 0, action.item)
-    activeCustomPackIndex = action.packIndex
-    renderCustomPackList()
-    renderGrid()
-    updateExportState()
-    updatePopGroupBtn()
-    showToast('已撤销移出', 'success')
-    return true
-  }
-
-  if (action.type === 'custom-clear') {
-    customPacks.length = 0
-    for (const pack of action.packs) {
-      customPacks.push({
-        id: pack.id,
-        label: pack.label,
-        items: pack.items.slice(),
-        isExpanded: pack.isExpanded,
-      })
-    }
-    activeCustomPackIndex = action.activeIndex
-    renderCustomPackList()
-    renderGrid()
-    updateExportState()
-    updatePopGroupBtn()
-    showToast('已恢复自选分组', 'success')
-    return true
-  }
-
-  if (action.type === 'custom-delete') {
-    if (customPacks.length >= CUSTOM_PACK_LIMIT) {
-      showToast('无法撤销：分组数已满', 'error')
-      return false
-    }
-    customPacks.splice(action.packIndex, 0, {
-      id: action.pack.id,
-      label: action.pack.label,
-      items: action.pack.items.slice(),
-      isExpanded: action.pack.isExpanded,
-    })
-    activeCustomPackIndex = action.activeIndex
-    renderCustomPackList()
-    renderGrid()
-    updateExportState()
-    updatePopGroupBtn()
-    showToast(`已恢复分组「${action.pack.label}」`, 'success')
-    return true
-  }
-
   return false
 }
 
@@ -2196,45 +1903,6 @@ async function clearAllCustomGroups(): Promise<void> {
     danger: true,
   })
   if (!ok) return
-  const snapshotPacks = customPacks.map((p) => ({
-    id: p.id,
-    label: p.label,
-    items: p.items.slice(),
-    isExpanded: p.isExpanded,
-  }))
-  const snapshotActive = activeCustomPackIndex
-  historyStack.push({
-    description: '清空自选分组',
-    undo: () => {
-      customPacks.length = 0
-      for (const p of snapshotPacks) {
-        customPacks.push({
-          id: p.id,
-          label: p.label,
-          items: p.items.slice(),
-          isExpanded: p.isExpanded,
-        })
-      }
-      activeCustomPackIndex = snapshotActive
-      renderCustomPackList()
-      renderGrid()
-      updateExportState()
-      updatePopGroupBtn()
-    },
-    redo: () => {
-      customPacks.length = 0
-      activeCustomPackIndex = -1
-      renderCustomPackList()
-      renderGrid()
-      updateExportState()
-      updatePopGroupBtn()
-    },
-  })
-  lastUndo = {
-    type: 'custom-clear',
-    packs: snapshotPacks,
-    activeIndex: snapshotActive,
-  }
   customPacks.length = 0
   activeCustomPackIndex = -1
   renderCustomPackList()
@@ -2253,21 +1921,14 @@ export function handlePackItemToggle(item: SmojiItem): void {
   const resolved = itemBySrc.get(item.src)
   const pack = resolved?.pack ?? packs[activePack]
   if (!pack) return
-  const announce = (message: string, kind: 'success' | 'info' | 'error') => {
-    if (!pop.hidden) showPopFeedback(message, kind)
-    else showToast(message, kind)
-  }
   if (!selectedPackIds.has(pack.id)) {
     selectedPackIds.add(pack.id)
     renderPackNav()
-    announce(`已勾选「${packTitle(pack)}」整包导出`, 'success')
   } else {
     if (excludedItemSrcs.has(item.src)) {
       excludedItemSrcs.delete(item.src)
-      announce('已恢复此表情导出', 'success')
     } else {
       excludedItemSrcs.add(item.src)
-      announce('已将此表情从导出中剔除', 'info')
     }
   }
   renderGrid()
@@ -2297,6 +1958,7 @@ function updatePopGroupBtn(): void {
         activeCustomPackIndex = 0
       }
       popTargetGroup.value = String(activeCustomPackIndex)
+      groupTargetControl.sync()
     }
 
     const activeCustom = activeCustomPackIndex >= 0 ? customPacks[activeCustomPackIndex] : null
@@ -2354,6 +2016,10 @@ function setMenuOpen(open: boolean): void {
   menuToggle.setAttribute('aria-expanded', String(open))
   menuToggle.setAttribute('aria-label', open ? '关闭侧边栏菜单' : '打开侧边栏菜单')
   if (open) {
+    if (mobileViewportMq.matches) globalTools.open = false
+    sidebar.setAttribute('role', 'dialog')
+    sidebar.setAttribute('aria-modal', 'true')
+    sidebar.setAttribute('aria-label', '分类与分组')
     backdrop.hidden = false
     releaseMenuFocus?.()
     releaseMenuFocus = trapFocus(sidebar, {
@@ -2361,6 +2027,9 @@ function setMenuOpen(open: boolean): void {
     })
     sidebar.style.transform = ''
   } else {
+    sidebar.removeAttribute('role')
+    sidebar.removeAttribute('aria-modal')
+    syncOverlayInert()
     releaseMenuFocus?.()
     releaseMenuFocus = null
     sidebar.style.transform = ''
@@ -2369,62 +2038,10 @@ function setMenuOpen(open: boolean): void {
   syncOverlayInert()
 }
 
-/** Mobile drawer: swipe left to close. */
-let menuSwipeX: number | null = null
-let menuSwipeY: number | null = null
-let menuSwipeActive = false
-sidebar.addEventListener(
-  'pointerdown',
-  (event) => {
-    if (!mobileViewportMq.matches || !document.body.classList.contains('menu-open')) return
-    if (event.pointerType === 'mouse' && event.button !== 0) return
-    menuSwipeX = event.clientX
-    menuSwipeY = event.clientY
-    menuSwipeActive = true
-  },
-  { passive: true },
-)
-sidebar.addEventListener(
-  'pointermove',
-  (event) => {
-    if (!menuSwipeActive || menuSwipeX == null || menuSwipeY == null) return
-    const dx = event.clientX - menuSwipeX
-    const dy = event.clientY - menuSwipeY
-    if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 12) {
-      menuSwipeActive = false
-      sidebar.style.transform = ''
-      return
-    }
-    if (dx >= 0) {
-      sidebar.style.transform = ''
-      return
-    }
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (!reduceMotion) sidebar.style.transform = `translateX(${Math.max(dx, -sidebar.offsetWidth)}px)`
-  },
-  { passive: true },
-)
-const endMenuSwipe = (event: PointerEvent) => {
-  if (!menuSwipeActive || menuSwipeX == null) {
-    menuSwipeX = null
-    menuSwipeY = null
-    menuSwipeActive = false
-    return
-  }
-  const dx = event.clientX - menuSwipeX
-  menuSwipeX = null
-  menuSwipeY = null
-  menuSwipeActive = false
-  sidebar.style.transform = ''
-  if (dx < -48 && document.body.classList.contains('menu-open')) {
-    setMenuOpen(false)
-  }
-}
-sidebar.addEventListener('pointerup', endMenuSwipe, { passive: true })
-sidebar.addEventListener('pointercancel', endMenuSwipe, { passive: true })
-
-const mobileViewportMq = window.matchMedia('(max-width: 720px)')
+const mobileViewportMq = window.matchMedia('(max-width: 900px)')
+globalTools.open = !mobileViewportMq.matches
 mobileViewportMq.addEventListener('change', () => {
+  globalTools.open = !mobileViewportMq.matches
   if (!mobileViewportMq.matches && document.body.classList.contains('menu-open')) setMenuOpen(false)
   if (mobileViewportMq.matches && sidebar.contains(document.activeElement)) menuToggle.focus()
   syncOverlayInert()
@@ -2493,17 +2110,19 @@ function renderPackNav(): void {
     const name = document.createElement('span')
     name.className = 'pack__name'
     name.textContent = title
-    const id = document.createElement('span')
-    id.className = 'pack__id'
-    id.textContent = pack.id
-    text.append(name, id)
+    name.title = `${title} · ${pack.id}`
+    text.append(name)
 
     const count = document.createElement('span')
     count.className = 'pack__count'
     count.textContent = String(pack.items.length)
 
     button.append(icon, text, count)
-    row.append(checkbox, button)
+    const selectLabel = document.createElement('label')
+    selectLabel.className = 'pack-select'
+    selectLabel.title = `选择 ${title}`
+    selectLabel.append(checkbox)
+    row.append(selectLabel, button)
     fragment.append(row)
   })
 
@@ -2527,57 +2146,17 @@ function renderGrid(): void {
   const atCap = Boolean(activeCustom && (activeCustom.items.length >= CUSTOM_PACK_ITEM_LIMIT ||
     customPacks.reduce((total, group) => total + group.items.length, 0) >= CUSTOM_TOTAL_ITEM_LIMIT))
 
-  const iconSrc =
-    galleryView === 'picked' && activeCustom?.items[0]
-      ? activeCustom.items[0].src
-      : pack?.items[0]?.src
-  galleryPackIcon.classList.remove('is-broken')
-  if (iconSrc) {
-    galleryPackIcon.hidden = false
-    const probe = new Image()
-    probe.decoding = 'async'
-    probe.onload = () => {
-      if (galleryPackIcon.dataset.pendingSrc !== iconSrc) return
-      galleryPackIcon.style.backgroundImage = `url("${thumbnailSrc(iconSrc)}")`
-      galleryPackIcon.classList.remove('is-broken')
-      delete galleryPackIcon.dataset.pendingSrc
-    }
-    probe.onerror = () => {
-      if (galleryPackIcon.dataset.pendingSrc !== iconSrc) return
-      galleryPackIcon.style.backgroundImage = ''
-      galleryPackIcon.classList.add('is-broken')
-      delete galleryPackIcon.dataset.pendingSrc
-    }
-    galleryPackIcon.dataset.pendingSrc = iconSrc
-    probe.src = thumbnailSrc(iconSrc)
+  galleryTitle.textContent = galleryView === 'picked'
+    ? activeCustom?.label ?? '已入组'
+    : pack ? packTitle(pack) : '表情库'
+  if (mode === 'custom') {
+    galleryExportCount.textContent = activeCustom
+      ? `${galleryView === 'picked' ? '当前分组' : '添加到'}「${activeCustom.label}」 · 已入组 ${activeCustom.items.length} 张`
+      : '自选分组'
   } else {
-    galleryPackIcon.style.backgroundImage = ''
-    galleryPackIcon.hidden = true
-    delete galleryPackIcon.dataset.pendingSrc
-  }
-
-  if (galleryView === 'picked') {
-    galleryTitle.textContent = activeCustom
-      ? `已入组 · 「${activeCustom.label}」 ${items.length} 张`
-      : '已入组 · 请先选择自选分组'
-  } else if (mode === 'custom') {
-    galleryTitle.textContent = pack
-      ? `${packTitle(pack)} · ${items.length} 张` +
-        (activeCustom ? ` (目标：「${activeCustom.label}」)` : '')
-      : '—'
-  } else if (pack) {
-    const isSelected = selectedPackIds.has(pack.id)
-    let packExcluded = 0
-    for (const item of pack.items) {
-      if (excludedItemSrcs.has(item.src)) packExcluded++
-    }
-    if (isSelected && packExcluded > 0) {
-      galleryTitle.textContent = `${packTitle(pack)} · ${pack.items.length - packExcluded} / ${pack.items.length} 张 (已剔除 ${packExcluded} 张)`
-    } else {
-      galleryTitle.textContent = `${packTitle(pack)} · ${pack.items.length} 张`
-    }
-  } else {
-    galleryTitle.textContent = '—'
+    const excluded = pack && selectedPackIds.has(pack.id)
+      ? pack.items.filter((item) => excludedItemSrcs.has(item.src)).length : 0
+    galleryExportCount.textContent = `${items.length} 张表情${excluded ? ` · 已排除 ${excluded} 张` : ''}`
   }
 
   grid.classList.remove('is-loading-more')
@@ -2599,7 +2178,7 @@ function updateCardActions(card: HTMLElement, item: SmojiItem, index: number): v
         badge.dataset.badgeItemIndex = String(index)
         badge.title = `从「${activeCustom.label}」移除 (#${pickIndex + 1})`
         badge.setAttribute('aria-label', badge.title)
-        badge.textContent = `已加入 ${pickIndex + 1}`
+        badge.textContent = '✓'
         card.append(badge)
       } else {
         const hoverCheck = document.createElement('button')
@@ -2612,7 +2191,7 @@ function updateCardActions(card: HTMLElement, item: SmojiItem, index: number): v
           ? `「${activeCustom.label}」或总容量已达上限`
           : `加入「${activeCustom.label}」`
         hoverCheck.setAttribute('aria-label', hoverCheck.title)
-        hoverCheck.textContent = '加入'
+        hoverCheck.textContent = '+'
         card.append(hoverCheck)
       }
     } else {
@@ -2623,7 +2202,7 @@ function updateCardActions(card: HTMLElement, item: SmojiItem, index: number): v
       hoverCheck.dataset.checkItemIndex = String(index)
       hoverCheck.title = '创建分组并加入'
       hoverCheck.setAttribute('aria-label', hoverCheck.title)
-      hoverCheck.textContent = '加入'
+      hoverCheck.textContent = '+'
       card.append(hoverCheck)
     }
   } else {
@@ -2638,7 +2217,7 @@ function updateCardActions(card: HTMLElement, item: SmojiItem, index: number): v
       actionBtn.dataset.excludeItemIndex = String(index)
       actionBtn.title = '恢复此表情 (重新加入整包导出)'
       actionBtn.setAttribute('aria-label', actionBtn.title)
-      actionBtn.textContent = '恢复'
+      actionBtn.textContent = '↺'
       card.append(actionBtn)
     } else if (isPackSelected) {
       const actionBtn = document.createElement('button')
@@ -2648,13 +2227,16 @@ function updateCardActions(card: HTMLElement, item: SmojiItem, index: number): v
       actionBtn.dataset.excludeItemIndex = String(index)
       actionBtn.title = '剔除此表情 (整包导出时排除)'
       actionBtn.setAttribute('aria-label', actionBtn.title)
-      actionBtn.textContent = '剔除'
+      actionBtn.textContent = '−'
       card.append(actionBtn)
     }
 
     if (selected?.src === item.src) card.classList.add('is-on')
   }
 
+  for (const action of card.querySelectorAll<HTMLButtonElement>(':scope > button')) {
+    action.dataset.symbol = action.textContent ?? ''
+  }
   card.draggable = mode === 'custom' && window.matchMedia('(hover: hover) and (pointer: fine)').matches
   if (card.draggable) card.title = '拖到自选分组托盘可加入；点击打开详情'
   else card.removeAttribute('title')
@@ -2680,7 +2262,7 @@ function createCardNode(
   card.setAttribute('role', 'group')
   card.setAttribute(
     'aria-label',
-    `${item.label} (${name})`,
+    `${item.label}，打开预览并复制`,
   )
 
   updateCardActions(card, item, index)
@@ -2778,16 +2360,13 @@ function createCardNode(
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       empty.classList.add('grid__empty--enter')
     }
-    const emptyIcon = document.createElement('span')
-    emptyIcon.className = 'grid__empty-icon'
-    emptyIcon.textContent = '○'
     const emptyMsg = document.createElement('span')
     if (galleryView === 'picked') {
       emptyMsg.textContent =
         activeCustomPackIndex >= 0
           ? '当前分组还没有表情，请切换到源分类浏览并加入'
           : '请先新建或选择一个自选分组'
-      empty.append(emptyIcon, emptyMsg)
+      empty.append(emptyMsg)
       if (activeCustomPackIndex < 0) {
         const create = document.createElement('button')
         create.type = 'button'
@@ -2795,8 +2374,7 @@ function createCardNode(
         create.textContent = '去新建分组'
         create.addEventListener('click', () => {
           if (mobileViewportMq.matches) setMenuOpen(true)
-          customNameInput.focus()
-          customNameInput.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+          focusCustomName()
         })
         empty.append(create)
       } else {
@@ -2812,19 +2390,13 @@ function createCardNode(
         })
         empty.append(browse)
       }
-      const tip = document.createElement('button')
-      tip.type = 'button'
-      tip.className = 'btn-ghost btn-sm grid__empty-action'
-      tip.textContent = '返回浏览分类'
-      tip.addEventListener('click', () => setGalleryView('active'))
-      empty.append(tip)
       grid.append(empty)
       if (gridStatus) gridStatus.textContent = emptyMsg.textContent
       return
     } else {
       emptyMsg.textContent = packs.length ? '此分类暂无表情' : '正在加载表情库…'
     }
-    empty.append(emptyIcon, emptyMsg)
+    empty.append(emptyMsg)
     grid.append(empty)
     if (gridStatus) gridStatus.textContent = emptyMsg.textContent || '暂无表情'
     return
@@ -2841,7 +2413,7 @@ function gridStatusLabel(count: number): string {
 
 function updateActiveCopyField(): void {
   const panel = document.querySelector<HTMLElement>('#copy-active-panel')
-  const formatKeys: Record<string, string> = { md: '1', url: '2', html: '3', bbcode: '4' }
+  const formatKeys: Record<string, string> = { md: '1', url: '2', hugo: '3', html: '4', bbcode: '5' }
   copyTabs.forEach((tab) => {
     const fmt = tab.dataset.copyFormat || 'md'
     const on = fmt === activeCopyFormat
@@ -2853,7 +2425,7 @@ function updateActiveCopyField(): void {
     if (tab.title) tab.setAttribute('aria-label', tab.title)
     if (on && panel && tab.id) panel.setAttribute('aria-labelledby', tab.id)
   })
-  const map = { url: copyUrl, html: copyHtml, md: copyMd, bbcode: copyBbcode } as const
+  const map = { url: copyUrl, hugo: copyHugo, html: copyHtml, md: copyMd, bbcode: copyBbcode } as const
   const field = map[activeCopyFormat]
   if (field && copyActiveInput) {
     copyActiveInput.value = field.value
@@ -2864,6 +2436,7 @@ function updateActiveCopyField(): void {
 const COPY_FORMAT_LABELS: Record<string, string> = {
   md: 'Markdown',
   url: 'URL',
+  hugo: 'Hugo',
   html: 'HTML',
   bbcode: 'BBCode',
 }
@@ -2871,6 +2444,7 @@ const COPY_FORMAT_LABELS: Record<string, string> = {
 function syncCopyActionAria(): void {
   const fmtLabel = COPY_FORMAT_LABELS[activeCopyFormat] ?? activeCopyFormat
   const copyLabel = `复制 ${fmtLabel} 格式到剪贴板`
+  btnCopyActive.textContent = '复制'
   btnCopyActive.title = copyLabel
   btnCopyActive.setAttribute('aria-label', copyLabel)
 
@@ -2939,19 +2513,20 @@ function openPop(item: SmojiItem, pack: SmojiPack, opts: { retainFocus?: boolean
   popFormatBadge.textContent = kind
   syncPopMeta()
 
-  copyUrl.value = item.src
-  copyHtml.value = `<img src="${item.src}" alt="${(item.label || name).replace(/"/g, '&quot;')}">`
-  copyMd.value = smojiMarker(item)
-  copyBbcode.value = `[img]${item.src}[/img]`
+  const exportedItem = { ...item, src: toExportItemSrc(item.src, manifestUrl) }
+  copyUrl.value = exportedItem.src
+  copyHugo.value = `{{< inTextImg url=${JSON.stringify(exportedItem.src)} alt=${JSON.stringify(item.label || name)} >}}`
+  copyHtml.value = `<img src="${exportedItem.src}" alt="${(item.label || name).replace(/"/g, '&quot;')}">`
+  copyMd.value = smojiMarker(exportedItem)
+  copyBbcode.value = `[img]${exportedItem.src}[/img]`
   copyFeedback.hidden = true
 
-  rememberRecent(item, pack)
   updateActiveCopyField()
   updatePopGroupBtn()
   setMenuOpen(false)
   syncSelection()
 
-  // Clean CSS Grid centered modal with zero inline transform layout-thrashing
+  // The inspector owns scrolling while the background is inert.
   pop.hidden = false
   syncPopNavButtons()
   backdrop.hidden = false
@@ -2974,6 +2549,7 @@ function closePop(): void {
   popStage.classList.remove('is-loading', 'is-broken')
   pop.removeAttribute('aria-busy')
   syncPopNavButtons()
+  syncOverlayInert()
   releasePopFocus?.()
   releasePopFocus = null
   resolveBackdrop()
@@ -3053,8 +2629,8 @@ export function navigatePop(direction: -1 | 1): void {
   }
 }
 
-function activatePack(index: number, opts?: { closePop?: boolean }): void {
-  setMenuOpen(false)
+function activatePack(index: number, opts?: { closePop?: boolean; keepMenuOpen?: boolean }): void {
+  if (!opts?.keepMenuOpen) setMenuOpen(false)
   if (!packs[index] || (index === activePack && galleryView === 'active')) return
   galleryView = 'active'
   syncGalleryViewChips()
@@ -3078,6 +2654,7 @@ function activatePack(index: number, opts?: { closePop?: boolean }): void {
       b.tabIndex = Number(b.dataset.packIndex) === activePack ? 0 : -1
     })
   grid.scrollTop = 0
+  if (mobileViewportMq.matches && !anyModalOpen() && !document.body.classList.contains('menu-open')) window.scrollTo({ top: 0, behavior: 'instant' })
   packNav.querySelector<HTMLElement>('.pack-row.is-on')?.scrollIntoView({ block: 'nearest' })
   renderGrid()
   updateExportState()
@@ -3179,6 +2756,10 @@ function exportCustomGroupsFile(): void {
 }
 
 function importCustomGroupsFromFile(file: File): void {
+  if (file.size > SMOJI_MANIFEST_MAX_BYTES) {
+    showToast('分组文件超过 1 MiB 上限', 'error')
+    return
+  }
   const reader = new FileReader()
   reader.onload = () => {
     void (async () => {
@@ -3208,29 +2789,22 @@ function importCustomGroupsFromFile(file: File): void {
           if (!ok) return
         }
 
-        const snapshot = customPacks.map((p) => ({
-          id: p.id,
-          label: p.label,
-          items: p.items.slice(),
-          isExpanded: p.isExpanded,
-        }))
-        const snapshotActive = activeCustomPackIndex
-
+        const incomingPacks: EditableCustomPack[] = []
         let imported = 0
         let skippedStale = 0
         let skippedCap = 0
         let totalItems = customPacks.reduce((acc, p) => acc + p.items.length, 0)
 
         for (const entry of entries) {
-          if (customPacks.length >= CUSTOM_PACK_LIMIT) {
+          if (customPacks.length + incomingPacks.length >= CUSTOM_PACK_LIMIT) {
             skippedCap += 1
             continue
           }
           if (!entry.id || !entry.label || !Array.isArray(entry.itemSrcs)) continue
           let id = entry.id
           let n = 1
-          while (customPacks.some((p) => p.id === id)) {
-            id = `${entry.id}_${n++}`
+          while ([...customPacks, ...incomingPacks].some((p) => p.id === id)) {
+            id = `${entry.id.slice(0, 58)}_${n++}`
           }
           const items: SmojiItem[] = []
           const seen = new Set<string>()
@@ -3249,12 +2823,13 @@ function importCustomGroupsFromFile(file: File): void {
             seen.add(item.src)
           }
           if (!items.length) continue
-          customPacks.push({ id, label: entry.label, items })
+          incomingPacks.push({ id, label: entry.label, items })
           totalItems += items.length
           imported++
         }
 
         if (!imported) throw new Error('文件中没有可导入的有效分组')
+        customPacks.push(...incomingPacks)
 
         if (incomingExtensions) {
           const unknownExt = listUnknownPackGroupExtensionIds(incomingExtensions)
@@ -3267,14 +2842,8 @@ function importCustomGroupsFromFile(file: File): void {
           }
         }
 
-        lastUndo = {
-          type: 'custom-clear',
-          packs: snapshot,
-          activeIndex: snapshotActive,
-        }
-
         activeCustomPackIndex = customPacks.length - 1
-        if (mode !== 'custom') setMode('custom', { silent: true })
+        if (mode !== 'custom') setMode('custom')
         else {
           renderCustomPackList()
           renderGrid()
@@ -3295,6 +2864,7 @@ function importCustomGroupsFromFile(file: File): void {
       }
     })()
   }
+  reader.onerror = () => showToast('无法读取分组文件', 'error')
   reader.readAsText(file)
 }
 
@@ -3305,8 +2875,11 @@ function copyText(
     selectFallback?: () => void
   } = {},
 ): void {
-  void navigator.clipboard
-    .writeText(text)
+  void Promise.resolve()
+    .then(() => {
+      if (!navigator.clipboard) throw new Error('Clipboard unavailable')
+      return navigator.clipboard.writeText(text)
+    })
     .then(() => {
       options.onSuccess?.()
     })
@@ -3320,8 +2893,8 @@ function copyText(
     })
 }
 
-function copyValue(kind: string, triggerBtn?: HTMLButtonElement): void {
-  const map = { url: copyUrl, html: copyHtml, md: copyMd, bbcode: copyBbcode } as const
+function copyValue(kind: string): void {
+  const map = { url: copyUrl, hugo: copyHugo, html: copyHtml, md: copyMd, bbcode: copyBbcode } as const
   const field = map[kind as keyof typeof map]
   if (!field) return
 
@@ -3329,21 +2902,11 @@ function copyValue(kind: string, triggerBtn?: HTMLButtonElement): void {
     onSuccess: () => {
       copyFeedback.hidden = false
       copyFeedback.textContent = '已成功复制到剪贴板'
-      if (triggerBtn) {
-        const orig = triggerBtn.textContent
-        triggerBtn.classList.add('is-copied')
-        triggerBtn.textContent = '已复制'
-        triggerBtn.setAttribute('aria-label', '已复制到剪贴板')
-        setTimeout(() => {
-          triggerBtn.classList.remove('is-copied')
-          triggerBtn.textContent = orig
-          syncCopyActionAria()
-        }, 1600)
-      }
       // Inline feedback already covers success — skip stacking a toast.
     },
     selectFallback: () => {
-      field.select()
+      copyActiveInput.focus()
+      copyActiveInput.select()
       copyFeedback.hidden = false
       copyFeedback.textContent = `请按 ${modKeyLabel}+C 手动复制`
       if (pop.hidden) showToast(`请按 ${modKeyLabel}+C 手动复制`, 'info')
@@ -3520,6 +3083,7 @@ export function updateCodePreview(format: ExportTargetFormat): void {
 }
 
 function openCodeModal(): void {
+  if (mobileViewportMq.matches) globalTools.open = false
   if (!pop.hidden) closePop()
   if (!guideModal.hidden) closeGuideModal()
   if (!confirmModal.hidden) closeConfirmModal(false)
@@ -3542,17 +3106,25 @@ function openCodeModal(): void {
 
 function closeCodeModal(): void {
   codeModal.hidden = true
+  syncOverlayInert()
   releaseCodeFocus?.()
   releaseCodeFocus = null
   resolveBackdrop()
   syncOverlayInert()
   const trigger = codeModalTrigger
   codeModalTrigger = null
-  if (trigger?.isConnected) trigger.focus({ preventScroll: true })
+  if (trigger?.isConnected) {
+    const target = mobileViewportMq.matches && globalTools.contains(trigger)
+      ? globalTools.querySelector<HTMLElement>('summary') : trigger
+    target?.focus({ preventScroll: true })
+  }
 }
 
 // Guide Modal Helpers
 function openGuideModal(): void {
+  if (mobileViewportMq.matches) globalTools.open = false
+  if (!pop.hidden) closePop()
+  if (!codeModal.hidden) closeCodeModal()
   const trigger = document.activeElement
   guideModalTrigger = trigger instanceof HTMLElement ? trigger : null
   guideModal.hidden = false
@@ -3561,15 +3133,16 @@ function openGuideModal(): void {
   if (guideContent) guideContent.scrollTop = 0
   releaseGuideFocus?.()
   releaseGuideFocus = trapFocus(guideModal.querySelector('.code-modal__dialog') ?? guideModal, {
-    initialFocus: guideModalConfirm,
+    initialFocus: guideModalClose,
   })
   syncOverlayInert()
   updateExportState()
-  guideModalConfirm.focus()
+  guideModalClose.focus()
 }
 
 function closeGuideModal(): void {
   guideModal.hidden = true
+  syncOverlayInert()
   releaseGuideFocus?.()
   releaseGuideFocus = null
   resolveBackdrop()
@@ -3577,7 +3150,11 @@ function closeGuideModal(): void {
   updateExportState()
   const trigger = guideModalTrigger
   guideModalTrigger = null
-  if (trigger?.isConnected) trigger.focus({ preventScroll: true })
+  if (trigger?.isConnected) {
+    const target = mobileViewportMq.matches && globalTools.contains(trigger)
+      ? globalTools.querySelector<HTMLElement>('summary') : trigger
+    target?.focus({ preventScroll: true })
+  }
 }
 
 // Event Listeners
@@ -3602,7 +3179,6 @@ densityToggle.addEventListener('click', () => {
   densityLabel.textContent = isComfortableDensity ? '舒适' : '紧凑'
   syncDensityAriaLabel()
   saveDensity(isComfortableDensity)
-  showToast(`已切换为${isComfortableDensity ? '舒适' : '紧凑'}网格视图`, 'info')
 })
 
 galleryViewActive.addEventListener('click', () => setGalleryView('active'))
@@ -3633,9 +3209,7 @@ galleryViewChips.forEach((chip) => {
 btnCtaSelectCurrent.addEventListener('click', () => {
   if (mode === 'custom') {
     if (mobileViewportMq.matches) setMenuOpen(true)
-    customNameInput.focus()
-    customNameInput.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
-    showToast('输入分组名称后点击新建', 'info')
+    focusCustomName()
     return
   }
   const pack = packs[activePack]
@@ -3644,17 +3218,10 @@ btnCtaSelectCurrent.addEventListener('click', () => {
   renderPackNav()
   renderGrid()
   updateExportState()
-  showToast(`已勾选「${packTitle(pack)}」`, 'success')
-})
-
-btnCtaCustom.addEventListener('click', () => {
-  setMode('custom')
-  if (mobileViewportMq.matches) setMenuOpen(true)
-  customNameInput.focus()
-  customNameInput.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
 })
 
 selectionDockPreview.addEventListener('click', () => {
+  currentCodeFormat = selectionDockFormat.value || 'smoji'
   setPreviewScope('selected')
   openCodeModal()
 })
@@ -3701,85 +3268,16 @@ importGroupsFile.addEventListener('change', () => {
   importGroupsFile.value = ''
 })
 
-btnClearRecent.addEventListener('click', () => {
-  if (!recentEntries.length) {
-    showToast('最近使用已为空', 'info')
-    return
-  }
-  void (async () => {
-    const ok = await showConfirm(`确定清空 ${recentEntries.length} 条最近使用记录？`, {
-      title: '清空最近使用',
-      okLabel: '清空',
-      danger: true,
-    })
-    if (!ok) return
-    recentEntries = []
-    localStorage.removeItem('smoji-workbench:recent-srcs')
-    renderRecentStrip()
-    showToast('已清空最近使用', 'info')
-  })()
-})
-
-function openRecentFromSrc(src: string): void {
-  const resolved = itemBySrc.get(src)
-  if (!resolved) return
-  if (resolved.packIndex !== activePack) activatePack(resolved.packIndex, { closePop: false })
-  keyboardFocusIndex = currentItems().findIndex((i) => i.src === resolved.item.src)
-  openPop(resolved.item, resolved.pack)
-}
-
-recentStripList.addEventListener('click', (event) => {
-  const btn = (event.target as Element).closest<HTMLButtonElement>('[data-recent-src]')
-  if (!btn?.dataset.recentSrc) return
-  openRecentFromSrc(btn.dataset.recentSrc)
-})
-
-recentStripList.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter' || event.key === ' ') {
-    const btn = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-recent-src]')
-    if (!btn?.dataset.recentSrc) return
-    event.preventDefault()
-    openRecentFromSrc(btn.dataset.recentSrc)
-    return
-  }
-  if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight' && event.key !== 'Home' && event.key !== 'End') {
-    return
-  }
-  const thumbs = [...recentStripList.querySelectorAll<HTMLButtonElement>('.recent-thumb')]
-  if (!thumbs.length) return
-  const current = (event.target as HTMLElement).closest<HTMLButtonElement>('.recent-thumb')
-  const idx = current ? thumbs.indexOf(current) : 0
-  if (idx < 0) return
-  event.preventDefault()
-  let next = idx
-  if (event.key === 'ArrowLeft') next = (idx + thumbs.length - 1) % thumbs.length
-  if (event.key === 'ArrowRight') next = (idx + 1) % thumbs.length
-  if (event.key === 'Home') next = 0
-  if (event.key === 'End') next = thumbs.length - 1
-  thumbs.forEach((t, i) => {
-    t.tabIndex = i === next ? 0 : -1
-  })
-  thumbs[next]?.focus()
-})
-
 // Batch Actions for Packs Mode
 btnSelectAllPacks.addEventListener('click', () => {
-  packs.forEach((p) => selectedPackIds.add(p.id))
-  renderPackNav()
-  renderGrid()
-  updateExportState()
-  showToast(`已全选 ${packs.length} 个表情包`, 'success')
-})
-
-btnInvertPacks.addEventListener('click', () => {
-  packs.forEach((p) => {
-    if (selectedPackIds.has(p.id)) selectedPackIds.delete(p.id)
-    else selectedPackIds.add(p.id)
+  const invert = selectedPackIds.size > 0
+  packs.forEach((pack) => {
+    if (invert && selectedPackIds.has(pack.id)) selectedPackIds.delete(pack.id)
+    else selectedPackIds.add(pack.id)
   })
   renderPackNav()
   renderGrid()
   updateExportState()
-  showToast('已反选表情包', 'info')
 })
 
 btnClearPacks.addEventListener('click', () => {
@@ -3787,7 +3285,6 @@ btnClearPacks.addEventListener('click', () => {
   renderPackNav()
   renderGrid()
   updateExportState()
-  showToast('已清空所有勾选的表情包', 'info')
 })
 
 // Batch Action Button for Current Pack
@@ -3832,7 +3329,6 @@ btnBatchPackAction.addEventListener('click', () => {
     if (!isSelected) {
       selectedPackIds.add(pack.id)
       for (const item of pack.items) excludedItemSrcs.delete(item.src)
-      showToast(`已勾选「${packTitle(pack)}」整包`, 'success')
     } else {
       let packExcluded = 0
       for (const item of pack.items) {
@@ -3840,10 +3336,8 @@ btnBatchPackAction.addEventListener('click', () => {
       }
       if (packExcluded === pack.items.length) {
         for (const item of pack.items) excludedItemSrcs.delete(item.src)
-        showToast(`已恢复「${packTitle(pack)}」全部表情`, 'success')
       } else {
         for (const item of pack.items) excludedItemSrcs.add(item.src)
-        showToast(`已全部剔除「${packTitle(pack)}」的表情`, 'info')
       }
     }
     renderPackNav()
@@ -3861,12 +3355,8 @@ packNav.addEventListener('change', (event) => {
     if (!packId) return
     if (target.checked) {
       selectedPackIds.add(packId)
-      const pack = packs.find((p) => p.id === packId)
-      showToast(`已勾选「${pack ? packTitle(pack) : packId}」`, 'success')
     } else {
       selectedPackIds.delete(packId)
-      const pack = packs.find((p) => p.id === packId)
-      showToast(`已取消勾选「${pack ? packTitle(pack) : packId}」`, 'info')
     }
     updateExportState()
     if (packs[activePack]?.id === packId) {
@@ -3966,7 +3456,7 @@ packNav.addEventListener('keydown', (event) => {
     return
   }
   const packIndex = Number(buttons[next]!.dataset.packIndex)
-  activatePack(packIndex)
+  activatePack(packIndex, { keepMenuOpen: true })
   const focused = packNav.querySelector<HTMLButtonElement>(
     `button.pack[data-pack-index="${packIndex}"]`,
   )
@@ -4034,9 +3524,9 @@ function createCustomPack(source?: SmojiPack): void {
   const label = source ? packTitle(source) : customNameInput.value.trim()
   let id = source?.id ?? customIdInput.value.trim()
 
-  if (!label) {
-    showCustomFormError('分组名称不能为空', 'name')
-    customNameInput.focus()
+  if (!isValidSmojiLabel(label)) {
+    showCustomFormError('名称需为 1–40 字且不能含 ] 或控制字符', 'name')
+    focusCustomName()
     return
   }
 
@@ -4048,12 +3538,16 @@ function createCustomPack(source?: SmojiPack): void {
 
   if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/.test(id)) {
     showCustomFormError('ID 格式不合法 (需以字母数字开头，允许 ._-)', 'id')
+    customCreate.open = true
+    customOptions.open = true
     customIdInput.focus()
     return
   }
 
   if (customPacks.some((p) => p.id === id)) {
     showCustomFormError(`分组 ID "${id}" 已存在`, 'id')
+    customCreate.open = true
+    customOptions.open = true
     customIdInput.focus()
     return
   }
@@ -4081,12 +3575,21 @@ function createCustomPack(source?: SmojiPack): void {
   renderGrid()
   updateExportState()
   updatePopGroupBtn()
-  showToast(`已新建自选分组「${label}」${source ? `，已加入 ${items.length} 张表情` : ''}`, 'success')
+  customCreate.open = false
+  customOptions.open = false
+  if (mobileViewportMq.matches) {
+    setMenuOpen(false)
+    galleryMain.focus({ preventScroll: true })
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  } else {
+    customPackList.querySelector<HTMLElement>('.is-active')?.focus({ preventScroll: true })
+  }
 }
 
 // Custom Pack List Events (Delete, Expand, Edit, Select)
 customPackList.addEventListener('click', (event) => {
   const target = event.target as HTMLElement
+  if (target.closest('summary')) return
 
   const trayMove = target.closest<HTMLButtonElement>('[data-tray-move-pack]')
   if (trayMove) {
@@ -4116,8 +3619,9 @@ customPackList.addEventListener('click', (event) => {
     if (Number.isFinite(packIdx) && customPacks[packIdx]) {
       activeCustomPackIndex = packIdx
       renderCustomPackList()
+      renderGrid()
       updateExportState()
-      showToast(`已将「${customPacks[packIdx].label}」设为目标分组`, 'info')
+      updatePopGroupBtn()
     }
     return
   }
@@ -4141,41 +3645,6 @@ customPackList.addEventListener('click', (event) => {
     const removed = pack?.items[itemIdx]
     if (pack && removed) {
       pack.items.splice(itemIdx, 1)
-      const packIndex = packIdx
-      const removedIndex = itemIdx
-      const removedItem = removed
-      historyStack.push({
-        description: `从「${pack.label}」移出表情「${removed.label}」`,
-        undo: () => {
-          const targetPack = customPacks[packIndex]
-          if (targetPack && !targetPack.items.some((i) => i.src === removedItem.src)) {
-            targetPack.items.splice(Math.min(removedIndex, targetPack.items.length), 0, removedItem)
-            activeCustomPackIndex = packIndex
-            renderCustomPackList()
-            renderGrid()
-            updateExportState()
-            updatePopGroupBtn()
-          }
-        },
-        redo: () => {
-          const targetPack = customPacks[packIndex]
-          if (targetPack) {
-            const idx = targetPack.items.findIndex((i) => i.src === removedItem.src)
-            if (idx !== -1) targetPack.items.splice(idx, 1)
-            activeCustomPackIndex = packIndex
-            renderCustomPackList()
-            renderGrid()
-            updateExportState()
-            updatePopGroupBtn()
-          }
-        },
-      })
-      lastUndo = {
-        type: 'custom-remove',
-        packIndex: packIdx,
-        item: removed,
-        itemIndex: itemIdx,
-      }
       renderCustomPackList()
       renderGrid()
       updateExportState()
@@ -4264,51 +3733,9 @@ customPackList.addEventListener('click', (event) => {
       if (!ok) return
       const still = customPacks[idx]
       if (!still || still.id !== deleted.id) return
-      const packSnapshot = {
-        id: deleted.id,
-        label: deleted.label,
-        items: deleted.items.slice(),
-        isExpanded: deleted.isExpanded,
-      }
-      const deleteIdx = idx
-      const prevActive = activeCustomPackIndex
-      historyStack.push({
-        description: `删除分组「${deleted.label}」`,
-        undo: () => {
-          customPacks.splice(deleteIdx, 0, {
-            id: packSnapshot.id,
-            label: packSnapshot.label,
-            items: packSnapshot.items.slice(),
-            isExpanded: packSnapshot.isExpanded,
-          })
-          activeCustomPackIndex = prevActive
-          renderCustomPackList()
-          renderGrid()
-          updateExportState()
-          updatePopGroupBtn()
-        },
-        redo: () => {
-          const targetIdx = customPacks.findIndex((p) => p.id === packSnapshot.id)
-          if (targetIdx !== -1) {
-            customPacks.splice(targetIdx, 1)
-            activeCustomPackIndex = Math.min(prevActive, customPacks.length - 1)
-            renderCustomPackList()
-            renderGrid()
-            updateExportState()
-            updatePopGroupBtn()
-          }
-        },
-      })
-      lastUndo = {
-        type: 'custom-delete',
-        pack: packSnapshot,
-        packIndex: idx,
-        activeIndex: activeCustomPackIndex,
-      }
       customPacks.splice(idx, 1)
-      if (activeCustomPackIndex >= customPacks.length) {
-        activeCustomPackIndex = customPacks.length - 1
-      }
+      if (activeCustomPackIndex > idx) activeCustomPackIndex -= 1
+      else if (activeCustomPackIndex === idx) activeCustomPackIndex = Math.min(idx, customPacks.length - 1)
       renderCustomPackList()
       renderGrid()
       updateExportState()
@@ -4331,6 +3758,7 @@ customPackList.addEventListener('click', (event) => {
     })
     renderCustomPackList()
     renderGrid()
+    persistWorkbenchState()
     updatePopGroupBtn()
   }
 })
@@ -4338,7 +3766,7 @@ customPackList.addEventListener('click', (event) => {
 customPackList.addEventListener('keydown', (event) => {
   if (event.key !== 'Enter' && event.key !== ' ') return
   const target = event.target as HTMLElement
-  if (target.closest('button, input, textarea, select')) return
+  if (target.closest('button, input, textarea, select, summary')) return
   const emptyTray = target.closest<HTMLElement>('.custom-pack-tray.is-empty')
   if (emptyTray && customPackList.contains(emptyTray)) {
     event.preventDefault()
@@ -4346,8 +3774,9 @@ customPackList.addEventListener('keydown', (event) => {
     if (Number.isFinite(packIdx) && customPacks[packIdx]) {
       activeCustomPackIndex = packIdx
       renderCustomPackList()
+      renderGrid()
       updateExportState()
-      showToast(`已将「${customPacks[packIdx].label}」设为目标分组`, 'info')
+      updatePopGroupBtn()
     }
     return
   }
@@ -4370,6 +3799,7 @@ customPackList.addEventListener('keydown', (event) => {
   })
   renderCustomPackList()
   renderGrid()
+  persistWorkbenchState()
   updatePopGroupBtn()
   requestAnimationFrame(() => {
     customPackList.querySelector<HTMLElement>(`[data-custom-index="${activeCustomPackIndex}"]`)?.focus()
@@ -4441,22 +3871,21 @@ customPackList.addEventListener('dragstart', (event) => {
   setDragGhost(event, row, 56)
 })
 
-customPackList.addEventListener('dragend', () => {
+function clearDragState(): void {
   customPackList.classList.remove('is-drag-source')
-  customPackList.querySelectorAll('.custom-pack-item').forEach((el) => {
-    el.classList.remove('is-dragging', 'is-drop-target')
-  })
-  customPackList.querySelectorAll('.tray-thumb').forEach((el) => {
-    el.classList.remove('is-dragging', 'is-drop-target')
-  })
-  customPackList.querySelectorAll('.custom-pack-tray').forEach((el) => {
-    el.classList.remove('is-drop-target')
-  })
+  for (const root of [customPackList, grid]) {
+    root.querySelectorAll('.is-dragging, .is-drop-target').forEach((el) => {
+      el.classList.remove('is-dragging', 'is-drop-target')
+    })
+  }
   clearDragGhost()
   dragFromIndex = -1
   trayDragPack = -1
   trayDragItem = -1
-})
+  gridDragSrc = null
+}
+
+customPackList.addEventListener('dragend', clearDragState)
 
 customPackList.addEventListener('dragover', (event) => {
   event.preventDefault()
@@ -4500,57 +3929,60 @@ customPackList.addEventListener('dragover', (event) => {
 
 customPackList.addEventListener('drop', (event) => {
   event.preventDefault()
-  const gridSrc =
-    gridDragSrc ||
-    event.dataTransfer?.getData('text/smoji-src') ||
-    ''
-  if (gridSrc) {
-    const item = itemBySrc.get(gridSrc)?.item
-    const emptyTray = (event.target as Element).closest<HTMLElement>('.custom-pack-tray.is-empty')
-    const row = (event.target as Element).closest<HTMLElement>('[data-custom-index]')
-    const trayThumb = (event.target as Element).closest<HTMLElement>('[data-tray-pack]')
-    let targetPack =
-      Number(emptyTray?.dataset.trayDropPack) ||
-      Number(trayThumb?.dataset.trayPack) ||
-      Number(row?.dataset.customIndex)
-    if (!Number.isFinite(targetPack) || targetPack < 0) targetPack = activeCustomPackIndex
-    if (item && Number.isFinite(targetPack) && targetPack >= 0) {
-      addItemToCustomPackAt(targetPack, item)
-    }
-    gridDragSrc = null
-    return
-  }
-
-  if (trayDragPack >= 0) {
-    const thumb = (event.target as Element).closest<HTMLElement>('[data-tray-pack]')
-    const emptyTray = (event.target as Element).closest<HTMLElement>('.custom-pack-tray.is-empty')
-    const row = (event.target as Element).closest<HTMLElement>('[data-custom-index]')
-    if (thumb) {
-      moveTrayItemAcrossPacks(
-        trayDragPack,
-        trayDragItem,
-        Number(thumb.dataset.trayPack),
-        Number(thumb.dataset.trayItem),
-      )
+  try {
+    const gridSrc =
+      gridDragSrc ||
+      event.dataTransfer?.getData('text/smoji-src') ||
+      ''
+    if (gridSrc) {
+      const item = itemBySrc.get(gridSrc)?.item
+      const emptyTray = (event.target as Element).closest<HTMLElement>('.custom-pack-tray.is-empty')
+      const row = (event.target as Element).closest<HTMLElement>('[data-custom-index]')
+      const trayThumb = (event.target as Element).closest<HTMLElement>('[data-tray-pack]')
+      let targetPack =
+        Number(emptyTray?.dataset.trayDropPack ?? trayThumb?.dataset.trayPack ?? row?.dataset.customIndex)
+      if (!Number.isFinite(targetPack) || targetPack < 0) targetPack = activeCustomPackIndex
+      if (item && Number.isFinite(targetPack) && targetPack >= 0) {
+        addItemToCustomPackAt(targetPack, item)
+      }
+      gridDragSrc = null
       return
     }
-    if (emptyTray) {
-      const targetPack = Number(emptyTray.dataset.trayDropPack)
-      if (Number.isFinite(targetPack)) {
-        moveTrayItemAcrossPacks(trayDragPack, trayDragItem, targetPack, 0)
+
+    if (trayDragPack >= 0) {
+      const thumb = (event.target as Element).closest<HTMLElement>('[data-tray-pack]')
+      const emptyTray = (event.target as Element).closest<HTMLElement>('.custom-pack-tray.is-empty')
+      const row = (event.target as Element).closest<HTMLElement>('[data-custom-index]')
+      if (thumb) {
+        moveTrayItemAcrossPacks(
+          trayDragPack,
+          trayDragItem,
+          Number(thumb.dataset.trayPack),
+          Number(thumb.dataset.trayItem),
+        )
+        return
+      }
+      if (emptyTray) {
+        const targetPack = Number(emptyTray.dataset.trayDropPack)
+        if (Number.isFinite(targetPack)) {
+          moveTrayItemAcrossPacks(trayDragPack, trayDragItem, targetPack, 0)
+        }
+        return
+      }
+      if (row) {
+        moveTrayItemAcrossPacks(trayDragPack, trayDragItem, Number(row.dataset.customIndex))
+        return
       }
       return
     }
-    if (row) {
-      moveTrayItemAcrossPacks(trayDragPack, trayDragItem, Number(row.dataset.customIndex))
-      return
-    }
-    return
+    const row = (event.target as Element).closest<HTMLElement>('[data-custom-index]')
+    if (!row || dragFromIndex < 0) return
+    const toIndex = Number(row.dataset.customIndex)
+    reorderCustomPack(dragFromIndex, toIndex)
+  } finally {
+    // Rendering removes the drag source; dragend may no longer bubble to the list.
+    clearDragState()
   }
-  const row = (event.target as Element).closest<HTMLElement>('[data-custom-index]')
-  if (!row || dragFromIndex < 0) return
-  const toIndex = Number(row.dataset.customIndex)
-  reorderCustomPack(dragFromIndex, toIndex)
 })
 
 grid.addEventListener('dragstart', (event) => {
@@ -4576,12 +4008,7 @@ grid.addEventListener('dragstart', (event) => {
   setDragGhost(event, card, 52)
 })
 
-grid.addEventListener('dragend', () => {
-  grid.querySelectorAll('.card.is-dragging').forEach((el) => el.classList.remove('is-dragging'))
-  customPackList.querySelectorAll('.is-drop-target').forEach((el) => el.classList.remove('is-drop-target'))
-  clearDragGhost()
-  gridDragSrc = null
-})
+grid.addEventListener('dragend', clearDragState)
 
 // Export Buttons (registry-rendered; delegated)
 exportToolbar.addEventListener('click', (event) => {
@@ -4608,6 +4035,7 @@ popTargetGroup.addEventListener('change', () => {
   activeCustomPackIndex = idx
   renderCustomPackList()
   renderGrid()
+  persistWorkbenchState()
   updatePopGroupBtn()
 })
 
@@ -4616,11 +4044,14 @@ popPrevBtn.addEventListener('click', () => navigatePop(-1))
 popNextBtn.addEventListener('click', () => navigatePop(1))
 
 let popSwipeX: number | null = null
+let popSwipeY = 0
 popStageWrap.addEventListener(
   'pointerdown',
   (event) => {
     if (event.pointerType === 'mouse' && event.button !== 0) return
+    if ((event.target as Element).closest('button')) return
     popSwipeX = event.clientX
+    popSwipeY = event.clientY
   },
   { passive: true },
 )
@@ -4629,8 +4060,9 @@ popStageWrap.addEventListener(
   (event) => {
     if (popSwipeX == null) return
     const dx = event.clientX - popSwipeX
+    const dy = event.clientY - popSwipeY
     popSwipeX = null
-    if (Math.abs(dx) < 40) return
+    if (Math.abs(dx) < 40 || Math.abs(dy) >= Math.abs(dx)) return
     navigatePop(dx < 0 ? 1 : -1)
   },
   { passive: true },
@@ -4728,7 +4160,7 @@ grid.addEventListener('click', (event) => {
 // Copy Buttons in Pop
 pop.addEventListener('click', (event) => {
   const button = (event.target as Element).closest<HTMLButtonElement>('[data-copy]')
-  if (button?.dataset.copy) copyValue(button.dataset.copy, button)
+  if (button?.dataset.copy) copyValue(button.dataset.copy)
 })
 
 copyTabs.forEach((tab) => {
@@ -4759,7 +4191,7 @@ copyTabs.forEach((tab) => {
 })
 
 btnCopyActive.addEventListener('click', () => {
-  copyValue(activeCopyFormat, btnCopyActive)
+  copyValue(activeCopyFormat)
 })
 
 copyActiveInput.addEventListener('focus', () => {
@@ -4806,8 +4238,7 @@ btnPreviewCtaPrimary.addEventListener('click', () => {
   closeCodeModal()
   if (mode === 'custom') {
     if (mobileViewportMq.matches) setMenuOpen(true)
-    customNameInput.focus()
-    customNameInput.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+    focusCustomName()
     return
   }
   const pack = packs[activePack]
@@ -4816,17 +4247,14 @@ btnPreviewCtaPrimary.addEventListener('click', () => {
   renderPackNav()
   renderGrid()
   updateExportState()
-  showToast(`已勾选「${packTitle(pack)}」`, 'success')
 })
 
 btnPreviewCtaScope.addEventListener('click', () => {
   if (mode === 'custom') {
     setPreviewScope('selected')
-    showToast('已切换预览范围为全部自选分组', 'info')
     return
   }
   setPreviewScope('all')
-  showToast('已切换预览范围为全部表情', 'info')
 })
 
 function syncPreviewScopeChips(): void {
@@ -4930,7 +4358,6 @@ btnDownloadCurrentCode.addEventListener('click', () => {
 
 // Guide Modal
 btnOpenGuide.addEventListener('click', openGuideModal)
-mobileGuideToggle.addEventListener('click', openGuideModal)
 guideModalClose.addEventListener('click', closeGuideModal)
 guideModalConfirm.addEventListener('click', closeGuideModal)
 
@@ -4949,19 +4376,28 @@ backdrop.addEventListener('click', () => {
 confirmOk.addEventListener('click', () => closeConfirmModal(true))
 confirmCancel.addEventListener('click', () => closeConfirmModal(false))
 
+document.addEventListener('click', (event) => {
+  if (mobileViewportMq.matches && !globalTools.contains(event.target as Node)) globalTools.open = false
+  if (!quickExport.contains(event.target as Node)) quickExport.open = false
+})
+
 // Global Keyboard Shortcuts
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') {
-    if (!confirmModal.hidden) {
-      event.preventDefault()
-      closeConfirmModal(false)
-      return
+    event.preventDefault()
+    if (!confirmModal.hidden) closeConfirmModal(false)
+    else if (!codeModal.hidden) closeCodeModal()
+    else if (!guideModal.hidden) closeGuideModal()
+    else if (!pop.hidden) closePop()
+    else if (document.body.classList.contains('menu-open')) setMenuOpen(false)
+    else if (mobileViewportMq.matches && globalTools.open) {
+      globalTools.open = false
+      globalTools.querySelector<HTMLElement>('summary')?.focus()
+    } else if (quickExport.open) {
+      quickExport.open = false
+      quickExport.querySelector<HTMLElement>('summary')?.focus()
     }
-    closePop()
-    closeCodeModal()
-    closeGuideModal()
-    setMenuOpen(false)
-      return
+    return
   }
 
   if ((event.metaKey || event.ctrlKey) && event.key === '1') {
@@ -5008,7 +4444,7 @@ document.addEventListener('keydown', (event) => {
     if (anyModalOpen()) return
     if (selectionDock.hidden) return
     event.preventDefault()
-    selectionDockFormat.focus()
+    dockFormatControl.focus()
     return
   }
   if ((event.metaKey || event.ctrlKey) && event.shiftKey && event.key.toLowerCase() === 'p') {
@@ -5016,7 +4452,8 @@ document.addEventListener('keydown', (event) => {
     if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
     if (!codeModal.hidden) return
     event.preventDefault()
-    openCodeModal()
+    if (selectionDock.hidden) openCodeModal()
+    else selectionDockPreview.click()
     return
   }
   if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'd') {
@@ -5095,6 +4532,7 @@ document.addEventListener('keydown', (event) => {
     })
     renderCustomPackList()
     renderGrid()
+    persistWorkbenchState()
     updatePopGroupBtn()
     if (customPackStatus) {
       const pack = customPacks[to]
@@ -5169,8 +4607,8 @@ document.addEventListener('keydown', (event) => {
     const ae = document.activeElement as HTMLElement | null
     const onCopyField = ae === copyActiveInput
     const onTextControl =
-      !onCopyField && Boolean(ae?.closest('input, textarea, select, [contenteditable="true"]'))
-    const allowFormatKeys = !ae || ae.tagName !== 'INPUT' || onCopyField
+      !onCopyField && Boolean(ae?.closest('input, textarea, select, [role="combobox"], [contenteditable="true"]'))
+    const allowFormatKeys = !onTextControl
     if (event.key === 'ArrowLeft' && !onTextControl) {
       event.preventDefault()
       navigatePop(-1)
@@ -5189,10 +4627,15 @@ document.addEventListener('keydown', (event) => {
       updateActiveCopyField()
     } else if (event.key === '3' && allowFormatKeys) {
       event.preventDefault()
-      activeCopyFormat = 'html'
+      activeCopyFormat = 'hugo'
       saveCopyFormat(activeCopyFormat)
       updateActiveCopyField()
     } else if (event.key === '4' && allowFormatKeys) {
+      event.preventDefault()
+      activeCopyFormat = 'html'
+      saveCopyFormat(activeCopyFormat)
+      updateActiveCopyField()
+    } else if (event.key === '5' && allowFormatKeys) {
       event.preventDefault()
       activeCopyFormat = 'bbcode'
       saveCopyFormat(activeCopyFormat)
@@ -5241,11 +4684,6 @@ document.addEventListener('keydown', (event) => {
   }
 })
 
-grid.addEventListener('scroll', () => {
-  const header = document.querySelector('.gallery__header')
-  header?.classList.toggle('is-scrolled', grid.scrollTop > 8)
-}, { passive: true })
-
 // App Bootstrapping
 let dockLeaveTimer: number | null = null
 
@@ -5257,15 +4695,11 @@ function showSelectionDock(): void {
   selectionDock.classList.remove('is-leaving')
   selectionDock.hidden = false
   document.body.classList.add('has-selection-dock')
-  exportToolbar.toggleAttribute('inert', true)
-  exportToolbar.setAttribute('aria-hidden', 'true')
 }
 
 function hideSelectionDock(): void {
   if (selectionDock.hidden && !selectionDock.classList.contains('is-leaving')) {
     document.body.classList.remove('has-selection-dock')
-    exportToolbar.toggleAttribute('inert', false)
-    exportToolbar.setAttribute('aria-hidden', 'false')
     return
   }
   if (selectionDock.classList.contains('is-leaving')) return
@@ -5275,8 +4709,6 @@ function hideSelectionDock(): void {
     selectionDock.hidden = true
     selectionDock.classList.remove('is-leaving')
     dockLeaveTimer = null
-    exportToolbar.toggleAttribute('inert', false)
-    exportToolbar.setAttribute('aria-hidden', 'false')
     syncSelectionDockOffset()
   }
   if (reduceMotion) {
@@ -5285,7 +4717,7 @@ function hideSelectionDock(): void {
   }
   selectionDock.classList.add('is-leaving')
   if (dockLeaveTimer !== null) window.clearTimeout(dockLeaveTimer)
-  dockLeaveTimer = window.setTimeout(finishHide, 220)
+  dockLeaveTimer = window.setTimeout(finishHide, 160)
 }
 
 function syncGuideExportTable(): void {
@@ -5321,6 +4753,7 @@ function syncExportChrome(): void {
   }
   selectionDockFormat.value = preferred
   if (selectionDockFormat.value !== preferred) selectionDockFormat.value = 'smoji'
+  dockFormatControl.sync()
 
   exportToolbar.querySelectorAll('.export-btn').forEach((el) => el.remove())
   for (const fmt of toolbarExportFormats()) {
@@ -5367,6 +4800,7 @@ function syncExportChrome(): void {
 }
 
 async function boot(): Promise<void> {
+  workbenchReady = false
   syncPlatformShortcutHints()
   syncExportChrome()
   onExportRegistryChange(() => {
@@ -5406,18 +4840,6 @@ async function boot(): Promise<void> {
     excludedItemSrcs.clear()
     excluded.forEach((src) => excludedItemSrcs.add(src))
     migratePackSelection(selectedPackIds, excludedItemSrcs, packs, manifestUrl)
-    const recentSrcs = new Set<string>()
-    recentEntries = recentEntries.map((entry) => {
-      const src = canonicalAssetSrc(entry.src, manifestUrl)
-      const resolved = itemBySrc.get(src)
-      return { ...entry, src, packId: resolved?.pack.id ?? entry.packId, label: resolved?.item.label ?? entry.label }
-    }).filter((entry) => {
-      if (recentSrcs.has(entry.src)) return false
-      recentSrcs.add(entry.src)
-      return true
-    })
-    localStorage.setItem('smoji-workbench:recent-srcs', JSON.stringify(recentEntries))
-
     // Drop stale selected ids that no longer exist
     for (const id of [...selectedPackIds]) {
       if (!packs.some((p) => p.id === id)) selectedPackIds.delete(id)
@@ -5449,7 +4871,7 @@ async function boot(): Promise<void> {
     updateSidebarFoot()
     renderPackNav()
     renderCustomPackList()
-    renderRecentStrip()
+    customCreate.open = customPacks.length === 0
     renderGrid()
     workbenchReady = true
     persistWorkbenchState()
@@ -5493,7 +4915,7 @@ async function boot(): Promise<void> {
     })
     alert.append(alertText, retry)
     grid.append(alert)
-    workbenchReady = true
+    workbenchReady = false
     updateExportState()
     showToast('清单加载失败，请检查网络或配置', 'error')
   }

@@ -40,7 +40,9 @@ next_link="$deploy_parent/.$site_name-next-$release_id"
 rollback_link="$deploy_parent/.$site_name-rollback-$release_id"
 lock_file="$release_root/.deploy.lock"
 
+owns_paths=false
 cleanup_temporary_paths() {
+  [ "$owns_paths" = true ] || return 0
   [ ! -L "$next_link" ] || rm -f -- "$next_link"
   [ ! -L "$rollback_link" ] || rm -f -- "$rollback_link"
   [ ! -d "$build_dir" ] || rm -rf -- "$build_dir"
@@ -54,6 +56,12 @@ if [ ! -d "$release_root" ] || [ -L "$release_root" ]; then
   echo "site release root is not a directory: $release_root" >&2
   exit 66
 fi
+exec 9>"$lock_file"
+if ! flock -x -w 900 9; then
+  echo "timed out waiting for the deployment lock: $lock_file" >&2
+  exit 75
+fi
+
 release_root_real="$(readlink -f "$release_root")"
 for reserved_path in "$build_dir" "$candidate_dir" "$next_link" "$rollback_link"; do
   if [ -e "$reserved_path" ] || [ -L "$reserved_path" ]; then
@@ -62,6 +70,7 @@ for reserved_path in "$build_dir" "$candidate_dir" "$next_link" "$rollback_link"
   fi
 done
 
+owns_paths=true
 mkdir "$build_dir"
 cp -a "$source_dir"/. "$build_dir"/
 find "$build_dir" -type d -exec chmod 0755 {} +
@@ -69,11 +78,6 @@ find "$build_dir" -type f -exec chmod 0644 {} +
 node --experimental-strip-types scripts/verify-site-output.mjs "$build_dir"
 mv -T -- "$build_dir" "$candidate_dir"
 
-exec 9>"$lock_file"
-if ! flock -x -w 900 9; then
-  echo "timed out waiting for the deployment lock: $lock_file" >&2
-  exit 75
-fi
 
 incoming_pipeline="$(printf '%s' "$release_id" | sed -E 's/^[0-9a-f]{40}-([0-9]+)-[0-9]+$/\1/')"
 incoming_rerun="$(printf '%s' "$release_id" | sed -E 's/^[0-9a-f]{40}-[0-9]+-([0-9]+)$/\1/')"
@@ -117,6 +121,11 @@ fi
 if [ ! -d "$candidate_dir" ] || [ -L "$candidate_dir" ] || [ ! -s "$candidate_dir/index.html" ]; then
   echo "site candidate is missing or invalid: $candidate_dir" >&2
   exit 66
+fi
+
+# Carry immutable assets forward so already-open pages can still fetch old chunks.
+if [ -n "$old_link_target" ]; then
+  cp -a -n "$old_link_target/assets"/. "$candidate_dir/assets"/
 fi
 
 candidate_name="$(basename "$candidate_dir")"

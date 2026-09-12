@@ -11,7 +11,7 @@ export function createSmoji(opts: SmojiOptions): SmojiPicker {
   const sa = (e: Element, a: string, b: any, c?: string, d?: any) => { e.setAttribute(a, b); if (c) e.setAttribute(c, d) }
   const on = (t: any, ev: string, fn: any, p?: boolean) => t?.addEventListener(ev, fn, { signal: ac.signal, passive: p })
 
-  const R = 'role', G = 'smoji-grid', AL = 'aria-label', TAB = 'tab'
+  const R = 'role', G = 'smoji-' + crypto.randomUUID(), AL = 'aria-label', TAB = 'tab'
   const pan = ce('div', 'smoji'), tabs = ce('div', 'smoji__tabs'), grid = ce('div', 'smoji__grid')
   pan.hidden = true
   sa(pan, R, 'dialog', AL, 'Smoji')
@@ -20,7 +20,7 @@ export function createSmoji(opts: SmojiOptions): SmojiPicker {
   sa(grid, R, 'tabpanel')
 
   packs.forEach((p, i) => {
-    const b = Object.assign(ce('button', 'smoji__tab'), { type: 'button', textContent: p.label, id: 'smoji-tab-' + i })
+    const b = Object.assign(ce('button', 'smoji__tab'), { type: 'button', textContent: p.label, id: G + '-' + i })
     b.dataset.packIndex = i as any
     sa(b, R, TAB, 'aria-controls', G)
     tabs.append(b)
@@ -40,7 +40,7 @@ export function createSmoji(opts: SmojiOptions): SmojiPicker {
       }))
       return b
     }))
-    sa(grid, 'aria-labelledby', 'smoji-tab-' + active)
+    sa(grid, 'aria-labelledby', G + '-' + active)
     for (let i = 0; i < tabs.children.length; i++) {
       const tab = tabs.children[i] as HTMLElement
       sa(tab, 'aria-selected', i === active)

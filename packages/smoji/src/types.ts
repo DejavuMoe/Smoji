@@ -15,6 +15,17 @@ export interface SmojiManifest {
   readonly packs: readonly SmojiPack[]
 }
 
+/** JSON input; parsing expands templates into SmojiManifest with required src. */
+export type SmojiManifestInput = SmojiManifest | {
+  readonly version: 1
+  readonly base: string
+  readonly packs: readonly {
+    readonly id: string
+    readonly label: string
+    readonly items: readonly (Omit<SmojiItem, 'src'> & { readonly src?: string })[]
+  }[]
+}
+
 export interface InsertTarget {
   insert(item: SmojiItem, pack: SmojiPack): void
 }

@@ -74,13 +74,19 @@ export function resolveSmojiImageUrl(src: string, manifestUrl: string): string {
 export function parseSmojiManifest(value: unknown, manifestUrl: string): SmojiManifest {
   if (!value || typeof value !== 'object') throw new SmojiManifestError('invalid-manifest')
   const raw = value as Record<string, unknown>
-  if (!hasExactKeys(raw, MANIFEST_KEYS) || raw.version !== 1 || !Array.isArray(raw.packs)) {
+  if (!hasExactKeys(raw, 'base' in raw ? ['version', 'base', 'packs'] : MANIFEST_KEYS) || raw.version !== 1 || !Array.isArray(raw.packs)) {
     throw new SmojiManifestError('invalid-manifest')
   }
   if (raw.packs.length < 1 || raw.packs.length > SMOJI_MAX_PACKS) {
     throw new SmojiManifestError('invalid-manifest')
   }
 
+  if ('base' in raw) {
+    if (typeof raw.base !== 'string' || !raw.base.includes('{pack}') || !raw.base.includes('{id}')) throw new SmojiManifestError('invalid-manifest')
+    const sample = raw.base.split('{pack}').join('pack').split('{id}').join('item')
+    if (/[{}]/.test(sample)) throw new SmojiManifestError('invalid-manifest')
+    resolveSmojiImageUrl(sample, manifestUrl)
+  }
   let itemCount = 0
   const packIds = new Set<string>()
   const packs: SmojiPack[] = raw.packs.map((pack): SmojiPack => {
@@ -105,12 +111,12 @@ export function parseSmojiManifest(value: unknown, manifestUrl: string): SmojiMa
       if (!item || typeof item !== 'object') throw new SmojiManifestError('invalid-manifest')
       const entry = item as Record<string, unknown>
       if (
-        !hasExactKeys(entry, ITEM_KEYS)
+        !hasExactKeys(entry, 'src' in entry ? ITEM_KEYS : ['id', 'label'])
         || typeof entry.id !== 'string'
         || !SMOJI_ID_PATTERN.test(entry.id)
         || itemIds.has(entry.id)
         || !isValidSmojiLabel(entry.label)
-        || typeof entry.src !== 'string'
+        || ('src' in entry ? typeof entry.src !== 'string' : typeof raw.base !== 'string')
       ) {
         throw new SmojiManifestError('invalid-manifest')
       }
@@ -120,7 +126,7 @@ export function parseSmojiManifest(value: unknown, manifestUrl: string): SmojiMa
       return {
         id: entry.id,
         label: entry.label.trim(),
-        src: resolveSmojiImageUrl(entry.src, manifestUrl),
+        src: resolveSmojiImageUrl(typeof entry.src === 'string' ? entry.src : (raw.base as string).split('{pack}').join(source.id as string).split('{id}').join(entry.id), manifestUrl),
       }
     })
 

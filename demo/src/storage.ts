@@ -1,3 +1,4 @@
+import { SMOJI_ID_PATTERN, isValidSmojiLabel, SMOJI_MAX_PACKS, SMOJI_MAX_ITEMS, SMOJI_MAX_ITEMS_PER_PACK } from '../../packages/smoji/src/validate'
 import type { SmojiItem } from 'smoji'
 import { isDockExportFormat, type DockExportFormat } from './export'
 
@@ -11,6 +12,18 @@ export interface EditableCustomPack {
   isExpanded?: boolean
 }
 
+export const safeStorage = {
+  getItem(key: string): string | null {
+    try { return localStorage.getItem(key) } catch { return null }
+  },
+  setItem(key: string, value: string): boolean {
+    try { localStorage.setItem(key, value); return true } catch { return false }
+  },
+  removeItem(key: string): void {
+    try { localStorage.removeItem(key) } catch { /* Storage may be disabled. */ }
+  },
+}
+
 const PREFIX = 'smoji-workbench:'
 
 export const STORAGE_KEYS = {
@@ -21,7 +34,6 @@ export const STORAGE_KEYS = {
   activeCustomIndex: `${PREFIX}active-custom-index`,
   selectedPackIds: `${PREFIX}selected-pack-ids`,
   excludedSrcs: `${PREFIX}excluded-srcs`,
-  recentSrcs: `${PREFIX}recent-srcs`,
   copyFormat: `${PREFIX}copy-format`,
   exportFormat: `${PREFIX}export-format`,
   customGroupExtensions: `${PREFIX}custom-group-extensions`,
@@ -33,18 +45,12 @@ export type PersistedCustomPack = {
   itemSrcs: string[]
 }
 
-export type RecentEntry = {
-  src: string
-  packId: string
-  label: string
-  at: number
-}
-
 function readJson<T>(key: string, fallback: T): T {
   try {
-    const raw = localStorage.getItem(key)
+    const raw = safeStorage.getItem(key)
     if (!raw) return fallback
-    return JSON.parse(raw) as T
+    const value = JSON.parse(raw)
+    return Array.isArray(fallback) && !Array.isArray(value) ? fallback : value as T
   } catch {
     return fallback
   }
@@ -52,28 +58,27 @@ function readJson<T>(key: string, fallback: T): T {
 
 function writeJson(key: string, value: unknown): boolean {
   try {
-    localStorage.setItem(key, JSON.stringify(value))
-    return true
+    return safeStorage.setItem(key, JSON.stringify(value))
   } catch {
     return false
   }
 }
 
 export function loadDensity(): boolean {
-  return localStorage.getItem(STORAGE_KEYS.density) === 'comfortable'
+  return safeStorage.getItem(STORAGE_KEYS.density) === 'comfortable'
 }
 
 export function saveDensity(comfortable: boolean): void {
-  localStorage.setItem(STORAGE_KEYS.density, comfortable ? 'comfortable' : 'compact')
+  safeStorage.setItem(STORAGE_KEYS.density, comfortable ? 'comfortable' : 'compact')
 }
 
 export function loadMode(): 'packs' | 'custom' {
-  const mode = localStorage.getItem(STORAGE_KEYS.mode)
+  const mode = safeStorage.getItem(STORAGE_KEYS.mode)
   return mode === 'custom' ? 'custom' : 'packs'
 }
 
 export function saveMode(mode: 'packs' | 'custom'): void {
-  localStorage.setItem(STORAGE_KEYS.mode, mode)
+  safeStorage.setItem(STORAGE_KEYS.mode, mode)
 }
 
 export function loadSelectedPackIds(): Set<string> {
@@ -94,44 +99,24 @@ export function saveExcludedSrcs(srcs: ReadonlySet<string>): boolean {
   return writeJson(STORAGE_KEYS.excludedSrcs, [...srcs])
 }
 
-export function loadRecentEntries(limit = 24): RecentEntry[] {
-  const entries = readJson<RecentEntry[]>(STORAGE_KEYS.recentSrcs, [])
-  return entries
-    .filter((e) => e && typeof e.src === 'string' && typeof e.packId === 'string')
-    .slice(0, limit)
-}
-
-export function pushRecentEntry(
-  entry: Omit<RecentEntry, 'at'>,
-  limit = 24,
-): RecentEntry[] {
-  const prev = loadRecentEntries(limit)
-  const next = [
-    { ...entry, at: Date.now() },
-    ...prev.filter((e) => e.src !== entry.src),
-  ].slice(0, limit)
-  writeJson(STORAGE_KEYS.recentSrcs, next)
-  return next
-}
-
-export function loadCopyFormat(): 'md' | 'url' | 'html' | 'bbcode' {
-  const v = localStorage.getItem(STORAGE_KEYS.copyFormat)
-  if (v === 'url' || v === 'html' || v === 'bbcode' || v === 'md') return v
+export function loadCopyFormat(): 'md' | 'url' | 'hugo' | 'html' | 'bbcode' {
+  const v = safeStorage.getItem(STORAGE_KEYS.copyFormat)
+  if (v === 'hugo' || v === 'url' || v === 'html' || v === 'bbcode' || v === 'md') return v
   return 'md'
 }
 
-export function saveCopyFormat(format: 'md' | 'url' | 'html' | 'bbcode'): void {
-  localStorage.setItem(STORAGE_KEYS.copyFormat, format)
+export function saveCopyFormat(format: 'md' | 'url' | 'hugo' | 'html' | 'bbcode'): void {
+  safeStorage.setItem(STORAGE_KEYS.copyFormat, format)
 }
 
 export function loadExportFormat(): DockExportFormat {
-  const v = localStorage.getItem(STORAGE_KEYS.exportFormat)
+  const v = safeStorage.getItem(STORAGE_KEYS.exportFormat)
   if (v && isDockExportFormat(v)) return v
   return 'smoji'
 }
 
 export function saveExportFormat(format: DockExportFormat): void {
-  localStorage.setItem(STORAGE_KEYS.exportFormat, format)
+  safeStorage.setItem(STORAGE_KEYS.exportFormat, format)
 }
 
 export function loadCustomGroupExtensions(): Record<string, unknown> {
@@ -155,8 +140,7 @@ export function serializeCustomPacks(packs: EditableCustomPack[]): PersistedCust
 export function saveCustomPacks(packs: EditableCustomPack[], activeIndex: number): boolean {
   const ok = writeJson(STORAGE_KEYS.customPacks, serializeCustomPacks(packs))
   try {
-    localStorage.setItem(STORAGE_KEYS.activeCustomIndex, String(activeIndex))
-    return ok
+    return safeStorage.setItem(STORAGE_KEYS.activeCustomIndex, String(activeIndex)) && ok
   } catch {
     return false
   }
@@ -167,23 +151,28 @@ export function loadCustomPacks(
 ): { packs: EditableCustomPack[]; activeIndex: number } {
   const raw = readJson<PersistedCustomPack[]>(STORAGE_KEYS.customPacks, [])
   const packs: EditableCustomPack[] = []
+  let total = 0
   for (const entry of raw) {
-    if (!entry || typeof entry.id !== 'string' || typeof entry.label !== 'string') continue
+    if (!entry || typeof entry.id !== 'string' || !SMOJI_ID_PATTERN.test(entry.id) || !isValidSmojiLabel(entry.label) || packs.some((pack) => pack.id === entry.id)) continue
+    if (packs.length >= SMOJI_MAX_PACKS) break
     if (!Array.isArray(entry.itemSrcs)) continue
     const items: SmojiItem[] = []
     const seen = new Set<string>()
     for (const src of entry.itemSrcs) {
+      if (typeof src !== 'string') continue
+      if (items.length >= SMOJI_MAX_ITEMS_PER_PACK || total >= SMOJI_MAX_ITEMS) break
       const item = resolveItem(src)
       if (item && !seen.has(item.src)) {
         items.push(item)
+        total++
         seen.add(item.src)
       }
     }
     packs.push({ id: entry.id, label: entry.label, items })
   }
-  const activeRaw = Number(localStorage.getItem(STORAGE_KEYS.activeCustomIndex) ?? '-1')
+  const activeRaw = Number(safeStorage.getItem(STORAGE_KEYS.activeCustomIndex) ?? '-1')
   const activeIndex =
-    Number.isFinite(activeRaw) && activeRaw >= 0 && activeRaw < packs.length
+    Number.isInteger(activeRaw) && activeRaw >= 0 && activeRaw < packs.length
       ? activeRaw
       : packs.length
         ? 0
@@ -231,16 +220,33 @@ export function parseCustomGroupBundle(raw: unknown): PersistedCustomPack[] {
   if (!raw || typeof raw !== 'object') throw new Error('无效的分组文件')
   const data = raw as Record<string, unknown>
   if (Array.isArray(raw)) {
-    return raw as PersistedCustomPack[]
+    return validatePersistedPacks(raw)
   }
   if (data.kind === 'smoji-custom-groups') {
     if (data.version !== 1) throw new Error('不支持的分组文件版本')
     if (!Array.isArray(data.packs)) throw new Error('分组文件缺少 packs')
-    return data.packs as PersistedCustomPack[]
+    return validatePersistedPacks(data.packs)
   }
   if (Array.isArray(data.packs)) {
-    return data.packs as PersistedCustomPack[]
+    return validatePersistedPacks(data.packs)
   }
   throw new Error('无法识别的分组文件格式')
 }
 
+
+function validatePersistedPacks(raw: unknown[]): PersistedCustomPack[] {
+  let total = 0
+  const ids = new Set<string>()
+  if (raw.length > SMOJI_MAX_PACKS) throw new Error('分组数超出上限')
+  for (const value of raw) {
+    const entry = value as PersistedCustomPack | null
+    if (!entry || typeof entry.id !== 'string' || !SMOJI_ID_PATTERN.test(entry.id)
+      || ids.has(entry.id) || !isValidSmojiLabel(entry.label) || !Array.isArray(entry.itemSrcs)
+      || entry.itemSrcs.some((src) => typeof src !== 'string' || !src.trim())
+      || entry.itemSrcs.length > SMOJI_MAX_ITEMS_PER_PACK) throw new Error('无效的分组数据')
+    ids.add(entry.id)
+    total += entry.itemSrcs.length
+  }
+  if (total > SMOJI_MAX_ITEMS) throw new Error('表情总数超出上限')
+  return raw as PersistedCustomPack[]
+}

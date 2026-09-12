@@ -5,6 +5,7 @@ export type {
   LoadSmojiOptions,
   SmojiItem,
   SmojiManifest,
+  SmojiManifestInput,
   SmojiOptions,
   SmojiPack,
   SmojiPicker,

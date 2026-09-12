@@ -4,14 +4,25 @@
   "title": "Smoji manifest v1",
   "type": "object",
   "additionalProperties": false,
-  "required": ["version", "packs"],
+  "required": [
+    "version",
+    "packs"
+  ],
   "properties": {
-    "version": { "const": 1 },
+    "version": {
+      "const": 1
+    },
     "packs": {
       "type": "array",
       "minItems": 1,
       "maxItems": 64,
-      "items": { "$ref": "#/$defs/pack" }
+      "items": {
+        "$ref": "#/$defs/pack"
+      }
+    },
+    "base": {
+      "type": "string",
+      "pattern": "^(?=.*\\{pack\\})(?=.*\\{id\\})(?:[^{}]|\\{pack\\}|\\{id\\})+$"
     }
   },
   "$defs": {
@@ -22,33 +33,82 @@
     "label": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 40,
-      "pattern": "^[^\\]\\x00-\\x1F\\x7F]+$"
+      "pattern": "^(?!.*[\\]\\x00-\\x1F\\x7F-\\x9F])\\s*\\S(?:.{0,38}\\S)?\\s*$",
+      "description": "Nonblank; at most 40 Unicode code points after trimming; no closing bracket or C0/C1 controls."
     },
     "pack": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "label", "items"],
+      "required": [
+        "id",
+        "label",
+        "items"
+      ],
       "properties": {
-        "id": { "$ref": "#/$defs/id" },
-        "label": { "$ref": "#/$defs/label" },
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "label": {
+          "$ref": "#/$defs/label"
+        },
         "items": {
           "type": "array",
           "minItems": 1,
           "maxItems": 600,
-          "items": { "$ref": "#/$defs/item" }
+          "items": {
+            "$ref": "#/$defs/item"
+          }
         }
       }
     },
     "item": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "label", "src"],
+      "required": [
+        "id",
+        "label"
+      ],
       "properties": {
-        "id": { "$ref": "#/$defs/id" },
-        "label": { "$ref": "#/$defs/label" },
-        "src": { "type": "string", "minLength": 1 }
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "label": {
+          "$ref": "#/$defs/label"
+        },
+        "src": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "not": {
+          "required": [
+            "base"
+          ]
+        }
+      },
+      "then": {
+        "properties": {
+          "packs": {
+            "items": {
+              "properties": {
+                "items": {
+                  "items": {
+                    "required": [
+                      "src"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "description": "Smoji v1 JSON input. Runtime validation additionally enforces 6000 total items, 1 MiB UTF-8 size, unique pack/item IDs and manifest-same-origin HTTP(S) URLs without credentials, query or fragment."
 }

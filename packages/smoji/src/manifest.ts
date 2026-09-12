@@ -53,7 +53,29 @@ export async function loadSmojiManifest(
       throw new SmojiManifestError('manifest-too-large')
     }
 
-    const text = await response.text()
+    let text = ''
+    if (response.body) {
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder()
+      let bytes = 0
+      try {
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+          bytes += value.byteLength
+          if (bytes > SMOJI_MANIFEST_MAX_BYTES) {
+            controller.abort()
+            throw new SmojiManifestError('manifest-too-large')
+          }
+          text += decoder.decode(value, { stream: true })
+        }
+        text += decoder.decode()
+      } finally {
+        reader.releaseLock()
+      }
+    } else {
+      text = await response.text()
+    }
     assertManifestSize(text)
 
     let value: unknown
