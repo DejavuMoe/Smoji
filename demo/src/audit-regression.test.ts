@@ -40,6 +40,7 @@ it('preserves groups and consistent undo through real workbench handlers', async
   localStorage.setItem(STORAGE_KEYS.activeCustomIndex, '1')
   const app = await import('./main')
   await vi.waitFor(() => expect(document.querySelectorAll('[data-merge-index]')).toHaveLength(2))
+  expect(document.querySelector('.custom-pack-count.is-full')?.textContent).toContain('600 / 600 张')
   const groups = () => JSON.parse(localStorage.getItem(STORAGE_KEYS.customPacks)!) as Array<{ id: string; label: string; itemSrcs: string[] }>
   const click = (selector: string) => { const button = document.querySelector<HTMLElement>(selector); expect(button, selector).not.toBeNull(); button!.click() }
   const undo = () => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'z', ctrlKey: true, bubbles: true }))

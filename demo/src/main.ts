@@ -18,6 +18,7 @@ import {
   listExportFormats,
   onExportRegistryChange,
   previewExportFormats,
+  stampDownloadFilename,
   toolbarExportFormats,
   type ExportTargetFormat,
 } from './export'
@@ -1266,12 +1267,12 @@ function renderCustomPackList(): void {
     count.setAttribute('aria-controls', `custom-tray-${index}`)
     count.setAttribute(
       'aria-label',
-      `${pack.isExpanded ? '折叠' : '展开'}「${pack.label}」缩略图，${pack.items.length} 项`,
+      `${pack.isExpanded ? '折叠' : '展开'}「${pack.label}」缩略图，已用 ${pack.items.length} / ${CUSTOM_PACK_ITEM_LIMIT} 项`,
     )
     count.title = pack.isExpanded ? '折叠缩略图' : '展开缩略图'
     count.classList.toggle('is-near-full', pack.items.length >= CUSTOM_ITEM_NEAR_FULL)
     count.classList.toggle('is-full', pack.items.length >= CUSTOM_PACK_ITEM_LIMIT)
-    count.textContent = `${pack.items.length} 张${pack.isExpanded ? ' ▴' : ' ▾'}`
+    count.textContent = `${pack.items.length} / ${CUSTOM_PACK_ITEM_LIMIT} 张${pack.isExpanded ? ' ▴' : ' ▾'}`
 
     const delBtn = document.createElement('button')
     delBtn.type = 'button'
@@ -3050,6 +3051,7 @@ export function updateCodePreview(format: ExportTargetFormat): void {
 
   try {
     const { content, filename } = generateFormattedExport(format, packsToExport, manifestUrl)
+    const downloadName = stampDownloadFilename(filename)
     codePreviewContent.textContent = content
     const totalItems = packsToExport.reduce((acc, p) => acc + p.items.length, 0)
     const byteSize = new TextEncoder().encode(content).length
@@ -3069,8 +3071,8 @@ export function updateCodePreview(format: ExportTargetFormat): void {
       btnCopyCode.disabled = false
       btnDownloadCurrentCode.disabled = false
       codeModalMeta.textContent = nearBudget
-        ? `${filename} • 接近上限（${Math.round((manifestBytes / SMOJI_MANIFEST_MAX_BYTES) * 100)}%）`
-        : `${filename} • 校验通过`
+        ? `${downloadName} • 接近上限（${Math.round((manifestBytes / SMOJI_MANIFEST_MAX_BYTES) * 100)}%）`
+        : `${downloadName} • 校验通过`
     }
   } catch (err) {
     codePreviewContent.textContent = `// 数据生成错误: ${err instanceof Error ? err.message : String(err)}`
@@ -3122,6 +3124,7 @@ function closeCodeModal(): void {
 
 // Guide Modal Helpers
 function openGuideModal(): void {
+  syncGuideExportTable()
   if (mobileViewportMq.matches) globalTools.open = false
   if (!pop.hidden) closePop()
   if (!codeModal.hidden) closeCodeModal()
@@ -4735,7 +4738,7 @@ function syncGuideExportTable(): void {
     target.textContent = fmt.guideTarget ?? (fmt.dock || fmt.toolbar ? '扩展注册格式' : '代码预览格式')
     const file = document.createElement('td')
     const code = document.createElement('code')
-    code.textContent = fmt.guideFilename ?? `${fmt.id}.json`
+    code.textContent = stampDownloadFilename(fmt.guideFilename ?? `${fmt.id}.json`)
     file.append(code)
     tr.append(name, target, file)
     tbody.append(tr)

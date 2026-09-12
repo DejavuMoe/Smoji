@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { afterEach, expect, it, vi } from 'vitest'
+import { stampDownloadFilename } from './export'
 
 afterEach(() => {
   localStorage.clear()
@@ -29,6 +30,10 @@ it('keeps export scope/format, progressive group creation, overlays and clipboar
   const click = (selector: string) => el(selector).click()
   await import('./main')
   await vi.waitFor(() => expect(el('.card')).not.toBeNull())
+  click('#btn-open-guide')
+  expect(el('[data-guide-limit="packs-n"]').textContent).toBe('64')
+  const guideNames = [...document.querySelectorAll('#guide-export-tbody code')].map(node => node.textContent)
+  click('#guide-modal-close')
   expect(el('#gallery-empty-cta').hidden).toBe(true)
   expect(el('#selection-dock').hidden).toBe(true)
   expect(el('#btn-select-all-packs').textContent).toBe('全选')
@@ -49,6 +54,21 @@ it('keeps export scope/format, progressive group creation, overlays and clipboar
   expect(el('#code-tab-twikoo').getAttribute('aria-selected')).toBe('true')
   expect(el('[data-scope="selected"]').getAttribute('aria-checked')).toBe('true')
   expect(JSON.parse(el('#code-preview-content').textContent!).示例.container).toHaveLength(2)
+  vi.stubGlobal('URL', class extends URL {
+    static createObjectURL = vi.fn(() => 'blob:export')
+    static revokeObjectURL = vi.fn()
+  })
+  const downloadNames: string[] = []
+  vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function (this: HTMLAnchorElement) { downloadNames.push(this.download) })
+  for (const [format, filename] of [['smoji', 'smoji.json'], ['twikoo', 'twikoo.json'], ['markdown', 'smoji-markers.md']]) {
+    click(`#code-tab-${format}`)
+    const expected = stampDownloadFilename(filename!)
+    expect(guideNames).toContain(expected)
+    expect(el('#code-modal-meta').textContent).toContain(expected)
+    click('#btn-download-current-code')
+    expect(downloadNames[downloadNames.length - 1]).toBe(expected)
+  }
+  click('#code-tab-twikoo')
   click('#code-modal-close')
   expect(document.activeElement).toBe(el('#selection-dock-preview'))
   expect(document.body.classList.contains('overlay-open')).toBe(false)
@@ -76,6 +96,8 @@ it('keeps export scope/format, progressive group creation, overlays and clipboar
   notes.dispatchEvent(new Event('change'))
   expect(JSON.parse(localStorage.getItem('smoji-workbench:custom-group-extensions')!)['smoji.workbench'].notes).toBeUndefined()
   click('[data-check-item-index="0"]')
+  expect(el('.custom-pack-count').textContent).toContain('1 / 600 张')
+  expect(el('.custom-pack-count').getAttribute('aria-label')).toContain('已用 1 / 600 项')
   expect(el('[data-badge-item-index="0"]').textContent).toBe('✓')
   expect(el('#selection-dock-count').textContent).toContain('1 张表情')
   expect(el('#toast-container').children).toHaveLength(0)

@@ -393,7 +393,7 @@
           <section class="guide-section">
             <h3>工作台功能</h3>
             <ul>
-              <li><strong>整包 / 自选双模式</strong>：勾选源分类整包导出，或创建最多 <span data-guide-limit="packs-n">32</span> 个自选分组精选表情。</li>
+              <li><strong>整包 / 自选双模式</strong>：勾选源分类整包导出，或创建最多 <span data-guide-limit="packs-n">64</span> 个自选分组精选表情。</li>
               <li><strong>本地持久化</strong>：自选分组、勾选状态、主题与密度会自动保存在浏览器本地。</li>
               <li><strong>分组可移植</strong>：自选分组支持导入/导出 JSON（<code>smoji-custom-groups</code>）。桌面端可从网格拖入托盘、拖拽排序与跨组投放；触控端用分组 ↑↓、托盘 ◀▶（边缘可跨组）与 Alt 快捷键。展开空分组可点选为目标或拖入表情。</li>
               <li><strong>浏览与预览</strong>：按分类浏览，自选分组可切换「源分类 / 已入组」。点击图片查看原图和动图，使用底部导出栏保存配置。</li>
@@ -452,6 +452,7 @@
 
           <section class="guide-section">
             <h3>多平台导出格式对照</h3>
+            <p>下载文件名包含 UTC 日期后缀（YYYYMMDD）。部署时可重命名；配置中的 URL 应与实际部署的文件名一致。</p>
             <table class="guide-table">
               <thead>
                 <tr>
@@ -464,27 +465,27 @@
                 <tr>
                   <td><strong>Smoji v1</strong></td>
                   <td>Ecoku 原生评论系统、Smoji Picker 官方核心库</td>
-                  <td><code>smoji.json</code></td>
+                  <td><code>smoji-YYYYMMDD.json</code></td>
                 </tr>
                 <tr>
                   <td><strong>Artalk</strong></td>
                   <td>Artalk 自托管评论系统 v2+</td>
-                  <td><code>artalk.json</code></td>
+                  <td><code>artalk-YYYYMMDD.json</code></td>
                 </tr>
                 <tr>
                   <td><strong>Twikoo</strong></td>
                   <td>Twikoo 无服务器评论系统</td>
-                  <td><code>twikoo.json</code></td>
+                  <td><code>twikoo-YYYYMMDD.json</code></td>
                 </tr>
                 <tr>
                   <td><strong>OwO</strong></td>
                   <td>Valine 及各类兼容 OwO 规范的独立博客</td>
-                  <td><code>OwO.json</code></td>
+                  <td><code>OwO-YYYYMMDD.json</code></td>
                 </tr>
                 <tr>
                   <td><strong>Waline</strong></td>
                   <td>Waline emoji 配置对象数组</td>
-                  <td><code>waline.json</code></td>
+                  <td><code>waline-YYYYMMDD.json</code></td>
                 </tr>
               </tbody>
             </table>

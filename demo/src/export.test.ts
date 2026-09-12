@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import {
   DOCK_EXPORT_FORMAT_IDS,
   EXPORT_FORMAT_REGISTRY,
@@ -10,8 +10,13 @@ import {
 
 describe('stampDownloadFilename', () => {
   it('inserts YYYYMMDD before the extension', () => {
-    const stamped = stampDownloadFilename('smoji.json')
-    expect(stamped).toMatch(/^smoji-\d{8}\.json$/)
+    vi.useFakeTimers()
+    try {
+      vi.setSystemTime(new Date('2026-09-13T00:30:00+08:00'))
+      expect(stampDownloadFilename('smoji.json')).toBe('smoji-20260912.json')
+    } finally {
+      vi.useRealTimers()
+    }
   })
 
   it('handles markdown and OwO names', () => {

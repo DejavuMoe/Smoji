@@ -16,307 +16,256 @@
   <img src="https://img.shields.io/badge/TypeScript-5.9-blue.svg" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Dependencies-Zero-success.svg" alt="Zero Dependencies" />
   <img src="https://img.shields.io/badge/Core_Gzip-%3C1.6KB-brightgreen.svg" alt="Core Bundle Size" />
-  <img src="https://img.shields.io/badge/Node.js-24+-orange.svg" alt="Node.js 24+" />
-  <img src="https://img.shields.io/badge/pnpm-11.24+-red.svg" alt="pnpm" />
 </p>
 
 ---
 
-**Smoji** 是一套现代化开源图片表情解决方案，由两大部分组成：
+## 📖 项目简介
 
-1. **表情库与工作台（Web App）**：面向博主与个人用户，在浏览器中自由浏览高清静态/动态表情、灵活管理自选分组、实时预览多格式数据，一键导出 Artalk、Twikoo、OwO、Waline、Ecoku 等主流博客评论系统的配置文件。
-2. **轻量表情选择器（Picker Core SDK）**：面向前端开发者，采用原生 TypeScript 编写、**零运行时依赖（无 React / Vue 绑定）**、核心压缩体积小于 1.6 KB (Gzip) 的 Web 表情选择器组件与严格防注入渲染器。
+**Smoji** 是一套面向个人博客、文档网站与社区论坛的开源图片表情管理与集成工具，由两部分组成：
 
----
-
-## ✨ 核心特性
-
-### 🎨 现代化表情工作台 (Workbench)
-- **双导出模式**：
-  - **整包导出**：一键全选、反选或按分类剔除不需要的表情包。
-  - **自选分组**：自由创建最多 32 个自定义分组，支持跨组拖拽投放、调序与精准筛选。
-- **优异的浏览与预览体验**：缩略图列表极大节省加载流量；详情弹窗支持原图与动图播放，提供透明棋盘格、浅色纯白、深色纯黑 3 种背景预览模式。
-- **多格式快捷复制**：内置复制控制台，一键复制 Markdown（`![smoji:标签](url)`）、绝对图片 URL、HTML 标签与 BBCode。
-- **数据实时预览与下载**：支持按当前分类、已勾选项目或全部表情范围实时预览导出代码，并支持一键下载。
-- **隐私保护与本地持久化**：无需注册任何账号，自选分组、勾选状态、主题与视图密度均自动持久化在浏览器本地（`localStorage`），支持分组配置的 JSON 导入与导出备份。
-- **全键盘与无障碍支持 (A11y)**：严格遵循 WAI-ARIA 规范，支持键盘方向键无缝漫游、焦点捕获与丰富快捷键。
-
-### ⚡ 原生极简表情选择器 (`packages/smoji`)
-- **零运行时依赖**：原生纯 JavaScript / TypeScript 编写，完全与框架无关。
-- **极致羽量级体积**：
-  - Core JS: 压缩后 **~3 KB** (Gzip **~1.5 KB**)
-  - Core CSS: 压缩后 **~1.9 KB** (Gzip **~800 B**)
-- **智能定位算法**：结合 `visualViewport` 与边界碰撞检测，在复杂移动端和滚动页面中精准浮层定位，不越界、不溢出。
-- **开箱即用输入适配**：提供 `textTarget` 绑定助手，支持光标位置插入、`InputEvent` 派发与自动失焦恢复。
-
-### 🛡️ 安全规范与持久化设计
-- **严格防注入 (Zero XSS)**：富文本渲染器纯 DOM 节点组装，**绝不使用 `innerHTML`**，强制校验图片同源性与 URL 协议，杜绝恶意脚本注入。
-- **契约规范化**：提供标准的单文件清单契约 `smoji.json`（遵循 [JSON Schema](packages/smoji/data.schema.json)），单清单最多 64 个分组、单组最多 600 项、总计最多 6000 项、清单体积限制 ≤ 1 MiB（UTF-8）。
-- **历史内容永续性**：导出 Markdown 均使用绝对图片链接，未来图库分类调整或个别下架不会破坏历史博客评论的正常渲染。
+1. **表情工作台（Web App）**：无需注册账号，纯浏览器端运行。用户可在线浏览高清静态与动态表情，灵活自由地管理自选分组、实时预览多格式导出代码，并一键生成 **Artalk、Twikoo、OwO、Waline、Ecoku / Smoji** 等主流评论系统与 Markdown 文档的配置文件。
+2. **轻量表情选择器（Picker SDK）**：采用原生 TypeScript 编写、**零运行时依赖（无框架绑定）**、压缩体积小于 1.6 KB (Gzip) 的 Web 表情选择器组件与严格防注入渲染器，便于前端开发者或网站主直接嵌入自己的网页。
 
 ---
 
-## 📦 支持的导出格式
+## 🎨 工作台使用指南
 
-工作台支持一键将挑选的表情导出为各主流博客评论系统与文档格式：
+Smoji 工作台提供直观、高效的表情浏览与挑选体验，支持鼠标拖拽、触控操作与全键盘交互。
 
-| 平台 / 格式 | 导出文件名 | 适用系统 / 使用场景 |
-| :--- | :--- | :--- |
-| **Smoji v1** | `smoji.json` | Ecoku 原生评论系统、Smoji Picker 官方核心库 |
-| **Artalk** | `artalk.json` | Artalk 自托管评论系统 (v2+) |
-| **Twikoo** | `twikoo.json` | Twikoo 无服务器评论系统 |
-| **Waline** | `waline.json` | Waline 的 `emoji` 配置对象数组 |
-| **OwO** | `OwO.json` | Valine 及各类兼容 OwO 格式的独立博客系统 |
-| **Markdown** | 剪贴板 / 单项复制 | 支持 Markdown 语法的博客文章、即时通讯工具 |
-| **URL / HTML / BBCode** | 剪贴板复制 | Discuz、各大论坛、富文本编辑器与网页嵌入 |
+### 1. 核心导出模式
 
+工作台提供两种核心操作模式，满足不同的筛选导出需求：
+
+#### ① 整包导出模式 (Packs Mode)
+适合直接使用图库现成预设分类（如经典贴吧、阿鲁、小黄脸等）：
+- **批量勾选与反选**：在左侧分类导航栏中，点击单个表情包右侧的复选框进行勾选；或通过顶部的「全选 / 反选」与「清空」按钮快速批量切换。
+- **分类内单项排除与恢复**：勾选某一分类后，若其中有个别表情不需要，可在表情网格中悬浮点击卡片右上角的 **`−`** 按钮将其排除（排除后卡片呈半透明状态）；再次点击 **`↺`** 按钮即可重新恢复。
+- **分类整包快捷控制**：图库顶部提供批量操作按钮，支持一键「排除本包全部表情」或「恢复本包全部表情」。
+
+#### ② 自选分组模式 (Custom Mode)
+适合博主精选表情，自由组合专属表情包：
+- **创建自定义分组**：
+  - 在侧边栏输入「分组名称」（1 ~ 40 个字符，不能含 `]` 符号或控制字符）；
+  - 可展开「自定义 ID」输入专属英文标识（允许字母数字开头，包含 `.`、`_`、`-`，最多 64 字符；留空则自动按序号生成）；
+  - 单个清单最多支持创建 **64** 个自选分组。
+- **添加表情到分组**：
+  - **网格点击**：鼠标悬停在表情卡片上，点击右上角的 **`+`** 即可加入当前激活的目标分组；
+  - **拖拽投放**：桌面端可直接将网格中的表情卡片拖动到左侧任意自选分组项或展开的托盘中；
+  - **整包批量添加**：点击图库顶部的「本分类全部加入」，可将当前源分类内的所有表情一次性加入当前自选分组（自动跳过重复项，严格受容量上限保护）；
+  - **从详情弹窗加入**：在表情详情窗口中点击底部「+ 加入当前分组」；若尚未创建分组，点击「+ 创建自选分组并加入」会自动以源分类名创建新分组并将其收录。
+- **分组托盘与表情管理**：
+  - 点击分组名称下方的计数按钮（如 `12 张 ▾`）可展开该分组的缩略图托盘；
+  - **移除表情**：在托盘缩略图右上角点击 **`×`**，即可将表情移出该分组；
+  - **托盘内调序**：拖动缩略图直接调换位置；触控端可点击缩略图下方的 **`◀ / ▶`** 移动位置；当处于列表首项或末项时，点击方向按钮可直接将表情跨组转移至相邻分组；
+  - **跨组拖拽**：在托盘之间拖动表情，可直接跨分组投放转移。
+- **分组高级管理工具**（点击各分组右侧「管理」展开）：
+  - **编辑**：修改分组名称与 ID；
+  - **复制**：克隆当前分组为独立新副本（自动追加 `_copy` 后缀），便于制作派生变体；
+  - **上合并**：将当前分组内的全部表情合并到上一个分组（自动去重）；
+  - **拆分**：将当前分组对半拆分为两个新分组（下半部分自动追加 `_part` 后缀）；
+  - **上移 / 下移**：调整分组在侧边栏及导出配置文件中的前后顺序；
+  - **删除**：移除当前自选分组（弹出对话框确认，防止误触）。
+- **视图切换（源分类 / 已入组）**：
+  - 在自选分组模式下，图库顶部提供「源分类」与「已入组」视图切换；
+  - 切换至「已入组」视图后，网格仅展示当前自选分组已收录的表情，方便集中审查与删减。
+
+---
+
+### 2. 表情详情与多格式快捷复制
+
+点击网格或托盘中的任意表情，即可打开全功能详情窗口：
+
+- **高清与动图播放**：自动展示无损高清原图，动态 WebP / GIF 表情自动循环播放。
+- **背景模式切换**：提供 3 种底色背景，便于排查透明通道与深浅边缘：
+  - **透明（棋盘格）**：默认棋盘格背景，精确观察半透明像素与边缘透明度；
+  - **浅底（纯白）**：白色纯净背景，模拟亮色主题网页阅读体验；
+  - **深底（纯黑）**：黑色背景，核验表情在暗色主题下是否存在白边或黑边。
+- **5 种格式快捷复制**：内置实时复制控制台，按对应数字快捷键或点击 Tab 切换格式，点击「复制」一键写入剪贴板：
+  1. **Markdown**（快捷键 <kbd>1</kbd>）：`![smoji:表情名](图片绝对URL)`（遵循 Smoji 规范标记，直接粘贴至博客评论或文档）
+  2. **URL**（快捷键 <kbd>2</kbd>）：图片绝对 HTTP(S) 地址（用于论坛外链、网页设计与图片插入）
+  3. **Hugo**（快捷键 <kbd>3</kbd>）：Hugo 短代码 `{{< inTextImg url="..." alt="..." >}}`
+  4. **HTML**（快捷键 <kbd>4</kbd>）：标准 HTML 标签 `<img src="..." alt="...">`
+  5. **BBCode**（快捷键 <kbd>5</kbd>）：Discuz 等传统论坛格式 `[img]图片绝对URL[/img]`
+- **表情切换**：点击窗口左右箭头、键盘按 <kbd>←</kbd> / <kbd>→</kbd>、或在触屏上左右滑动，可无缝切换上一个 / 下一个表情。
+
+---
+
+### 3. 多平台配置导出说明
+
+Smoji 工作台支持将勾选或自选的表情一键导出为各大博客与评论系统所需的配置文件。
+
+#### 导出文件命名规则
 > [!NOTE]
-> 导出的配置文件需导入到对应评论系统的后台或放置在静态服务中引用。工作台中的「Ecoku 响应示例」用于展示接口数据，非后台导入文件。
+> 为避免用户多次导出同名文件时在浏览器下载目录发生静默覆盖，工作台所有导出的下载文件名默认会自动附加 **`YYYYMMDD`** 日期后缀（例如 `smoji-20260913.json`、`waline-20260913.json`）。如目标系统要求固定文件名，使用前只需将日期后缀删除即可。
+
+| 导出格式 | 实际下载文件名示例 | 适用系统 / 使用方式 |
+| :--- | :--- | :--- |
+| **Smoji v1** | `smoji-YYYYMMDD.json` | **Ecoku** 原生评论系统、Smoji Picker SDK 核心库。采用精简 URL 模板机制，大幅缩减清单文件体积。 |
+| **Artalk** | `artalk-YYYYMMDD.json` | **Artalk v2+** 自托管评论系统。导出的 JSON 数组可直接配置在 Artalk 服务端或前端表情设置中。 |
+| **Twikoo** | `twikoo-YYYYMMDD.json` | **Twikoo** 无服务器评论系统。导出的对象格式以分组名为键，图片封装在 `container` 中。 |
+| **OwO** | `OwO-YYYYMMDD.json` | **Valine** 及各类兼容 OwO 规范的静态博客评论插件。 |
+| **Waline** | `waline-YYYYMMDD.json` | **Waline** 官方 `emoji` 配置对象数组。Origin 映射为 `folder`，`items` 保留完整文件名与扩展名，原生支持 WebP / GIF / PNG 混用。 |
+| **Markdown** | `smoji-markers-YYYYMMDD.md` | Markdown 格式文档。导出所有选中表情的绝对链接标记，按分类列出，便于留存备忘。 |
+| **分组备份** | `smoji-custom-groups-YYYYMMDD.json` | **Smoji 自选分组备份包**。保存完整的自选分组结构、备注与设置，支持在不同设备间无缝导入恢复。 |
+
+#### 导出方式
+1. **底部浮动 Dock 栏**：勾选表情后，屏幕底部会自动浮出导出栏。选择目标格式后点击「导出」（或快捷键 <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>E</kbd>）即可直接触发下载。
+2. **图库快捷导出**：在图库顶部工具栏的「快捷导出」下拉菜单中快速选择格式下载。
+3. **数据实时预览窗口**：
+   - 点击顶部导航栏的「数据预览」或快捷键 <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> 打开预览窗口；
+   - 支持在 **当前分类 / 已勾选项目 / 全部表情**（自选模式下为 **当前自选分组 / 全部自选分组**）之间切换数据范围；
+   - 实时预览生成的 JSON / Markdown 代码，支持「复制完整代码」与「下载此格式」。
 
 ---
 
-## 🚀 核心选择器接入指南
+### 4. 自选分组导入、导出与备份
 
-`packages/smoji` 提供独立的轻量级表情选择器，可直接用于任何网页或前端项目。
+在自选分组模式下，展开侧边栏「导入与管理」面板：
+- **导出分组**：将当前建立的全部自选分组及其排序完整打包导出为 `smoji-custom-groups-YYYYMMDD.json` 文件；
+- **导入分组**：点击「导入分组」选择之前备份的 JSON 文件。若当前已有分组，系统会弹出对话框提示并进行安全合并；重复 ID 将自动重命名，失效的图片地址会自动过滤；
+- **填写备注**：支持在「备注」输入框填写描述信息（最多 240 字），该备注会随分组文件一同保存；
+- **清空分组**：一键清空全部自选分组（带防误触确认弹窗，误删可按撤销恢复）。
 
-### 1. 基础用法 (Vanilla JS / TS)
+---
+
+### 5. 撤销与重做系统
+
+工作台内置最多 **50 步** 操作历史记录栈：
+- 当您误删分组、误移出表情、清空分组或误调顺序时，直接按下 <kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>Z</kbd> 即可撤销操作；
+- 按下 <kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd>（或 <kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>Y</kbd>）即可重做。
+
+---
+
+## ⌨️ 快捷键指南
+
+Smoji 针对全键盘操作与无障碍浏览（A11y）进行了严格适配：
+
+| 快捷键 | 作用区域 | 功能说明 |
+| :--- | :--- | :--- |
+| <kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>1</kbd> | 全局 | 切换至「整包导出」模式 |
+| <kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>2</kbd> | 全局 | 切换至「自选分组」模式 |
+| <kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>E</kbd> | 全局 | 触发底部 Dock 导出当前选中的配置 |
+| <kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>.</kbd> | 全局 | 聚焦到底部 Dock 导出格式下拉选择框 |
+| <kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> | 全局 | 打开实时数据预览窗口 |
+| <kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>D</kbd> | 全局 | 切换图库显示密度（紧凑 / 舒适） |
+| <kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>Z</kbd> | 全局 | 撤销最近的移出、删除、修改或清空分组操作 |
+| <kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd> / <kbd>Y</kbd> | 全局 | 重做已撤销的操作 |
+| <kbd>?</kbd> | 全局 | 打开接入与规范说明指南窗口 |
+| <kbd>Esc</kbd> | 弹窗 / 浮层 | 关闭当前详情窗口、代码预览、确认对话框或侧边栏 |
+| <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> | 表情网格 | 网格内键盘漫游移动焦点 |
+| <kbd>Enter</kbd> / <kbd>Space</kbd> | 表情网格 | 打开当前聚焦表情的详情窗口 |
+| <kbd>←</kbd> / <kbd>→</kbd> | 详情弹窗 | 切换至上一个 / 下一个表情 |
+| <kbd>1</kbd> ~ <kbd>5</kbd> | 详情弹窗 | 切换复制格式（1: Markdown, 2: URL, 3: Hugo, 4: HTML, 5: BBCode） |
+| <kbd>Space</kbd> | 详情弹窗 | 切换当前表情状态（整包模式：排除/恢复；自选模式：加入/移出） |
+| <kbd>Alt</kbd> + <kbd>↑</kbd> / <kbd>↓</kbd> | 自选分组列表 | 上移 / 下移调整选中分组的位次 |
+| <kbd>Alt</kbd> + <kbd>←</kbd> / <kbd>→</kbd> | 分组托盘 | 调整当前表情在托盘内的位置（首尾项可直接跨越至相邻分组） |
+
+---
+
+## 📐 规格与约束限制
+
+Smoji 遵循标准的单文件清单规范（遵循 [JSON Schema](packages/smoji/data.schema.json)），工作台与校验器严格执行以下硬性限制：
+
+- **最大表情包分组数**：最多 **64** 个分组（1 ~ 64）
+- **每分组表情项上限**：每个分组最多 **600** 项表情（1 ~ 600）
+- **单清单总表情数上限**：总计不超过 **6000** 个表情
+- **清单文件体积上限**：UTF-8 编码体积不超过 **1024 KiB (1 MiB)**
+- **标识符 (ID) 规范**：由字母或数字开头，仅允许字母、数字、`.`、`_`、`-`，长度 1 ~ 64 位
+- **标签名 (Label) 规范**：非空，两端去除空格后最多 40 个 Unicode 字符，且不得包含 `]` 符号或 C0/C1 控制字符
+- **图片 URL 规范**：必须为 `http:` 或 `https:` 协议绝对地址，禁止包含凭据（用户名/密码）、查询参数（`?`）或片段标识符（`#`）
+
+---
+
+## 🔒 隐私与本地存储
+
+- **无须登录与隐私安全**：Smoji 是纯前端驱动的无状态应用，不向远端服务器发送或存储您的任何个性化配置。
+- **本地持久化机制**：所有的自选分组、排除项、勾选状态、界面密度偏好（紧凑/舒适）与主题模式（跟随系统/浅色/深色）均保存在浏览器的 `localStorage` 中。
+- **持久化键值**：
+  - `smoji-workbench:custom-packs`：自选分组内容与表情列表
+  - `smoji-workbench:selected-pack-ids`：整包模式下勾选的分类 ID
+  - `smoji-workbench:excluded-srcs`：整包模式下排除的单项表情地址
+  - `smoji-workbench:density` / `smoji-theme`：界面密度与主题外观
+  - `smoji-workbench:custom-group-extensions`：自选分组的备注与扩展偏好
+
+---
+
+## 🔌 网页表情选择器 SDK 集成
+
+除了在线工作台，本项目还提供了独立的原生轻量表情选择器核心库（`packages/smoji`），可嵌入至个人博客或 Web 页面。
+
+### 特点
+- **零外部运行时依赖**：原生纯 JavaScript / TypeScript 编写，不捆绑 React、Vue 或任何大型 UI 框架；
+- **极致羽量**：JS 核心压缩后约 3 KB (Gzip 约 1.5 KB)，CSS 约 1.9 KB (Gzip 约 800 B)；
+- **防 XSS 注入设计**：渲染器采用严格的 DOM 原生节点构造，**绝不使用 `innerHTML`**，防止恶意脚本注入。
+
+### 1. 基础集成示例
 
 ```typescript
 import { createSmoji, textTarget } from 'smoji'
 import { smojiMarker } from 'smoji/marker'
 import 'smoji/style.css'
 
-// 绑定触发按钮与输入框
-const triggerBtn = document.querySelector('#emoji-btn')
-const textarea = document.querySelector('#comment-textarea')
+const triggerBtn = document.querySelector<HTMLButtonElement>('#emoji-button')!
+const textarea = document.querySelector<HTMLTextAreaElement>('#comment-input')!
 
+// 初始化选择器
 const picker = createSmoji({
   trigger: triggerBtn,
   target: textTarget(textarea, { serialize: smojiMarker }),
   packs: [
     {
-      id: 'default',
-      label: '默认表情',
+      id: 'bilibili',
+      label: '哔哩哔哩',
       items: [
-        { id: 'smile', label: '微笑', src: 'https://s3-cdn.zsh.moe/smoji/smile.webp' },
-        { id: 'thumbsup', label: '点赞', src: 'https://s3-cdn.zsh.moe/smoji/thumbsup.webp' },
+        { id: 'smile', label: '微笑', src: 'https://s3-cdn.zsh.moe/smoji/bilibili/smile.webp' },
+        { id: 'like', label: '点赞', src: 'https://s3-cdn.zsh.moe/smoji/bilibili/like.webp' },
       ],
     },
   ],
   closeOnSelect: true,
   onSelect: (item, pack) => {
-    console.log(`选择了 ${pack.label} 中的 ${item.label}`)
+    console.log(`选中表情：${pack.label} - ${item.label}`)
   },
 })
 
 // 编程式控制 API
-// picker.open()
-// picker.close()
-// picker.toggle()
-// picker.destroy()
+// picker.open()   // 打开面板
+// picker.close()  // 关闭面板
+// picker.toggle() // 切换展开/关闭
+// picker.destroy() // 销毁实例与解绑事件
 ```
 
-### 2. 安全加载远程清单
+### 2. 加载远程表情清单
 
 ```typescript
 import { loadSmojiManifest } from 'smoji/manifest'
 
-// 内置体积限制检查（<= 1MB）、Content-Type 校验与超时控制
+// 加载清单（内置超时控制、1MB 体积防护与同源图片校验）
 const manifest = await loadSmojiManifest('https://s3-cdn.zsh.moe/smoji/smoji.json', {
   timeoutMs: 8000,
 })
 
-console.log(manifest.packs)
+console.log(`成功加载 ${manifest.packs.length} 个表情包`)
 ```
 
-### 3. 安全渲染评论内容 (Zero XSS)
+### 3. 安全渲染评论表情 (Zero XSS)
 
 ```typescript
 import { renderSmojiContent } from 'smoji/marker'
 
-const container = document.querySelector('#comment-content')
-const rawComment = '今天天气真好！![smoji:微笑](https://s3-cdn.zsh.moe/smoji/smile.webp)'
+const commentBox = document.querySelector<HTMLElement>('#comment-body')!
+const rawText = '写得太棒了！![smoji:点赞](https://s3-cdn.zsh.moe/smoji/bilibili/like.webp)'
 const manifestUrl = 'https://s3-cdn.zsh.moe/smoji/smoji.json'
 
-// 仅同源图片会转为安全的 <img> 元素，其他内容均为纯文本，绝不调用 innerHTML
-renderSmojiContent(container, rawComment, manifestUrl)
+// 仅与清单图片同源且协议合法的标记会被转为安全 <img> 节点，其他内容作为纯文本节点插入
+renderSmojiContent(commentBox, rawText, manifestUrl)
 ```
-
----
-
-## ⌨️ 快捷键一览
-
-| 快捷键 | 作用场景 | 说明 |
-| :--- | :--- | :--- |
-| <kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>1</kbd> / <kbd>2</kbd> | 全局 | 切换「整包导出」与「自选分组」模式 |
-| <kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>E</kbd> | 全局 | 触发底部 Dock 导出当前配置 |
-| <kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>.</kbd> | 全局 | 聚焦底部导出格式选择框 |
-| <kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> | 全局 | 打开实时数据预览弹窗 |
-| <kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>D</kbd> | 全局 | 切换图库显示密度（紧凑 / 舒适） |
-| <kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>Z</kbd> | 全局 | 撤销最近的移出、删除或清空分组操作 |
-| <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> | 表情网格 | 网格内键盘方向移动 |
-| <kbd>Enter</kbd> / <kbd>Space</kbd> | 表情网格 | 打开当前选中表情详情弹窗 |
-| <kbd>←</kbd> / <kbd>→</kbd> | 详情弹窗 | 切换上一个 / 下一个表情 |
-| <kbd>1</kbd> ~ <kbd>4</kbd> | 详情弹窗 | 快速切换复制格式（Markdown / URL / HTML / BBCode） |
-| <kbd>Esc</kbd> | 弹窗 / 浮层 | 关闭当前弹窗或选择器 |
-| <kbd>Alt</kbd> + <kbd>↑</kbd> / <kbd>↓</kbd> | 自选分组 | 列表向上 / 向下移动分组 |
-| <kbd>Alt</kbd> + <kbd>←</kbd> / <kbd>→</kbd> | 自选分组 | 托盘内表情调序（首尾可跨组） |
-| <kbd>?</kbd> | 全局 | 打开接入与规范说明指南 |
-
----
-
-## 🛠️ 本地开发
-
-### 环境要求
-- **Node.js**：`24.0.0+`
-- **包管理器**：`pnpm 11.24.0+`
-- **系统工具**：支持 WebP 的 **ImageMagick 7**（`magick` 命令可用）
-
-### 快速开始
-
-```sh
-# 克隆仓库
-git clone https://github.com/DejavuMoe/Smoji.git
-cd Smoji
-
-# 安装依赖
-pnpm install --frozen-lockfile
-
-# 启动本地开发工作台 (基于 Vite 开发服务器)
-pnpm dev
-```
-
-### 常用命令
-
-```sh
-pnpm check         # 全面检查：类型检查、测试、完整构建与体积预算校验
-pnpm typecheck     # 运行 TypeScript 类型检查
-pnpm test          # 运行 Vitest 单元与集成测试
-pnpm build         # 构建核心选择器与工作台静态网站
-pnpm build:core    # 仅构建 packages/smoji
-pnpm build:demo    # 仅构建 demo 网站，使用当前本地缩略图
-pnpm generate:previews # 可选：本地生成缩略图与 data/previews.json，部署 CI 自动执行
-pnpm check:size    # 校验核心库与样式体积预算限制
-```
-
-构建产物输出：
-- 网站应用：`demo/dist/`
-- 表情选择器：`packages/smoji/dist/`
-
----
-
-## 🗂️ 目录结构
-
-```text
-Smoji/
-├── packages/
-│   └── smoji/               # 轻量原生表情选择器核心库 (Zero Runtime Dependency)
-│       ├── src/             # 选择器源码 (picker, manifest, marker, types 等)
-│       ├── data.schema.json # Smoji v1 单文件清单 JSON Schema 规范
-│       └── test/            # 核心库契约与无障碍测试
-├── demo/                    # Smoji 在线工作台前端应用 (Vite)
-│   ├── src/                 # 工作台交互、导出适配器、状态管理与持久化
-│   ├── public/              # 静态资源与缩略图目录 (_previews)
-│   └── index.html           # 工作台主入口界面
-├── data/                    # 图库元数据、S3 CDN 映射与有效索引
-│   ├── hosting.json         # 远程原图 CDN 基地址配置
-│   ├── packs.json           # 扫描后的表情包结构数据
-│   └── smoji.json           # 最终发布的清单文件
-└── scripts/                 # 自动化脚本 (生成清单、生成缩略图、体积检查、发布部署)
-```
-
----
-
-## 🖼️ 图库维护与资产更新
-
-表情原图托管于对象存储 CDN（由 `data/hosting.json` 配置，当前默认指向 `https://s3-cdn.zsh.moe/smoji/`）。`data/` 目录保存有分类、标签与哈希索引，需随代码版本提交。
-
-本地素材更新流程：
-
-百度贴吧收录 89 张 90×90 WebP（已移除立体小黄人系列），托管于 CDN 的 `tieba/` 目录，来自 [Tieba_mobile_emotions](https://github.com/microlong666/Tieba_mobile_emotions/tree/3492cf674c7596773d572708e5681603839c4b9b)（贴吧 Android 11.6.8.2 提取版）。本地 `pnpm dev` 优先读取原图；生产构建使用 CDN 地址，上传时保留 `tieba/` 目录与文件名。
-
-1. **准备素材**：在本地 `packs/` 目录（已由 `.gitignore` 忽略）下创建包名子目录（仅允许小写字母与连字符，如 `packs/my-pack/`），将规范命名的表情放入该目录。
-2. **生成清单与缩略图**：
-   ```sh
-   pnpm generate:packs     # 扫描素材，更新 data/ 中的清单与哈希索引
-   pnpm generate:previews  # 可选本地预览；netcup-nano 部署 CI 会自动生成
-   ```
-3. **上传云端与核对**：将本地原图同步上传至 S3 存储桶的对应路径，验证无误后可删除本地原图；本地手动生成缩略图时，如缺少原图，生成器会从 S3 下载对应文件并核对 SHA-256。
-4. **CI 每次全量生成**：提交清单和资源哈希索引后，`netcup-nano` 部署流水线先清空缩略图目录和索引，再从 CDN 下载原图、校验 SHA-256 并重新生成全部所需缩略图，不复用旧缩略图。生成完成后才构建、校验和发布站点；任何一步失败都不会发布。`data/previews.json` 与 `demo/public/_previews/` 均为 Git 忽略的构建产物，不再提交。
-
-   全新检出运行 `pnpm dev`、`pnpm test`、`pnpm typecheck` 或 `pnpm build:demo` 时，会按需初始化空缩略图索引，页面直接使用原图；本地需要缩略图时可执行 `pnpm generate:previews`。验证流水线不下载全量素材，生产缩略图仅在 netcup-nano 生成。
-5. **下架表情包**：保留同名的空文件夹并重新运行 `pnpm generate:packs` 即可安全下架，不会破坏既有历史别名。
-
----
-
-## 🌐 静态站点托管
-
-执行 `pnpm build:demo` 后，将 `demo/dist/` 完整发布到静态站点根目录。HTML 和 `smoji.json` 应使用 `Cache-Control: no-cache`，使客户端在复用缓存前重新验证；`assets/` 和 `_previews/` 内的文件名包含哈希，可长期缓存。
-
-Nginx 示例（`map` 放在 `http` 上下文；域名、证书和根目录按环境配置）：
-
-```nginx
-map $uri $smoji_cache_control {
-    default                 "no-cache";
-    ~^/(assets|_previews)/   "public, max-age=31536000, immutable";
-}
-
-server {
-    listen 443 ssl;
-    http2 on;
-    server_name example.com;
-    ssl_certificate /path/to/fullchain.pem;
-    ssl_certificate_key /path/to/privkey.pem;
-    root /path/to/site;
-    index index.html;
-
-    expires off;
-    add_header Cache-Control $smoji_cache_control;
-    add_header X-Content-Type-Options "nosniff" always;
-    add_header X-Frame-Options "SAMEORIGIN" always;
-    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-
-    location ~ /\. {
-        return 404;
-    }
-    location /assets/ {
-        try_files $uri =404;
-    }
-    location /_previews/ {
-        try_files $uri =404;
-    }
-    location / {
-        try_files $uri $uri/ =404;
-    }
-}
-```
-
-`add_header` 统一设置在 `server` 层，避免在 `location` 中添加缓存头时丢失上层安全响应头。无需同时设置 `expires 1y`，否则会重复生成 `Cache-Control`。更新站点时应保留旧哈希资源，避免已打开页面加载旧分块失败。
 
 ---
 
 ## 📄 许可证与版权说明
 
-- **代码许可**：本项目源码基于 [MIT License](LICENSE) 开源。
-- **字体许可**：界面内嵌的 IBM Plex 字体遵循 [SIL Open Font License](https://scripts.sil.org/OFL)。
-- **素材免责声明**：Smoji 收集并索引的各表情包知识产权与版权均归各自原作者或合法权利人所有，仅供个人交流与展示使用。如需商用请联系相应权利人。
-
-## Ecoku 精简清单导出
-
-```json
-{"version":1,"base":"https://s3-cdn.zsh.moe/smoji/{pack}/{id}.webp","packs":[{"id":"douyin-current","label":"抖音","items":[{"id":"fehpikklicec","label":"微笑"}]}]}
-```
-
-`base` 是可选 URL 模板，必须包含 `{pack}` 与 `{id}`，分别替换为分组和条目的 ID。省略 `src` 的条目使用该模板；自选分组或不同扩展名可保留 `src` 覆盖。解析后仍得到完整 URL，评论存储格式不变。旧版逐项 `src` 清单继续受支持，未知字段仍被拒绝。
-
-清单与展开后的图片仍须同源，禁止凭据、query 和 fragment。生产清单不要包含 `localhost` 图片地址；Smoji 工作台本地导出会使用配置的 CDN `https://s3-cdn.zsh.moe/smoji/`。JSON 响应需使用 `application/json` 或 `+json` 类型，体积按 UTF-8 字节计算，8 秒超时覆盖正文读取。
-
-v0.2.0 不支持 `base`，且仍限制为 32 包、每包 300 项、总计 2000 项、256 KiB。使用该版本时需保留逐项 `src` 并导出容量内的子集；升级后再切换精简清单。清单和图片均需要发布到 CDN，更换 JSON 不会自动发布代码或修复历史评论 URL。
-
-类型 `SmojiManifestInput` 表示 JSON 输入（含可选模板格式）；`parseSmojiManifest` / `loadSmojiManifest` 返回的 `SmojiManifest` 中，每项 `src` 均为完整 URL。JSON Schema 检查结构；总条目数、UTF-8 字节数、ID 唯一性与 URL 同源约束由运行时校验器检查。
-
-## Waline 导出
-
-选择 Waline 格式下载 `waline.json`，将解析后的数组赋给 `Waline.init({ emoji: presets, ... })` 的 `emoji` 选项。它是[官方支持的配置对象数组](https://waline.js.org/cookbook/customize/emoji.html#使用配置对象)，不是单个目录的 `info.json`，也不是 OwO 格式。
-
-导出保留选中顺序与自选分组；以图片 Origin 为 `folder`，`items` 和 `icon` 使用含扩展名的路径，`prefix` / `type` 留空，因此 PNG、GIF、WebP 可以共存。跨 Origin 的条目按连续区段拆为同名标签页；不同 Origin 出现同一路径时会提示键冲突，避免 Waline 静默覆盖。图片须另行上传，JSON 导出不会上传资源。
+- **代码许可**：本项目代码基于 [MIT License](LICENSE) 开源。
+- **字体许可**：工作台内嵌的 IBM Plex 字体遵循 [SIL Open Font License](https://scripts.sil.org/OFL)。
+- **素材免责声明**：Smoji 索引并呈现的各类表情包知识产权与版权均归原作者或其合法权利人所有，仅供个人学习、交流与展示使用。商业使用请获得原作者许可。

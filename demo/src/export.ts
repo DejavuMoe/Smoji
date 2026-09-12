@@ -320,7 +320,7 @@ export function downloadCustomExportManifest(
   URL.revokeObjectURL(url)
 }
 
-export type BuiltInExportFormat = 'smoji' | 'artalk' | 'twikoo' | 'owo' | 'waline' | 'ecoku' | 'markdown'
+export type BuiltInExportFormat = 'smoji' | 'artalk' | 'twikoo' | 'owo' | 'waline' | 'markdown'
 /** Built-in ids plus any runtime-registered format plugins. */
 export type ExportTargetFormat = BuiltInExportFormat | (string & {})
 
@@ -397,13 +397,6 @@ export const EXPORT_FORMAT_REGISTRY: readonly ExportFormatDescriptor[] = [
     preview: true,
     guideTarget: 'Waline emoji 配置对象数组',
     guideFilename: 'waline.json',
-  },
-  {
-    id: 'ecoku',
-    label: 'Ecoku 响应示例',
-    preview: true,
-    guideTarget: 'Ecoku 公共响应示例（formConfig.smoji），不是后台导入文件',
-    guideFilename: 'ecoku.json',
   },
   {
     id: 'markdown',
@@ -504,19 +497,6 @@ export function generateFormattedExport(
     case 'waline': {
       content = JSON.stringify(buildWalineExport(packs, manifestUrl), null, 2) + '\n'
       filename = 'waline.json'
-      break
-    }
-    case 'ecoku': {
-      const ecokuConfig = {
-        formConfig: {
-          smoji: {
-            enabled: true,
-            manifestUrl: exportManifestUrl(manifestUrl),
-          },
-        },
-      }
-      content = JSON.stringify(ecokuConfig, null, 2) + '\n'
-      filename = 'ecoku.json'
       break
     }
     case 'markdown': {

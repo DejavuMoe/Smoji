@@ -31,7 +31,10 @@ it('copies Hugo shortcodes with quoted labels and preserves all five format shor
   await vi.waitFor(() => expect(writeText).toHaveBeenCalledWith(value()))
   expect(document.getElementById('btn-copy-active')!.textContent).toBe('复制')
   for (const [index, format] of ['md', 'url', 'hugo', 'html', 'bbcode'].entries()) {
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: String(index + 1), bubbles: true }))
+    const input = document.querySelector<HTMLInputElement>('#copy-active-input')!
+    input.focus()
+    expect(document.activeElement).toBe(input)
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: String(index + 1), bubbles: true }))
     expect(document.querySelector('[data-copy-format][aria-selected="true"]')?.getAttribute('data-copy-format')).toBe(format)
   }
   localStorage.clear()
