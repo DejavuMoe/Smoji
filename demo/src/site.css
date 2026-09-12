@@ -1286,7 +1286,7 @@ body.density-comfortable {
   object-fit: scale-down;
 }
 
-.card.is-excluded img {
+.card.is-excluded img.is-loaded {
   opacity: .35;
   filter: grayscale(1);
 }
@@ -1380,6 +1380,15 @@ body.density-comfortable .card__label {
 
 .image-reveal.is-loaded {
   opacity: 1;
+  animation: image-reveal .35s ease-out;
+}
+
+@keyframes image-reveal {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+    transform: scale(1.04);
+  }
 }
 
 .grid-skeleton {
