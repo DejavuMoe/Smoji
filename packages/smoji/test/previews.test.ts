@@ -1,7 +1,7 @@
 import { createServer } from 'node:http'
 import { once } from 'node:events'
 import { promisify } from 'node:util'
-import { mkdtemp, mkdir, readFile, writeFile, stat, rm } from 'node:fs/promises'
+import { mkdtemp, mkdir, readFile, writeFile, stat, utimes, rm } from 'node:fs/promises'
 import { execFile, execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { tmpdir } from 'node:os'
@@ -33,23 +33,20 @@ it('generates visible previews locally or from verified remote originals, and re
     expect(thumbnail.includes(Buffer.from('ANIM'))).toBe(false)
     expect(Number(execFileSync('magick', [output, '-alpha', 'extract', '-format', '%[fx:mean]', 'info:'], { encoding: 'utf8' })))
       .toBeGreaterThan(0.2)
-    const before = (await stat(output)).mtimeMs
+    await utimes(output, 0, 0)
     await run()
-    expect((await stat(output)).mtimeMs).toBe(before)
+    expect((await stat(output)).mtimeMs).toBeGreaterThan(0)
     expect(await readFile(join(root, 'packs', src))).toEqual(gif)
     await rm(join(root, 'packs'), { recursive: true })
-    await run()
-    expect(JSON.parse(await readFile(join(root, 'data/previews.json'), 'utf8'))).toEqual(index)
-    expect(await readFile(output)).toEqual(thumbnail)
     server.listen(0, '127.0.0.1')
     await once(server, 'listening')
     const address = server.address() as { port: number }
     await writeFile(join(root, 'data/hosting.json'), JSON.stringify({ assetBaseUrl: `http://127.0.0.1:${address.port}/` }))
-    await rm(output)
     await run()
     expect(requests).toBe(1)
     expect(await readFile(output)).toEqual(thumbnail)
-    await rm(output)
+    await run()
+    expect(requests).toBe(2)
     corrupt = true
     await expect(run()).rejects.toThrow(/Asset integrity mismatch/)
     expect(JSON.parse(await readFile(join(root, 'data/previews.json'), 'utf8'))).toEqual(index)

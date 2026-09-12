@@ -1,4 +1,4 @@
-import { access, mkdir, mkdtemp, readFile, rename, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
 import { resolve, join } from 'node:path'
@@ -9,10 +9,6 @@ import { createHash } from 'node:crypto'
 const run = promisify(execFile)
 const root = resolve(process.argv[2] ?? fileURLToPath(new URL('../', import.meta.url)))
 const assets = JSON.parse(await readFile(resolve(root, 'data/assets.json'), 'utf8'))
-const previous = JSON.parse(await readFile(resolve(root, 'data/previews.json'), 'utf8').catch((error) => {
-  if (error.code === 'ENOENT') return '{}'
-  throw error
-}))
 const entries = Object.entries(assets)
 const results = new Array(entries.length)
 const temporary = await mkdtemp(join(tmpdir(), 'smoji-preview-sources-'))
@@ -28,11 +24,6 @@ async function preview(path, asset) {
   if (asset.preview === false) return
   const src = `_previews/${asset.sha256}-160-v3.webp`
   const output = resolve(root, 'demo/public', src)
-  if (previous[path]?.src === src) {
-    try { await access(output); return [path, previous[path]] } catch (error) {
-      if (error.code !== 'ENOENT') throw error
-    }
-  }
   let input = resolve(root, 'packs', path)
   let bytes = await readFile(input).catch((error) => {
     if (error.code === 'ENOENT') return null

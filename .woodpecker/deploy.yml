@@ -12,9 +12,11 @@ steps:
   - name: build-site
     image: node:24.19.0-alpine3.24
     commands:
-      - apk add --no-cache git
+      - apk add --no-cache git imagemagick imagemagick-webp
       - npm install --global pnpm@11.24.0
       - pnpm install --frozen-lockfile
+      - rm -rf demo/public/_previews data/previews.json
+      - pnpm generate:previews
       - pnpm build:demo
       - node --experimental-strip-types scripts/verify-site-output.mjs demo/dist
 

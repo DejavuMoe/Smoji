@@ -103,4 +103,10 @@ for (const [name, data] of [['packs.json', packs], ['assets.json', assets], ['pu
   await writeFile(resolve(dataRoot, name), `${JSON.stringify(data, null, 2)}\n`)
 }
 await writeFile(resolve(dataRoot, 'smoji.json'), text)
+// A clean checkout can develop/test against original images before CI creates thumbnails.
+try {
+  await writeFile(resolve(dataRoot, 'previews.json'), '{}\n', { flag: 'wx' })
+} catch (error) {
+  if (error.code !== 'EEXIST') throw error
+}
 console.log(`Generated ${packs.length} packs / ${Object.keys(assets).length} items / ${Buffer.byteLength(text)} bytes; ${Object.keys(aliases).length} live aliases`)

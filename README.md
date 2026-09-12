@@ -194,8 +194,8 @@ pnpm typecheck     # 运行 TypeScript 类型检查
 pnpm test          # 运行 Vitest 单元与集成测试
 pnpm build         # 构建核心选择器与工作台静态网站
 pnpm build:core    # 仅构建 packages/smoji
-pnpm build:demo    # 仅构建 demo 网站，使用已提交的缩略图
-pnpm generate:previews # 提交前手动生成缩略图与 data/previews.json
+pnpm build:demo    # 仅构建 demo 网站，使用当前本地缩略图
+pnpm generate:previews # 可选：本地生成缩略图与 data/previews.json，部署 CI 自动执行
 pnpm check:size    # 校验核心库与样式体积预算限制
 ```
 
@@ -239,10 +239,12 @@ Smoji/
 2. **生成清单与缩略图**：
    ```sh
    pnpm generate:packs     # 扫描素材，更新 data/ 中的清单与哈希索引
-   pnpm generate:previews  # 采用 ImageMagick 生成优化后的 WebP 缩略图
+   pnpm generate:previews  # 可选本地预览；netcup-nano 部署 CI 会自动生成
    ```
 3. **上传云端与核对**：将本地原图同步上传至 S3 存储桶的对应路径，验证无误后可删除本地原图；本地手动生成缩略图时，如缺少原图，生成器会从 S3 下载对应文件并核对 SHA-256。
-4. **提交前生成并保存**：执行上述生成命令，将 `data/` 与 `demo/public/_previews/` 一起提交。`pnpm dev`、网站构建和 CI 直接使用这些缩略图，不再自动生成全量缩略图。
+4. **CI 每次全量生成**：提交清单和资源哈希索引后，`netcup-nano` 部署流水线先清空缩略图目录和索引，再从 CDN 下载原图、校验 SHA-256 并重新生成全部所需缩略图，不复用旧缩略图。生成完成后才构建、校验和发布站点；任何一步失败都不会发布。`data/previews.json` 与 `demo/public/_previews/` 均为 Git 忽略的构建产物，不再提交。
+
+   全新检出运行 `pnpm dev`、`pnpm test`、`pnpm typecheck` 或 `pnpm build:demo` 时，会按需初始化空缩略图索引，页面直接使用原图；本地需要缩略图时可执行 `pnpm generate:previews`。验证流水线不下载全量素材，生产缩略图仅在 netcup-nano 生成。
 5. **下架表情包**：保留同名的空文件夹并重新运行 `pnpm generate:packs` 即可安全下架，不会破坏既有历史别名。
 
 ---

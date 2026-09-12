@@ -11,7 +11,7 @@
     "build:demo": "pnpm generate:packs && vite build --config vite.demo.config.ts",
     "dev": "pnpm generate:packs && vite --config vite.demo.config.ts",
     "test": "pnpm generate:packs && vitest run",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "pnpm generate:packs && tsc --noEmit",
     "check:size": "node scripts/check-size.mjs",
     "check": "pnpm typecheck && pnpm test && pnpm build && pnpm check:size"
   },
