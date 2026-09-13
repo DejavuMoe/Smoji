@@ -24,6 +24,10 @@ it('keeps export scope/format, progressive group creation, overlays and clipboar
       { id: 'smile', label: '微笑', src: './sample/smile.png' },
     ] }, { id: 'second', label: '另一分类', items: [
       { id: 'hello', label: '你好', src: './second/hello.png' },
+    ] }, { id: 'third', label: '第三分类', items: [
+      { id: 'cat', label: '猫', src: './third/cat.png' },
+    ] }, { id: 'fourth', label: '第四分类', items: [
+      { id: 'dog', label: '狗', src: './fourth/dog.png' },
     ] }] }),
   }))
   const el = <T extends HTMLElement = HTMLElement>(selector: string) => document.querySelector<T>(selector)!
@@ -38,11 +42,37 @@ it('keeps export scope/format, progressive group creation, overlays and clipboar
   expect(el('#selection-dock').hidden).toBe(true)
   expect(el('#btn-select-all-packs').textContent).toBe('全选')
   click('#btn-select-all-packs')
-  expect(document.querySelectorAll('.pack-check:checked')).toHaveLength(2)
+  expect(document.querySelectorAll('.pack-check:checked')).toHaveLength(4)
   expect(el('#btn-select-all-packs').textContent).toBe('反选')
   expect(el('#btn-invert-packs')).toBeNull()
   click('#btn-select-all-packs')
   expect(document.querySelectorAll('.pack-check:checked')).toHaveLength(0)
+  expect(el('#btn-select-all-packs').textContent).toBe('全选')
+
+  // Partial invert test: check pack 0 and pack 2
+  const checks = document.querySelectorAll<HTMLInputElement>('.pack-check')
+  checks[0]!.click()
+  checks[2]!.click()
+  expect(checks[0]!.checked).toBe(true)
+  expect(checks[1]!.checked).toBe(false)
+  expect(checks[2]!.checked).toBe(true)
+  expect(checks[3]!.checked).toBe(false)
+  expect(el('#btn-select-all-packs').textContent).toBe('反选')
+
+  // Invert: 0 and 2 become false, 1 and 3 become true
+  click('#btn-select-all-packs')
+  const invertedChecks = document.querySelectorAll<HTMLInputElement>('.pack-check')
+  expect(invertedChecks[0]!.checked).toBe(false)
+  expect(invertedChecks[1]!.checked).toBe(true)
+  expect(invertedChecks[2]!.checked).toBe(false)
+  expect(invertedChecks[3]!.checked).toBe(true)
+  expect(el('#btn-select-all-packs').textContent).toBe('反选')
+
+  // Clear button resets all and disables clear
+  click('#btn-clear-packs')
+  expect(document.querySelectorAll('.pack-check:checked')).toHaveLength(0)
+  expect(el('#btn-select-all-packs').textContent).toBe('全选')
+  expect(el<HTMLButtonElement>('#btn-clear-packs').disabled).toBe(true)
   click('#menu-toggle')
   click('.pack-check')
   click('#sidebar-close')
