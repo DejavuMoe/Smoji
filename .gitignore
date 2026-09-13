@@ -5,7 +5,7 @@ coverage/
 .vite/
 .tmp/
 .cache/
-packs/
+/packs/
 
 .env
 .env.*
