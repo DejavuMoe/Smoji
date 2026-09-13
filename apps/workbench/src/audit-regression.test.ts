@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { it, expect, vi } from 'vitest'
-import manifest from '../../data/smoji.json'
-import hosting from '../../data/hosting.json'
+import manifest from '../../../data/smoji.json'
+import hosting from '../../../data/hosting.json'
 import { buildTwikooExport, buildOwOExport } from './export'
 import { loadSelectedPackIds, loadExcludedSrcs, loadCustomPacks, parseCustomGroupBundle, STORAGE_KEYS, loadMode, saveCustomPacks } from './storage'
 
@@ -29,7 +29,7 @@ it('handles corrupt storage, unavailable storage and unsafe group imports/export
 })
 
 it('preserves groups and consistent undo through real workbench handlers', async () => {
-  document.documentElement.innerHTML = readFileSync('demo/index.html', 'utf8').replace(/<!doctype html>/i, '')
+  document.documentElement.innerHTML = readFileSync('apps/workbench/index.html', 'utf8').replace(/<!doctype html>/i, '')
   vi.stubEnv('PROD', true)
   window.matchMedia = vi.fn((media) => ({ matches: media.includes('hover: hover'), media, onchange: null, addListener() {}, removeListener() {}, addEventListener() {}, removeEventListener() {}, dispatchEvent() { return true } })) as any
   HTMLElement.prototype.scrollIntoView = () => {}

@@ -9,6 +9,6 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    include: ['packages/smoji/test/**/*.test.ts', 'demo/src/**/*.test.ts'],
+    include: ['packages/smoji/test/**/*.test.ts', 'apps/workbench/src/**/*.test.ts'],
   },
 })

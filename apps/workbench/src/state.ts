@@ -1,4 +1,4 @@
-import type { SmojiItem, SmojiPack } from '../../packages/smoji/src/types'
+import type { SmojiItem, SmojiPack } from '../../../packages/smoji/src/types'
 import type { ExportTargetFormat } from './export'
 
 export type WorkbenchMode = 'packs' | 'custom'

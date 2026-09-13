@@ -1,4 +1,4 @@
-import { SMOJI_ID_PATTERN, isValidSmojiLabel, SMOJI_MAX_PACKS, SMOJI_MAX_ITEMS, SMOJI_MAX_ITEMS_PER_PACK } from '../../packages/smoji/src/validate'
+import { SMOJI_ID_PATTERN, isValidSmojiLabel, SMOJI_MAX_PACKS, SMOJI_MAX_ITEMS, SMOJI_MAX_ITEMS_PER_PACK } from '../../../packages/smoji/src/validate'
 import type { SmojiItem } from 'smoji'
 import { isDockExportFormat, type DockExportFormat } from './export'
 

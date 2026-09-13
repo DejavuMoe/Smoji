@@ -1,6 +1,6 @@
-import hosting from '../../data/hosting.json'
-import type { SmojiItem, SmojiManifest, SmojiManifestInput, SmojiPack } from '../../packages/smoji/src/types'
-import { assertManifestSize, parseSmojiManifest } from '../../packages/smoji/src/manifest'
+import hosting from '../../../data/hosting.json'
+import type { SmojiItem, SmojiManifest, SmojiManifestInput, SmojiPack } from '../../../packages/smoji/src/types'
+import { assertManifestSize, parseSmojiManifest } from '../../../packages/smoji/src/manifest'
 
 export interface CustomPackInput {
   readonly id: string

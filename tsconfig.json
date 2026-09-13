@@ -20,8 +20,8 @@
   "include": [
     "packages/smoji/src/**/*.ts",
     "packages/smoji/test/**/*.ts",
-    "demo/src/**/*.ts",
-    "scripts/**/*.mjs",
-    "vite.*.config.ts"
+    "apps/workbench/src/**/*.ts",
+    "apps/workbench/vite.config.ts",
+    "scripts/**/*.mjs"
   ]
 }

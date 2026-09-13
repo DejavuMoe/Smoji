@@ -1,10 +1,10 @@
-import manifest from '../../data/smoji.json'
+import manifest from '../../../data/smoji.json'
 const assetPaths = new Set(manifest.packs.flatMap((pack) => pack.items.map((item) => item.src.replace(/^\.\//, ''))))
 import type { SmojiPack } from 'smoji'
 
 let paths: Record<string, string> = {}
 export async function loadAssetAliases(): Promise<void> {
-  paths = (await import('../../data/published-aliases.json')).default
+  paths = (await import('../../../data/published-aliases.json')).default
 }
 
 /** Resolve only known published paths on the current asset origin and base directory. */

@@ -1,16 +1,16 @@
 import { resolve } from 'node:path'
 import { readFile, access } from 'node:fs/promises'
-import manifest from './data/smoji.json'
-import hosting from './data/hosting.json'
-import publishedAliases from './data/published-aliases.json'
+import manifest from '../../data/smoji.json'
+import hosting from '../../data/hosting.json'
+import publishedAliases from '../../data/published-aliases.json'
 import { defineConfig } from 'vite'
 
-const workspace = import.meta.dirname
+const workspace = resolve(import.meta.dirname, '../..')
 const smojiSrc = resolve(workspace, 'packages/smoji/src')
 
 export default defineConfig({
-  root: resolve(workspace, 'demo'),
-  publicDir: resolve(workspace, 'demo/public'),
+  root: import.meta.dirname,
+  publicDir: resolve(import.meta.dirname, 'public'),
   resolve: {
     alias: {
       'smoji/manifest': resolve(smojiSrc, 'manifest.ts'),

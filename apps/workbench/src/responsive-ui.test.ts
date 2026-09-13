@@ -11,7 +11,7 @@ afterEach(() => {
 it('keeps the mobile drawer out of focus order, restores desktop access, and shows plain notifications', async () => {
   vi.stubGlobal('scrollTo', vi.fn())
   Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', { configurable: true, value: vi.fn() })
-  const html = await readFile('demo/index.html', 'utf8')
+  const html = await readFile('apps/workbench/index.html', 'utf8')
   document.body.innerHTML = html.split('<body>')[1]!.split('</body>')[0]!
   const mobile = Object.assign(new EventTarget(), { matches: true })
   vi.stubGlobal('matchMedia', (query: string) => query === '(max-width: 900px)'

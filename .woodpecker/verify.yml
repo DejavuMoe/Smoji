@@ -16,5 +16,5 @@ steps:
       - npm install --global pnpm@11.24.0
       - pnpm install --frozen-lockfile
       - pnpm check
-      - node --experimental-strip-types scripts/verify-site-output.mjs demo/dist
+      - node --experimental-strip-types scripts/verify-site-output.mjs apps/workbench/dist
       - node scripts/test-publish-site.mjs

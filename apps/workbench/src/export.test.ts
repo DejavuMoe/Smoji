@@ -83,7 +83,7 @@ it('exports CDN subdirectory and external image URLs without duplicating or repl
 
 it('exports local preview images using CDN templates and keeps custom group paths', async () => {
   const { buildCustomExportManifest, serializeAndValidateManifest } = await import('./export')
-  const { parseSmojiManifest } = await import('../../packages/smoji/src/manifest')
+  const { parseSmojiManifest } = await import('../../../packages/smoji/src/manifest')
   const local = 'http://localhost:5173/smoji.json'
   const groups = [
     { id: 'cats', label: '猫', items: [{ id: 'wave', label: '挥手', src: 'http://localhost:5173/cats/wave.webp' }] },

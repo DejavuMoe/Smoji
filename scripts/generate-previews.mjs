@@ -12,7 +12,7 @@ const assets = JSON.parse(await readFile(resolve(root, 'data/assets.json'), 'utf
 const entries = Object.entries(assets)
 const results = new Array(entries.length)
 const temporary = await mkdtemp(join(tmpdir(), 'smoji-preview-sources-'))
-await mkdir(resolve(root, 'demo/public/_previews'), { recursive: true })
+await mkdir(resolve(root, 'apps/workbench/public/_previews'), { recursive: true })
 let generated = 0
 let cursor = 0
 let assetBaseUrl
@@ -23,7 +23,7 @@ async function preview(path, asset) {
   }
   if (asset.preview === false) return
   const src = `_previews/${asset.sha256}-160-v3.webp`
-  const output = resolve(root, 'demo/public', src)
+  const output = resolve(root, 'apps/workbench/public', src)
   let input = resolve(root, 'packs', path)
   let bytes = await readFile(input).catch((error) => {
     if (error.code === 'ENOENT') return null

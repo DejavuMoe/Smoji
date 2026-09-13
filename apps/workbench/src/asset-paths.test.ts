@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest'
 import { canonicalAssetSrc, canonicalPackIds, loadAssetAliases, migratePackSelection } from './asset-paths'
-import aliases from '../../data/published-aliases.json'
-import manifest from '../../data/smoji.json'
+import aliases from '../../../data/published-aliases.json'
+import manifest from '../../../data/smoji.json'
 
 it('migrates published URLs and pack selections without rewriting other origins', async () => {
   await loadAssetAliases()

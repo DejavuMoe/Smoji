@@ -15,10 +15,10 @@ steps:
       - apk add --no-cache git imagemagick imagemagick-webp
       - npm install --global pnpm@11.24.0
       - pnpm install --frozen-lockfile
-      - rm -rf demo/public/_previews data/previews.json
+      - rm -rf apps/workbench/public/_previews data/previews.json
       - pnpm generate:previews
-      - pnpm build:demo
-      - node --experimental-strip-types scripts/verify-site-output.mjs demo/dist
+      - pnpm build:workbench
+      - node --experimental-strip-types scripts/verify-site-output.mjs apps/workbench/dist
 
   - name: publish-site
     image: node:24.19.0-alpine3.24
@@ -28,7 +28,7 @@ steps:
       - /var/www:/deploy
     commands:
       - apk add --no-cache coreutils util-linux
-      - reruns="$CI_PIPELINE_RERUNS"; test -n "$reruns" || reruns=0; release_id="$CI_COMMIT_SHA-$CI_PIPELINE_NUMBER-$reruns"; sh scripts/publish-site.sh demo/dist "$release_id"
+      - reruns="$CI_PIPELINE_RERUNS"; test -n "$reruns" || reruns=0; release_id="$CI_COMMIT_SHA-$CI_PIPELINE_NUMBER-$reruns"; sh scripts/publish-site.sh apps/workbench/dist "$release_id"
 
 depends_on:
   - verify

@@ -7,7 +7,7 @@ import { join } from 'node:path'
 const parent = await mkdtemp(join(tmpdir(), 'smoji-deploy-'))
 const sha = 'a'.repeat(40)
 const live = join(parent, 'smoji.zsh.moe')
-const run = (id, source = 'demo/dist') => execFileSync('sh', ['scripts/publish-site.sh', source, id], {
+const run = (id, source = 'apps/workbench/dist') => execFileSync('sh', ['scripts/publish-site.sh', source, id], {
   env: { ...process.env, SMOJI_DEPLOY_PARENT: parent, SMOJI_DEPLOY_SITE: 'smoji.zsh.moe' },
   stdio: 'pipe',
 })
@@ -19,7 +19,7 @@ try {
   assert.equal(await readFile(join(live, 'assets/previous-hash.js'), 'utf8'), 'export const previous = true', 'Old chunk URLs must survive activation')
   const second = await readlink(live)
   assert.notEqual(first, second)
-  assert.equal(await readFile(join(live, 'index.html'), 'utf8'), await readFile('demo/dist/index.html', 'utf8'))
+  assert.equal(await readFile(join(live, 'index.html'), 'utf8'), await readFile('apps/workbench/dist/index.html', 'utf8'))
   assert((await readFile(join(parent, first, 'index.html'))).length > 0, 'Keep previous release')
   run(`${sha}-1-1`)
   assert.equal(await readlink(live), second, 'A stale pipeline must not replace the current site')
@@ -36,7 +36,7 @@ try {
     await rm(reserved, { recursive: true })
   }
   const damaged = join(parent, 'damaged')
-  await cp('demo/dist', damaged, { recursive: true })
+  await cp('apps/workbench/dist', damaged, { recursive: true })
   const chunks = JSON.parse(await readFile(join(damaged, '.vite/manifest.json'), 'utf8'))
   const alias = Object.values(chunks).find((chunk) => chunk.file.includes('published-aliases'))
   assert(alias, 'Expected aliases dynamic chunk')

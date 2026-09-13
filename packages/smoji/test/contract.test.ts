@@ -13,15 +13,15 @@ import {
   generateFormattedExport,
   serializeAndValidateManifest,
   toExportItemSrc,
-} from '../../../demo/src/export'
+} from '../../../apps/workbench/src/export'
 
 describe('demo and schema contracts', () => {
   it('demo sources do not reference catalog.json or pack.json', async () => {
     const files = [
-      'demo/src/main.ts',
-      'demo/src/export.ts',
-      'demo/index.html',
-      'demo/src/site.css',
+      'apps/workbench/src/main.ts',
+      'apps/workbench/src/export.ts',
+      'apps/workbench/index.html',
+      'apps/workbench/src/site.css',
     ]
     for (const file of files) {
       const text = await readFile(resolve(file), 'utf8')
@@ -326,9 +326,9 @@ describe('demo and schema contracts', () => {
   })
 
   it('desktop and narrow screen UI controls contract is maintained', async () => {
-    const html = await readFile(resolve('demo/index.html'), 'utf8')
-    const css = await readFile(resolve('demo/src/site.css'), 'utf8')
-    const main = await readFile(resolve('demo/src/main.ts'), 'utf8')
+    const html = await readFile(resolve('apps/workbench/index.html'), 'utf8')
+    const css = await readFile(resolve('apps/workbench/src/site.css'), 'utf8')
+    const main = await readFile(resolve('apps/workbench/src/main.ts'), 'utf8')
 
     expect(html).toContain('id="pack-nav"')
     expect(html).toContain('id="tab-packs"')

@@ -34,6 +34,18 @@ importers:
         specifier: 4.1.11
         version: 4.1.11(@types/node@24.13.3)(jsdom@26.1.0)(vite@7.3.6(@types/node@24.13.3)(terser@5.50.0))
 
+  apps/workbench:
+    dependencies:
+      '@fontsource/ibm-plex-mono':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource/ibm-plex-sans':
+        specifier: ^5.3.0
+        version: 5.3.0
+      smoji:
+        specifier: workspace:*
+        version: link:../../packages/smoji
+
   packages/smoji: {}
 
 packages:

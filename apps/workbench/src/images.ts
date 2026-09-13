@@ -1,5 +1,5 @@
-import hosting from '../../data/hosting.json'
-import previews from '../../data/previews.json'
+import hosting from '../../../data/hosting.json'
+import previews from '../../../data/previews.json'
 
 type Preview = { src: string; bytes: number; animated: boolean }
 const index: Record<string, Preview> = previews

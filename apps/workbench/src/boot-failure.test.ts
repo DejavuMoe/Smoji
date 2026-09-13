@@ -3,7 +3,7 @@ import { it, expect, vi } from 'vitest'
 import { STORAGE_KEYS } from './storage'
 vi.mock('./asset-paths', async (original) => ({ ...await original<object>(), loadAssetAliases: async () => { throw new Error('Failed to fetch dynamically imported module') } }))
 it('preserves saved groups when the aliases chunk fails to load', async () => {
-  document.documentElement.innerHTML = readFileSync('demo/index.html', 'utf8').replace(/<!doctype html>/i, '')
+  document.documentElement.innerHTML = readFileSync('apps/workbench/index.html', 'utf8').replace(/<!doctype html>/i, '')
   vi.stubEnv('PROD', true)
   window.matchMedia = vi.fn((media) => ({ matches: false, media, onchange: null, addListener() {}, removeListener() {}, addEventListener() {}, removeEventListener() {}, dispatchEvent() { return true } })) as any
   HTMLElement.prototype.scrollIntoView = () => {}

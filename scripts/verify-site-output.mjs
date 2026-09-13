@@ -3,9 +3,9 @@ import { lstat, readdir, readFile } from 'node:fs/promises'
 import { resolve, relative } from 'node:path'
 import { parseSmojiManifest, assertManifestSize } from '../packages/smoji/src/validate.ts'
 
-const root = resolve(process.argv[2] || 'demo/dist')
+const root = resolve(process.argv[2] || 'apps/workbench/dist')
 const json = async (path) => JSON.parse(await readFile(path, 'utf8'))
-const publicRoot = resolve('demo/public')
+const publicRoot = resolve('apps/workbench/public')
 const hosting = await json('data/hosting.json')
 assert((await lstat(root)).isDirectory(), 'Site output must be a real directory')
 

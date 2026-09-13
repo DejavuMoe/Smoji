@@ -4,7 +4,7 @@ import { imagePreview, loadImage, thumbnailSrc } from './images'
 const previews = vi.hoisted(() => ({
   'sample/abcdefghijkl.webp': { src: '_previews/sample.webp', bytes: 100, animated: true },
 }))
-vi.mock('../../data/previews.json', () => ({ default: previews }))
+vi.mock('../../../data/previews.json', () => ({ default: previews }))
 
 it('uses a local static thumbnail without changing foreign or unknown URLs', () => {
   const [path, preview] = Object.entries(previews)[0]!

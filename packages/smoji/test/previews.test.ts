@@ -27,7 +27,7 @@ it('generates visible previews locally or from verified remote originals, and re
     await run()
     const index = JSON.parse(await readFile(join(root, 'data/previews.json'), 'utf8'))
     expect(index[src]).toMatchObject({ animated: true, bytes: gif.length })
-    const output = join(root, 'demo/public', index[src].src)
+    const output = join(root, 'apps/workbench/public', index[src].src)
     const thumbnail = await readFile(output)
     expect(thumbnail.toString('ascii', 8, 12)).toBe('WEBP')
     expect(thumbnail.includes(Buffer.from('ANIM'))).toBe(false)

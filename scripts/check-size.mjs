@@ -38,7 +38,7 @@ for (const file of reportOnly) {
 
 console.log('Demo build summary:')
 try {
-  const distRoot = new URL('../demo/dist/', import.meta.url)
+  const distRoot = new URL('../apps/workbench/dist/', import.meta.url)
   let files = 0
   let bytes = 0
   let uniqueBytes = 0
@@ -56,13 +56,13 @@ try {
       uniqueBytes += info.size
     }
     if (/\.(html|js|css|json)$/.test(name) || name === 'smoji.json') {
-      notable.push(`  demo/dist/${name}: ${info.size} B`)
+      notable.push(`  apps/workbench/dist/${name}: ${info.size} B`)
     }
   }
   for (const line of notable.sort()) console.log(line)
   console.log(`  (${files} files, ${bytes} logical bytes / ${uniqueBytes} hard-link-deduplicated bytes including images)`)
 } catch {
-  console.error('  demo/dist missing — run build:demo first')
+  console.error('  apps/workbench/dist missing — run build:workbench first')
   failed = true
 }
 

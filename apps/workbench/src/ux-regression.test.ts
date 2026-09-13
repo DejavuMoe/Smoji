@@ -10,7 +10,7 @@ afterEach(() => {
 })
 
 it('keeps export scope/format, progressive group creation, overlays and clipboard fallback coherent', async () => {
-  document.documentElement.innerHTML = readFileSync('demo/index.html', 'utf8').replace(/<!doctype html>/i, '')
+  document.documentElement.innerHTML = readFileSync('apps/workbench/index.html', 'utf8').replace(/<!doctype html>/i, '')
   localStorage.clear()
   vi.stubEnv('PROD', false)
   vi.stubGlobal('matchMedia', (media: string) => Object.assign(new EventTarget(), { matches: media === '(max-width: 900px)', media }))

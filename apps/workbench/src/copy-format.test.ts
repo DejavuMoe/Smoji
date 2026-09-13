@@ -3,7 +3,7 @@ import { expect, it, vi } from 'vitest'
 import { loadCopyFormat } from './storage'
 
 it('copies Hugo shortcodes with quoted labels and preserves all five format shortcuts', async () => {
-  document.documentElement.innerHTML = readFileSync('demo/index.html', 'utf8').replace(/<!doctype html>/i, '')
+  document.documentElement.innerHTML = readFileSync('apps/workbench/index.html', 'utf8').replace(/<!doctype html>/i, '')
   localStorage.clear()
   vi.stubEnv('PROD', false)
   vi.stubGlobal('matchMedia', (media: string) => Object.assign(new EventTarget(), { matches: false, media }))

@@ -1,0 +1,11 @@
+{
+  "name": "@smoji/workbench",
+  "version": "0.0.0-private",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/ibm-plex-sans": "^5.3.0",
+    "smoji": "workspace:*"
+  }
+}
