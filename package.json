@@ -14,9 +14,11 @@
     "test": "pnpm generate:packs && vitest run",
     "typecheck": "pnpm generate:packs && tsc --noEmit",
     "check:size": "node scripts/check-size.mjs",
+    "test:e2e": "playwright test",
     "check": "pnpm typecheck && pnpm test && pnpm build && pnpm check:size"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@types/node": "^24.3.0",
     "jsdom": "^26.1.0",
     "terser": "^5.43.1",
