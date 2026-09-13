@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { Header } from '../features/shell/Header'
 import { Sidebar } from '../features/shell/Sidebar'
 import { MobileNavSheet } from '../features/shell/MobileNavSheet'
@@ -5,9 +6,14 @@ import { GalleryHeader } from '../features/gallery/GalleryHeader'
 import { EmojiGrid } from '../features/gallery/EmojiGrid'
 import { ExportDock } from '../features/export/ExportDock'
 import { DetailInspectorDialog } from '../features/inspector/DetailInspectorDialog'
-import { CodePreviewDialog } from '../features/export/CodePreviewDialog'
-import { HelpDialog } from '../features/help/HelpDialog'
 import { ToastContainer } from '../features/feedback/ToastContainer'
+
+const CodePreviewDialog = lazy(() =>
+  import('../features/export/CodePreviewDialog').then((m) => ({ default: m.CodePreviewDialog })),
+)
+const HelpDialog = lazy(() =>
+  import('../features/help/HelpDialog').then((m) => ({ default: m.HelpDialog })),
+)
 
 export function App() {
   return (
@@ -37,8 +43,10 @@ export function App() {
       {/* Overlays */}
       <MobileNavSheet />
       <DetailInspectorDialog />
-      <CodePreviewDialog />
-      <HelpDialog />
+      <Suspense fallback={null}>
+        <CodePreviewDialog />
+        <HelpDialog />
+      </Suspense>
       <ExportDock />
       <ToastContainer />
     </div>

@@ -22,7 +22,7 @@ export function Header() {
         <button
           id="menu-toggle"
           type="button"
-          className="menu-toggle inline-flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2.5 text-xs font-medium text-foreground transition-colors hover:bg-muted md:hidden"
+          className="menu-toggle inline-flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2.5 text-xs font-medium text-foreground transition-colors hover:bg-muted min-[901px]:hidden"
           aria-expanded={mobileDrawerOpen}
           aria-controls="sidebar"
           aria-label="打开侧边栏菜单"

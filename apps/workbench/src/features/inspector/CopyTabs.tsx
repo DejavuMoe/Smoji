@@ -47,17 +47,16 @@ export function CopyTabs({ item }: CopyTabsProps) {
   // Keyboard shortcut 1-5 for format tabs
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
+      if (e.target instanceof HTMLInputElement && !e.target.readOnly) return
+      if (e.target instanceof HTMLTextAreaElement) return
       const match = FORMATS.find((f) => f.key === e.key)
       if (match) {
         dispatch({ type: 'SET_INSPECTOR_COPY_FORMAT', payload: match.id })
       }
     }
 
-    const input = inputRef.current
-    if (input) {
-      input.addEventListener('keydown', handleKeyDown)
-      return () => input.removeEventListener('keydown', handleKeyDown)
-    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
   }, [dispatch])
 
   return (

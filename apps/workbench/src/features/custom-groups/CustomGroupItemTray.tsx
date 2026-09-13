@@ -83,7 +83,7 @@ export function CustomGroupItemTray({ groupIndex, items }: CustomGroupItemTrayPr
           className="inline-flex h-7 items-center rounded border border-dashed border-border bg-muted/50 px-2 text-[11px] text-muted-foreground hover:bg-muted hover:text-foreground"
           onClick={handleViewAll}
         >
-          +{remaining}
+          {isMobile ? `查看全部 ${items.length} 项` : `+${remaining}`}
         </button>
       )}
     </div>

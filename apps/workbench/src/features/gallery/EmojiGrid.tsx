@@ -34,20 +34,43 @@ export function EmojiGrid() {
   const visibleItems = items.slice(0, renderLimit)
   const hasMore = items.length > renderLimit
 
-  // Expand render limit on scroll
+  const sentinelRef = useRef<HTMLDivElement | null>(null)
+
+  // Expand render limit on scroll / intersection
   useEffect(() => {
+    if (!hasMore) return
+
+    const sentinel = sentinelRef.current
+    if (sentinel && typeof IntersectionObserver !== 'undefined') {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0]?.isIntersecting) {
+            dispatch({ type: 'EXPAND_RENDER_LIMIT' })
+          }
+        },
+        { rootMargin: '300px' },
+      )
+      observer.observe(sentinel)
+      return () => observer.disconnect()
+    }
+
+    const container = gridRef.current?.closest('main') || window
     function handleScroll() {
       if (!hasMore) return
-      const scrollY = window.scrollY || document.documentElement.scrollTop
-      const windowHeight = window.innerHeight
-      const docHeight = document.documentElement.scrollHeight
-      if (scrollY + windowHeight >= docHeight - 300) {
-        dispatch({ type: 'EXPAND_RENDER_LIMIT' })
+      if (container instanceof HTMLElement) {
+        if (container.scrollTop + container.clientHeight >= container.scrollHeight - 300) {
+          dispatch({ type: 'EXPAND_RENDER_LIMIT' })
+        }
+      } else {
+        const scrollY = window.scrollY || document.documentElement.scrollTop
+        if (scrollY + window.innerHeight >= document.documentElement.scrollHeight - 300) {
+          dispatch({ type: 'EXPAND_RENDER_LIMIT' })
+        }
       }
     }
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+    container.addEventListener('scroll', handleScroll, { passive: true })
+    return () => container.removeEventListener('scroll', handleScroll)
   }, [hasMore, dispatch])
 
   const handleCardClick = useCallback(
@@ -94,7 +117,8 @@ export function EmojiGrid() {
         ref={gridRef}
         id="grid"
         role="grid"
-        className={`grid gap-2.5 sm:gap-3.5 ${
+        tabIndex={-1}
+        className={`grid gap-2.5 sm:gap-3.5 outline-none ${
           isComfortable
             ? 'grid-cols-[repeat(auto-fill,minmax(5.5rem,1fr))]'
             : 'grid-cols-[repeat(auto-fill,minmax(4.5rem,1fr))]'
@@ -122,7 +146,7 @@ export function EmojiGrid() {
       </div>
 
       {hasMore && (
-        <div className="mt-6 flex justify-center pb-8">
+        <div ref={sentinelRef} className="mt-6 flex justify-center pb-8">
           <button
             type="button"
             className="rounded-lg border border-border bg-surface px-4 py-2 text-xs font-medium text-foreground hover:bg-muted"

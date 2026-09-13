@@ -21,12 +21,10 @@ export function CustomGroupCreateForm() {
     if (detailsRef.current) {
       detailsRef.current.open = false
     }
-    // Close mobile drawer so user can immediately see the gallery and newly created group
-    setMobileDrawerOpen(false)
   }
 
   return (
-    <details ref={detailsRef} id="custom-create" className="group rounded-lg border border-dashed border-border p-2">
+    <details ref={detailsRef} id="custom-create" open className="group rounded-lg border border-dashed border-border p-2">
       <summary className="flex cursor-pointer items-center justify-between text-xs font-medium text-muted-foreground hover:text-foreground">
         <span className="flex items-center gap-1.5">
           <Plus className="h-3.5 w-3.5" />
@@ -44,6 +42,7 @@ export function CustomGroupCreateForm() {
           onChange={(e) => setName(e.target.value)}
         />
         <button
+          id="btn-create-custom-pack"
           type="submit"
           className="rounded bg-primary px-2.5 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
         >

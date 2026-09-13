@@ -67,7 +67,7 @@ export function CustomGroupList() {
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div id="custom-builder" className="flex flex-col gap-3">
       {/* Creation form */}
       <CustomGroupCreateForm />
 

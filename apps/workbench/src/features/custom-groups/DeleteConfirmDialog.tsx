@@ -37,7 +37,14 @@ export function DeleteConfirmDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={(isOpen) => !isOpen && onCancel()}>
-      <AlertDialogContent id="confirm-modal" className="sm:max-w-md">
+      <AlertDialogContent
+        id="confirm-modal"
+        className="sm:max-w-md"
+        onOpenAutoFocus={(e) => {
+          e.preventDefault()
+          cancelBtnRef.current?.focus()
+        }}
+      >
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>

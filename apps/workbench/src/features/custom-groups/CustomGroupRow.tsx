@@ -171,6 +171,7 @@ export function CustomGroupRow({ group, index, isActive, totalGroups }: CustomGr
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-36 text-xs">
                   <DropdownMenuItem
+                    data-group-action="edit"
                     data-edit-index={String(index)}
                     onClick={() => {
                       setEditLabel(group.label)
@@ -181,6 +182,7 @@ export function CustomGroupRow({ group, index, isActive, totalGroups }: CustomGr
                     <span>编辑名称</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem
+                    data-group-action="duplicate"
                     data-duplicate-index={String(index)}
                     onClick={() => dispatch({ type: 'DUPLICATE_CUSTOM_GROUP', payload: index })}
                   >
@@ -189,6 +191,7 @@ export function CustomGroupRow({ group, index, isActive, totalGroups }: CustomGr
                   </DropdownMenuItem>
                   {index > 0 && (
                     <DropdownMenuItem
+                      data-group-action="move-up"
                       data-move-index={String(index)}
                       data-move-dir="-1"
                       onClick={() =>
@@ -201,6 +204,7 @@ export function CustomGroupRow({ group, index, isActive, totalGroups }: CustomGr
                   )}
                   {index < totalGroups - 1 && (
                     <DropdownMenuItem
+                      data-group-action="move-down"
                       data-move-index={String(index)}
                       data-move-dir="1"
                       onClick={() =>
@@ -213,6 +217,7 @@ export function CustomGroupRow({ group, index, isActive, totalGroups }: CustomGr
                   )}
                   {index > 0 && (
                     <DropdownMenuItem
+                      data-group-action="merge"
                       data-merge-index={String(index)}
                       onClick={() => dispatch({ type: 'MERGE_CUSTOM_GROUP', payload: index })}
                     >
@@ -222,6 +227,7 @@ export function CustomGroupRow({ group, index, isActive, totalGroups }: CustomGr
                   )}
                   {group.items.length >= 2 && (
                     <DropdownMenuItem
+                      data-group-action="split"
                       data-split-index={String(index)}
                       onClick={() => dispatch({ type: 'SPLIT_CUSTOM_GROUP', payload: index })}
                     >
@@ -231,6 +237,7 @@ export function CustomGroupRow({ group, index, isActive, totalGroups }: CustomGr
                   )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
+                    data-group-action="delete"
                     data-delete-index={String(index)}
                     className="text-destructive focus:bg-destructive/10 focus:text-destructive"
                     onClick={() => setDeleteDialogOpen(true)}

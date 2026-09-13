@@ -57,7 +57,7 @@ export const EmojiCard = memo(function EmojiCard({
       {/* Picked badge (✓ in custom mode) */}
       {isCustomMode && isPicked && (
         <span
-          className="card__badge absolute top-1.5 left-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-xs"
+          className="card__badge absolute top-1.5 left-1.5 z-10 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-xs"
           data-badge-item-index={String(index)}
         >
           ✓
@@ -67,7 +67,7 @@ export const EmojiCard = memo(function EmojiCard({
       {/* Hover action / checkbox trigger */}
       <button
         type="button"
-        className="card__check-hover card__action-btn absolute top-1.5 right-1.5 flex h-5 w-5 items-center justify-center rounded-md border border-border/80 bg-surface/90 text-muted-foreground opacity-0 transition-opacity hover:border-primary hover:text-primary group-hover:opacity-100 focus:opacity-100"
+        className="card__check-hover card__action-btn absolute top-1.5 right-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-md border border-border/80 bg-surface/90 text-muted-foreground opacity-0 transition-opacity hover:border-primary hover:text-primary group-hover:opacity-100 focus:opacity-100 max-[900px]:opacity-100"
         data-check-item-index={String(index)}
         title={
           isCustomMode
@@ -87,7 +87,11 @@ export const EmojiCard = memo(function EmojiCard({
               ? `恢复 ${item.label}`
               : `排除 ${item.label}`
         }
-        onClick={(e) => onActionClick(e, item)}
+        onClick={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          onActionClick(e, item)
+        }}
       >
         {isCustomMode ? (
           <span className="text-xs">{isPicked ? '−' : '+'}</span>

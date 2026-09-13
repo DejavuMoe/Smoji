@@ -74,7 +74,10 @@ export function DetailInspectorDialog() {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="max-w-[420px] p-5 sm:rounded-2xl">
+      <DialogContent
+        showCloseButton={false}
+        className="max-sm:fixed max-sm:bottom-0 max-sm:left-0 max-sm:right-0 max-sm:top-auto max-sm:translate-x-0 max-sm:translate-y-0 max-sm:max-w-none max-sm:w-full max-sm:rounded-b-none max-sm:rounded-t-2xl max-sm:max-h-[92dvh] max-sm:overflow-y-auto max-w-[420px] p-5 sm:rounded-2xl"
+      >
         <DialogHeader className="flex flex-row items-center justify-between pb-2 border-b border-border/60">
           <div className="flex flex-col gap-0.5">
             <DialogTitle className="text-sm font-semibold text-foreground">

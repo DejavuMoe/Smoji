@@ -1,6 +1,7 @@
 import { useWorkbench } from '../../app/WorkbenchContext'
 import { PackList } from '../packs/PackList'
 import { CustomGroupList } from '../custom-groups/CustomGroupList'
+import { useMediaQuery } from '../../hooks/use-media-query'
 
 export function SidebarContent() {
   const { state, dispatch } = useWorkbench()
@@ -45,13 +46,15 @@ export function SidebarContent() {
 }
 
 export function Sidebar() {
+  const isDesktop = useMediaQuery('(min-width: 901px)')
+
   return (
     <aside
       id="sidebar"
-      className="hidden h-[calc(100dvh-3.5rem)] w-[240px] shrink-0 flex-col border-r border-border bg-surface/50 p-3 md:flex lg:w-[272px]"
+      className="hidden h-[calc(100dvh-3.5rem)] min-[901px]:flex w-[240px] shrink-0 flex-col border-r border-border bg-surface/50 p-3 min-[1100px]:w-[272px]"
       aria-label="侧边栏工作区"
     >
-      <SidebarContent />
+      {isDesktop && <SidebarContent />}
     </aside>
   )
 }

@@ -21,3 +21,6 @@ coverage/
 /data/previews.json
 /apps/workbench/public/_previews/
 /apps/workbench/dist/
+
+test-results/
+playwright-report/
