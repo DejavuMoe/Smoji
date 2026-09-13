@@ -6,10 +6,10 @@
     "moduleResolution": "Bundler",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["apps/workbench/src/*"],
-      "smoji": ["packages/smoji/src/index.ts"],
-      "smoji/manifest": ["packages/smoji/src/manifest.ts"],
-      "smoji/marker": ["packages/smoji/src/marker.ts"]
+      "@/*": ["src/*"],
+      "smoji": ["../../packages/smoji/src/index.ts"],
+      "smoji/manifest": ["../../packages/smoji/src/manifest.ts"],
+      "smoji/marker": ["../../packages/smoji/src/marker.ts"]
     },
     "jsx": "react-jsx",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
@@ -20,11 +20,7 @@
     "types": ["node", "vite/client", "vitest/globals"]
   },
   "include": [
-    "packages/smoji/src/**/*.ts",
-    "packages/smoji/test/**/*.ts",
-    "apps/workbench/src/**/*.ts",
-    "apps/workbench/src/**/*.tsx",
-    "apps/workbench/vite.config.ts",
-    "scripts/**/*.mjs"
+    "src/**/*",
+    "vite.config.ts"
   ]
 }

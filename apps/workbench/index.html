@@ -5,10 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
     <meta name="description" content="Smoji 表情库 — 轻量图片表情管理、多格式导出与配置工作台" />
     <meta name="color-scheme" content="light dark" />
-    <title>Smoji 表情库与配置工作台</title>
     <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml" />
+    <script>
+      try {
+        const theme = localStorage.getItem('smoji-theme') || 'system'
+        const isDark =
+          theme === 'dark' ||
+          (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        if (isDark) {
+          document.documentElement.classList.add('dark')
+          document.documentElement.setAttribute('data-theme', 'dark')
+          document.documentElement.style.colorScheme = 'dark'
+        } else {
+          document.documentElement.classList.remove('dark')
+          document.documentElement.setAttribute('data-theme', 'light')
+          document.documentElement.style.colorScheme = 'light'
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <div id="workbench-static" hidden>
     <a class="skip-link" href="#grid">跳到表情图库</a>
     <!-- Top Navigation Header -->
     <header class="top">
@@ -532,7 +551,5 @@
         <button id="selection-dock-export" class="btn-primary btn-sm" type="button" title="导出当前配置 (⌘/Ctrl+E)" aria-keyshortcuts="Control+E Meta+E" disabled>导出</button>
       </div>
     </div>
-
-    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
