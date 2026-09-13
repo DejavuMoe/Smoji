@@ -1,0 +1,132 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "IBM Plex Sans", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--foreground);
+  --color-popover: var(--surface);
+  --color-popover-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--border);
+  --color-ring: var(--ring);
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-2xl: 18px;
+}
+
+:root {
+  color-scheme: light;
+  --background: #f6f8f7;
+  --surface: #ffffff;
+  --foreground: #14231f;
+  --muted: #eef1f0;
+  --muted-foreground: #61716b;
+  --border: #dfe5e2;
+  --primary: #0f766e;
+  --primary-foreground: #ffffff;
+  --secondary: #eef1f0;
+  --secondary-foreground: #14231f;
+  --accent: #e5f1ed;
+  --accent-foreground: #0f766e;
+  --destructive: #b42323;
+  --destructive-foreground: #ffffff;
+  --ring: #0f766e;
+  --warning: #89530b;
+
+  --check-a: #e9edeb;
+  --check-b: #ffffff;
+  --radius: 0.5rem;
+  --selection-dock-offset: 0px;
+  --dock-gap: 12px;
+}
+
+.dark {
+  color-scheme: dark;
+  --background: #131917;
+  --surface: #1b2320;
+  --foreground: #edf3ef;
+  --muted: #242d29;
+  --muted-foreground: #a0b1a6;
+  --border: #35443c;
+  --primary: #68d8bf;
+  --primary-foreground: #14231f;
+  --secondary: #242d29;
+  --secondary-foreground: #edf3ef;
+  --accent: #263f36;
+  --accent-foreground: #68d8bf;
+  --destructive: #ff7d7d;
+  --destructive-foreground: #14231f;
+  --ring: #68d8bf;
+  --warning: #f59e0b;
+
+  --check-a: #202a25;
+  --check-b: #171f1b;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    min-height: 100dvh;
+  }
+}
+
+/* Custom functional styles */
+.bg-checkerboard {
+  background-image: linear-gradient(45deg, var(--check-a) 25%, transparent 25%),
+                    linear-gradient(-45deg, var(--check-a) 25%, transparent 25%),
+                    linear-gradient(45deg, transparent 75%, var(--check-a) 75%),
+                    linear-gradient(-45deg, transparent 75%, var(--check-a) 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+  background-color: var(--check-b);
+}
+
+.card {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 96px;
+}
+
+/* Dock safe area adjustment */
+.selection-dock {
+  margin-bottom: max(0px, env(safe-area-inset-bottom));
+}
+
+main {
+  scroll-padding-bottom: calc(var(--selection-dock-offset, 0px) + 24px);
+  padding-bottom: calc(var(--selection-dock-offset, 0px) + 24px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
