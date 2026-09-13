@@ -109,7 +109,7 @@
 
 .card {
   content-visibility: auto;
-  contain-intrinsic-size: 0 96px;
+  contain-intrinsic-size: auto 90px;
 }
 
 /* Dock safe area adjustment */

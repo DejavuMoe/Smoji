@@ -32,7 +32,7 @@ export function MobileNavSheet() {
             <X className="h-4 w-4" />
           </button>
         </SheetHeader>
-        <div className="h-[calc(100%-3rem)] overflow-y-auto">
+        <div className="h-[calc(100%-3rem)] min-h-0 flex flex-col">
           <SidebarContent />
         </div>
       </SheetContent>

@@ -28,7 +28,7 @@ export function PackRow({ pack, index, isActive, isChecked }: PackRowProps) {
       }`}
       data-pack-index={String(index)}
     >
-      <label className="flex cursor-pointer items-center p-0.5">
+      <label className="flex shrink-0 cursor-pointer items-center p-0.5">
         <input
           type="checkbox"
           className="pack-check h-4 w-4 rounded border-border text-primary accent-primary focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-40"
@@ -50,7 +50,7 @@ export function PackRow({ pack, index, isActive, isChecked }: PackRowProps) {
         onClick={handleSelect}
       >
         <span className="truncate">{pack.label}</span>
-        <span className="ml-1 text-[11px] tabular-nums text-muted-foreground/80 group-hover:text-muted-foreground">
+        <span className="ml-1 shrink-0 text-[11px] tabular-nums text-muted-foreground/80 group-hover:text-muted-foreground">
           {pack.items.length}
         </span>
       </button>

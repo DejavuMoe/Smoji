@@ -17,15 +17,15 @@ export function HelpDialog() {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => dispatch({ type: 'SET_HELP_DIALOG_OPEN', payload: open })}>
-      <DialogContent id="guide-modal" className="max-w-2xl p-6 sm:rounded-2xl max-h-[85vh] overflow-y-auto">
+      <DialogContent id="guide-modal" showCloseButton={false} className="sm:max-w-2xl max-h-[85dvh] overflow-y-auto p-4 sm:p-6 sm:rounded-2xl">
         <DialogHeader className="flex flex-row items-center justify-between pb-3 border-b border-border/60">
-          <DialogTitle className="text-base font-semibold text-foreground">
+          <DialogTitle className="text-sm sm:text-base font-semibold text-foreground truncate min-w-0 flex-1">
             Smoji 使用指南与接入规范
           </DialogTitle>
           <button
             id="guide-modal-close"
             type="button"
-            className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+            className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground shrink-0 ml-2"
             aria-label="关闭使用指南"
             onClick={() => dispatch({ type: 'SET_HELP_DIALOG_OPEN', payload: false })}
           >
@@ -105,7 +105,7 @@ export function HelpDialog() {
             </div>
 
             {/* Export Filenames Table */}
-            <div className="overflow-hidden rounded-xl border border-border">
+            <div className="overflow-x-auto rounded-xl border border-border">
               <table className="w-full text-left text-[11px]">
                 <thead className="border-b border-border bg-muted/50 text-muted-foreground">
                   <tr>

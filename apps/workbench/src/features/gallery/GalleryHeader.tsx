@@ -24,16 +24,16 @@ export function GalleryHeader() {
 
   return (
     <div className="gallery__header flex flex-wrap items-center justify-between gap-3 border-b border-border bg-surface/40 px-4 py-3 sm:px-6">
-      <div className="flex flex-col gap-0.5">
-        <h2 className="text-sm font-semibold tracking-tight text-foreground">
+      <div className="flex flex-col gap-0.5 min-w-0 flex-1">
+        <h2 className="text-sm font-semibold tracking-tight text-foreground truncate">
           {isCustom && isPickedView
             ? activeCustomGroup?.label ?? '已入组表情'
             : activePack?.label ?? '表情'}
         </h2>
-        <div id="gallery-export-count" className="text-xs text-muted-foreground">
+        <div id="gallery-export-count" className="text-xs text-muted-foreground truncate">
           {isCustom ? (
             activeCustomGroup ? (
-              <span>
+              <span className="truncate">
                 添加到「{activeCustomGroup.label}」 · 当前分组 {activeCustomGroup.items.length} 张
               </span>
             ) : (
@@ -48,7 +48,7 @@ export function GalleryHeader() {
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2 shrink-0">
         {/* Custom view toggle: [当前分类] [已入组] */}
         {isCustom && (
           <div id="gallery-view-picked" className="flex rounded-lg bg-muted p-0.5 text-xs">

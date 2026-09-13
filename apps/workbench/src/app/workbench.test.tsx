@@ -142,6 +142,7 @@ describe('React Workbench Integration Suite', () => {
     // 5. Inspector & Clipboard fallback
     Object.defineProperty(navigator, 'clipboard', { configurable: true, value: undefined })
     const card = document.querySelector('.card')!
+    expect(card.classList.contains('aspect-square')).toBe(true)
     fireEvent.click(card)
 
     await waitFor(() => {

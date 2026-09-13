@@ -76,19 +76,19 @@ export function DetailInspectorDialog() {
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent
         showCloseButton={false}
-        className="max-sm:fixed max-sm:bottom-0 max-sm:left-0 max-sm:right-0 max-sm:top-auto max-sm:translate-x-0 max-sm:translate-y-0 max-sm:max-w-none max-sm:w-full max-sm:rounded-b-none max-sm:rounded-t-2xl max-sm:max-h-[92dvh] max-sm:overflow-y-auto max-w-[420px] p-5 sm:rounded-2xl"
+        className="max-sm:fixed max-sm:bottom-0 max-sm:left-0 max-sm:right-0 max-sm:top-auto max-sm:translate-x-0 max-sm:translate-y-0 max-sm:max-w-none max-sm:w-full max-sm:rounded-b-none max-sm:rounded-t-2xl max-h-[92dvh] overflow-y-auto sm:max-w-[420px] p-4 sm:p-5 sm:rounded-2xl"
       >
         <DialogHeader className="flex flex-row items-center justify-between pb-2 border-b border-border/60">
-          <div className="flex flex-col gap-0.5">
-            <DialogTitle className="text-sm font-semibold text-foreground">
+          <div className="flex flex-col gap-0.5 min-w-0 flex-1">
+            <DialogTitle className="text-sm font-semibold text-foreground truncate">
               {item.label || item.id}
             </DialogTitle>
-            <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-              <span className="pop__badge rounded bg-muted px-1.5 py-0.5 font-medium">
+            <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground truncate">
+              <span className="pop__badge rounded bg-muted px-1.5 py-0.5 font-medium truncate">
                 {activeInspectorItem.packLabel}
               </span>
               <span>·</span>
-              <span className="pop__badge rounded bg-muted px-1.5 py-0.5 font-mono">
+              <span className="pop__badge rounded bg-muted px-1.5 py-0.5 font-mono shrink-0">
                 {activeInspectorItem.format}
               </span>
             </div>
@@ -96,7 +96,7 @@ export function DetailInspectorDialog() {
           <button
             id="pop-close-btn"
             type="button"
-            className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+            className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground shrink-0 ml-2"
             aria-label="关闭详情"
             onClick={handleClose}
           >
@@ -105,7 +105,7 @@ export function DetailInspectorDialog() {
         </DialogHeader>
 
         {/* Preview Area */}
-        <div className="relative my-2 flex h-48 w-full items-center justify-center rounded-xl border border-border/60 overflow-hidden">
+        <div className="relative my-2 flex h-40 sm:h-48 w-full items-center justify-center rounded-xl border border-border/60 overflow-hidden">
           <div className={`absolute inset-0 ${bgStyle}`} />
 
           <button
@@ -150,7 +150,7 @@ export function DetailInspectorDialog() {
           <button
             id="pop-group-btn"
             type="button"
-            className={`w-full rounded-lg py-2 text-xs font-medium transition-colors ${
+            className={`w-full rounded-lg py-2 px-3 text-xs font-medium transition-colors truncate ${
               isCustom
                 ? isPicked
                   ? 'border border-destructive/30 bg-destructive/10 text-destructive hover:bg-destructive/20'

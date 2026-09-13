@@ -78,7 +78,7 @@ export function ExportDock() {
     >
       {/* Selection Info */}
       <div className="selection-dock__info flex min-w-0 flex-col gap-0.5">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 min-w-0">
           <span
             id="selection-dock-count"
             className="selection-dock__count text-xs font-semibold text-foreground"
@@ -127,12 +127,12 @@ export function ExportDock() {
       </div>
 
       {/* Actions */}
-      <div className="selection-dock__actions flex items-center justify-end gap-2">
-        <div className="selection-dock__format-wrap relative">
+      <div className="selection-dock__actions flex flex-wrap items-center justify-between sm:justify-end gap-2 w-full sm:w-auto shrink-0">
+        <div className="selection-dock__format-wrap relative min-w-0 flex-1 sm:flex-initial">
           <span className="sr-only">导出格式</span>
           <select
             id="selection-dock-format"
-            className="selection-dock__format h-8 rounded-lg border border-input bg-background px-2.5 text-xs font-medium text-foreground outline-none focus:border-primary"
+            className="selection-dock__format h-8 w-full sm:w-auto rounded-lg border border-input bg-background px-2.5 text-xs font-medium text-foreground outline-none focus:border-primary"
             aria-label="导出格式"
             value={currentFormat}
             onChange={(e) => dispatch({ type: 'SET_EXPORT_FORMAT', payload: e.target.value })}

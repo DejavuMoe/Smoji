@@ -109,20 +109,20 @@ export function CodePreviewDialog() {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent id="code-modal" className="max-w-2xl p-5 sm:rounded-2xl">
+      <DialogContent id="code-modal" showCloseButton={false} className="sm:max-w-2xl max-h-[min(90dvh,700px)] overflow-y-auto p-5 sm:rounded-2xl">
         <DialogHeader className="flex flex-row items-center justify-between pb-2 border-b border-border/60">
-          <div className="flex flex-col gap-0.5">
-            <DialogTitle className="text-sm font-semibold text-foreground">
+          <div className="flex flex-col gap-0.5 min-w-0 flex-1">
+            <DialogTitle className="text-sm font-semibold text-foreground truncate">
               数据预览与导出
             </DialogTitle>
-            <div id="code-modal-meta" className="text-xs text-muted-foreground">
+            <div id="code-modal-meta" className="text-xs text-muted-foreground truncate">
               {stampedName} ({packsForPreview.length} 个分组 · {exportResult.content.length} 字节)
             </div>
           </div>
           <button
             id="code-modal-close"
             type="button"
-            className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+            className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground shrink-0 ml-2"
             aria-label="关闭预览"
             onClick={handleClose}
           >
@@ -177,7 +177,7 @@ export function CodePreviewDialog() {
         </div>
 
         {/* Code Content */}
-        <pre className="max-h-[380px] overflow-auto rounded-xl border border-border/80 bg-muted/40 p-3 font-mono text-[11px] text-foreground">
+        <pre className="max-h-[min(380px,55dvh)] overflow-auto rounded-xl border border-border/80 bg-muted/40 p-3 font-mono text-[11px] text-foreground">
           <code id="code-preview-content">{exportResult.content}</code>
         </pre>
 

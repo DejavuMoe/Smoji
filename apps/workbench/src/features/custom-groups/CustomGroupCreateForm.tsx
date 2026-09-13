@@ -25,7 +25,7 @@ export function CustomGroupCreateForm() {
 
   return (
     <details ref={detailsRef} id="custom-create" open className="group rounded-lg border border-dashed border-border p-2">
-      <summary className="flex cursor-pointer items-center justify-between text-xs font-medium text-muted-foreground hover:text-foreground">
+      <summary className="flex cursor-pointer items-center justify-between text-xs font-medium text-muted-foreground hover:text-foreground list-none [&::-webkit-details-marker]:hidden">
         <span className="flex items-center gap-1.5">
           <Plus className="h-3.5 w-3.5" />
           <span>新建分组</span>
@@ -44,7 +44,7 @@ export function CustomGroupCreateForm() {
         <button
           id="btn-create-custom-pack"
           type="submit"
-          className="rounded bg-primary px-2.5 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          className="shrink-0 rounded bg-primary px-2.5 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
         >
           添加
         </button>

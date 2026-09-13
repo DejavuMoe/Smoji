@@ -12,7 +12,7 @@ export function ToastContainer() {
   return (
     <div
       id="toast-container"
-      className="toast-container fixed bottom-20 right-4 z-50 flex flex-col gap-2 pointer-events-none max-w-sm"
+      className="toast-container fixed bottom-20 right-4 z-50 flex flex-col gap-2 pointer-events-none max-w-sm max-sm:left-4 max-sm:right-4 max-sm:max-w-none"
       aria-live="polite"
     >
       {items.map((item) => (
@@ -22,9 +22,9 @@ export function ToastContainer() {
           aria-live={item.type === 'error' ? 'assertive' : 'polite'}
           className="toast pointer-events-auto flex items-center justify-between gap-3 rounded-xl border border-border/80 bg-surface/95 px-3.5 py-2.5 text-xs shadow-lg backdrop-blur-sm"
         >
-          <span className="toast__text font-medium text-foreground">{item.message}</span>
+          <span className="toast__text min-w-0 break-words font-medium text-foreground">{item.message}</span>
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex shrink-0 items-center gap-1.5">
             {item.action && (
               <button
                 type="button"

@@ -96,7 +96,7 @@ export function CustomGroupRow({ group, index, isActive, totalGroups }: CustomGr
     >
       <div className="flex items-center gap-1.5 p-2">
         <span
-          className="cursor-grab text-muted-foreground/60 hover:text-muted-foreground active:cursor-grabbing"
+          className="shrink-0 cursor-grab text-muted-foreground/60 hover:text-muted-foreground active:cursor-grabbing"
           title="拖拽调整分组顺序"
           aria-hidden="true"
         >
@@ -104,11 +104,11 @@ export function CustomGroupRow({ group, index, isActive, totalGroups }: CustomGr
         </span>
 
         {isEditing ? (
-          <form className="custom-pack-edit-form flex flex-1 items-center gap-1" onSubmit={handleSaveEdit}>
+          <form className="custom-pack-edit-form flex flex-1 min-w-0 items-center gap-1" onSubmit={handleSaveEdit}>
             <input
               id={`edit-name-${index}`}
               type="text"
-              className="h-6 flex-1 rounded border border-input bg-background px-1.5 text-xs text-foreground outline-none focus:border-primary"
+              className="h-6 min-w-0 flex-1 rounded border border-input bg-background px-1.5 text-xs text-foreground outline-none focus:border-primary"
               value={editLabel}
               autoFocus
               onChange={(e) => setEditLabel(e.target.value)}
@@ -116,7 +116,7 @@ export function CustomGroupRow({ group, index, isActive, totalGroups }: CustomGr
                 if (e.key === 'Escape') setIsEditing(false)
               }}
             />
-            <div className="custom-pack-edit-actions flex gap-1">
+            <div className="custom-pack-edit-actions flex shrink-0 gap-1">
               <button
                 type="submit"
                 className="save rounded bg-primary px-1.5 py-0.5 text-[11px] text-primary-foreground hover:bg-primary/90"
@@ -148,7 +148,7 @@ export function CustomGroupRow({ group, index, isActive, totalGroups }: CustomGr
             </button>
 
             <span
-              className={`custom-pack-count text-[11px] tabular-nums ${
+              className={`custom-pack-count shrink-0 text-[11px] tabular-nums ${
                 isFull ? 'is-full font-semibold text-warning' : 'text-muted-foreground'
               }`}
               aria-label={`已用 ${group.items.length} / 600 项`}
@@ -157,7 +157,7 @@ export function CustomGroupRow({ group, index, isActive, totalGroups }: CustomGr
             </span>
 
             {/* Dropdown Menu for Group Tools */}
-            <div className="group-tools">
+            <div className="group-tools shrink-0">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button

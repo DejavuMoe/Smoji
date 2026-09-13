@@ -59,7 +59,7 @@ export function CustomGroupItemTray({ groupIndex, items }: CustomGroupItemTrayPr
           key={item.src}
           data-tray-item={String(itemIndex)}
           draggable
-          className={`relative h-7 w-7 cursor-grab rounded border border-border/60 bg-surface p-0.5 transition-opacity hover:border-primary/50 active:cursor-grabbing ${
+          className={`relative h-7 w-7 shrink-0 cursor-grab rounded border border-border/60 bg-surface p-0.5 transition-opacity hover:border-primary/50 active:cursor-grabbing ${
             draggedIndex === itemIndex ? 'opacity-40' : 'opacity-100'
           }`}
           title={item.label}
@@ -80,7 +80,7 @@ export function CustomGroupItemTray({ groupIndex, items }: CustomGroupItemTrayPr
       {remaining > 0 && (
         <button
           type="button"
-          className="inline-flex h-7 items-center rounded border border-dashed border-border bg-muted/50 px-2 text-[11px] text-muted-foreground hover:bg-muted hover:text-foreground"
+          className="inline-flex h-7 shrink-0 items-center rounded border border-dashed border-border bg-muted/50 px-2 text-[11px] text-muted-foreground hover:bg-muted hover:text-foreground"
           onClick={handleViewAll}
         >
           {isMobile ? `查看全部 ${items.length} 项` : `+${remaining}`}

@@ -62,7 +62,7 @@ export function CopyTabs({ item }: CopyTabsProps) {
   return (
     <div className="flex flex-col gap-2">
       {/* Scrollable Tabs row */}
-      <div className="flex overflow-x-auto rounded-lg bg-muted p-0.5 text-xs whitespace-nowrap">
+      <div className="flex overflow-x-auto rounded-lg bg-muted p-0.5 text-xs whitespace-nowrap [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         {FORMATS.map((fmt) => {
           const isSelected = activeFormat === fmt.id
           return (
@@ -99,7 +99,7 @@ export function CopyTabs({ item }: CopyTabsProps) {
         <button
           id="btn-copy-active"
           type="button"
-          className="rounded-lg bg-primary px-3 text-xs font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          className="shrink-0 rounded-lg bg-primary px-3 text-xs font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           onClick={handleCopy}
         >
           复制

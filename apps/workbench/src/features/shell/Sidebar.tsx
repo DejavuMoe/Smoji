@@ -8,9 +8,9 @@ export function SidebarContent() {
   const mode = state.mode
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col min-h-0">
       {/* Mode Tabs */}
-      <div className="mode-tabs mb-3 flex rounded-lg bg-muted p-1">
+      <div className="mode-tabs mb-3 flex shrink-0 rounded-lg bg-muted p-1">
         <button
           id="tab-packs"
           type="button"
@@ -38,7 +38,7 @@ export function SidebarContent() {
       </div>
 
       {/* Mode Body */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 min-h-0 overflow-y-auto">
         {mode === 'packs' ? <PackList /> : <CustomGroupList />}
       </div>
     </div>

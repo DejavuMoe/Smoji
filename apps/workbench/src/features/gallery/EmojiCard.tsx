@@ -1,4 +1,4 @@
-import { memo, useState } from 'react'
+import { memo } from 'react'
 import type { SmojiItem } from '../../../../../packages/smoji/src/types'
 import { thumbnailSrc } from '../../images'
 
@@ -23,7 +23,6 @@ export const EmojiCard = memo(function EmojiCard({
   onCardClick,
   onActionClick,
 }: EmojiCardProps) {
-  const [imageLoaded, setImageLoaded] = useState(false)
   const thumbUrl = thumbnailSrc(item.src)
 
   function handleDragStart(e: React.DragEvent<HTMLDivElement>) {
@@ -37,9 +36,7 @@ export const EmojiCard = memo(function EmojiCard({
       aria-label={`${item.label}，打开预览并复制`}
       data-roving-item="true"
       tabIndex={index === 0 ? 0 : -1}
-      className={`card group relative flex flex-col items-center justify-center rounded-xl border bg-surface p-2 transition-all outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring select-none ${
-        isComfortable ? 'h-24 sm:h-28' : 'h-20 sm:h-24'
-      } ${
+      className={`card group relative flex flex-col items-center justify-center rounded-xl border bg-surface p-2 transition-all outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring select-none aspect-square w-full ${
         isExcluded
           ? 'is-excluded opacity-35 grayscale border-dashed border-border'
           : 'border-border/60 hover:border-primary/40 hover:shadow-xs'
@@ -101,22 +98,23 @@ export const EmojiCard = memo(function EmojiCard({
       </button>
 
       {/* Emoji image preview */}
-      <div className="relative flex h-full w-full items-center justify-center overflow-hidden">
+      <div
+        className={`relative flex w-full items-center justify-center overflow-hidden ${
+          isComfortable ? 'flex-1 min-h-0' : 'h-full'
+        }`}
+      >
         <img
           src={thumbUrl}
           alt={item.label || item.id}
           loading="lazy"
-          className={`max-h-full max-w-full object-contain pointer-events-none transition-opacity duration-150 ${
-            imageLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
-          onLoad={() => setImageLoaded(true)}
+          className="max-h-full max-w-full object-contain pointer-events-none"
         />
       </div>
 
       {/* Label for comfortable density */}
       {isComfortable && (
-        <span className="mt-1 w-full truncate text-center text-[10px] text-muted-foreground">
-          {item.label}
+        <span className="mt-1 w-full shrink-0 truncate px-0.5 text-center text-[10px] leading-tight text-muted-foreground">
+          {item.label || item.id}
         </span>
       )}
     </div>
