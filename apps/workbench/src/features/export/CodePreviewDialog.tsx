@@ -1,125 +1,172 @@
-import { useState, useMemo, useCallback, useEffect } from 'react'
-import { Download, Copy, X } from 'lucide-react'
+import { ToggleGroup, ToggleGroupItem } from '../../components/ui/toggle-group'
+import { Button } from '../../components/ui/button'
+import { useState, useMemo, useCallback, useRef, useEffect } from 'react'
+import { Download, Copy, X, AlertTriangle, MousePointerClick } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '../../components/ui/dialog'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs'
 import { useWorkbench } from '../../app/WorkbenchContext'
 import {
+  exportErrorMessage,
   generateFormattedExport,
+  previewExportFormats,
   stampDownloadFilename,
-  toExportItemSrc,
 } from '../../export'
+import { useFocusReturn } from '../../focus-return'
 import type { PreviewScope } from '../../domain/state'
-import type { SmojiPack } from '../../../../../packages/smoji/src/types'
 
-const CODE_TABS = [
-  { id: 'smoji', label: 'Smoji', filename: 'smoji.json' },
-  { id: 'twikoo', label: 'Twikoo', filename: 'twikoo.json' },
-  { id: 'owo', label: 'OwO', filename: 'OwO.json' },
-  { id: 'artalk', label: 'Artalk', filename: 'artalk.json' },
-  { id: 'markdown', label: 'Markdown', filename: 'smoji-markers.md' },
-]
+interface ScopeOption {
+  id: PreviewScope
+  label: string
+}
 
 export function CodePreviewDialog() {
   const { state, dispatch, activePack, activeCustomGroup, manifestUrl } = useWorkbench()
   const isOpen = state.export.codeDialogOpen
+  const [copied, setCopied] = useState<string | null>(null)
+  const codeRef = useRef<HTMLElement | null>(null)
 
-  const [activeFormat, setActiveFormat] = useState(state.export.format || 'smoji')
-  useEffect(() => {
-    if (isOpen) setActiveFormat(state.export.format || 'smoji')
-  }, [isOpen, state.export.format])
-  const [scope, setScope] = useState<PreviewScope>(state.export.previewScope || 'selected')
-  const [copied, setCopied] = useState(false)
+  const focusReturn = useFocusReturn('#btn-open-code')
 
   const handleClose = useCallback(() => {
     dispatch({ type: 'SET_CODE_DIALOG_OPEN', payload: false })
   }, [dispatch])
 
-  // Compute packs to export based on scope
+  // One registry drives dock and preview; the selected format lives in global state.
+  const tabs = useMemo(() => previewExportFormats(), [])
+  const activeFormat = state.export.format && tabs.some((tab) => tab.id === state.export.format)
+    ? state.export.format
+    : tabs[0]?.id ?? 'smoji'
+
+  // A removed format may still be selected in an already-open workbench during an update.
+  useEffect(() => {
+    if (state.export.format !== activeFormat) dispatch({ type: 'SET_EXPORT_FORMAT', payload: activeFormat })
+  }, [state.export.format, activeFormat, dispatch])
+
+  const scopeOptions: ScopeOption[] = state.mode === 'packs'
+    ? [
+        { id: 'selected', label: '已选择' },
+        { id: 'all', label: '全部' },
+        { id: 'current', label: '当前' },
+      ]
+    : [
+        { id: 'selected', label: '全部自选分组' },
+        { id: 'current', label: '当前分组' },
+      ]
+  // Custom mode has no separate "all": keep one clear meaning for the stored scope.
+  const rawScope = state.export.previewScope
+  const scope: PreviewScope =
+    scopeOptions.some((option) => option.id === rawScope)
+      ? rawScope
+      : rawScope === 'all'
+        ? 'selected'
+        : scopeOptions[0]!.id
+
+  // Compute packs to export based on scope; exclusions always apply to concrete selections.
   const packsForPreview = useMemo(() => {
+    const withoutExcluded = <T extends { items: readonly { src: string }[] }>(pack: T): T => ({
+      ...pack,
+      items: pack.items.filter((i) => !state.packSelection.excludedItemSrcs.has(i.src)),
+    })
     if (state.mode === 'packs') {
-      if (scope === 'all') {
-        return state.catalog.packs
-      } else if (scope === 'current') {
-        return activePack ? [activePack] : []
-      } else {
-        // selected
-        return state.catalog.packs
-          .filter((p) => state.packSelection.selectedPackIds.has(p.id))
-          .map((p) => ({
-            ...p,
-            items: p.items.filter((i) => !state.packSelection.excludedItemSrcs.has(i.src)),
-          }))
-          .filter((p) => p.items.length > 0)
-      }
-    } else {
-      // custom mode
-      if (scope === 'current') {
-        return activeCustomGroup && activeCustomGroup.items.length > 0 ? [activeCustomGroup] : []
-      } else {
-        return state.customGroups.groups.filter((g) => g.items.length > 0)
-      }
+      if (scope === 'all') return state.catalog.packs
+      if (scope === 'current') return activePack ? [withoutExcluded(activePack)] : []
+      return state.catalog.packs
+        .filter((p) => state.packSelection.selectedPackIds.has(p.id))
+        .map(withoutExcluded)
+        .filter((p) => p.items.length > 0)
     }
+    if (scope === 'current') {
+      return activeCustomGroup && activeCustomGroup.items.length > 0 ? [activeCustomGroup] : []
+    }
+    return state.customGroups.groups.filter((g) => g.items.length > 0)
   }, [state, scope, activePack, activeCustomGroup])
 
-  const exportResult = useMemo(() => {
+  /** Errors stay errors: never wrap a failure message as a downloadable configuration. */
+  const preview = useMemo(() => {
     if (packsForPreview.length === 0) {
       return {
-        content: '{\n  "error": "当前范围内无选中的表情"\n}',
-        filename: 'smoji.json',
+        content: '',
+        filename: '',
+        bytes: 0,
+        error:
+          state.mode === 'packs'
+            ? '当前范围内没有可导出的表情。请先勾选分类，或切换到「全部 / 当前」范围。'
+            : '当前范围内没有可导出的表情。请先向自选分组添加表情。',
       }
     }
     try {
-      return generateFormattedExport(activeFormat, packsForPreview as any, manifestUrl)
-    } catch (err: any) {
+      const generated = generateFormattedExport(activeFormat, packsForPreview as any, manifestUrl)
       return {
-        content: `{\n  "error": ${JSON.stringify(err.message || '导出失败')}\n}`,
-        filename: `${activeFormat}.json`,
+        content: generated.content,
+        filename: generated.filename,
+        bytes: new TextEncoder().encode(generated.content).length,
+        error: null as string | null,
+      }
+    } catch (err) {
+      return {
+        content: '',
+        filename: '',
+        bytes: 0,
+        error: exportErrorMessage(err),
       }
     }
-  }, [activeFormat, packsForPreview, manifestUrl])
+  }, [activeFormat, packsForPreview, manifestUrl, state.mode])
 
-  const stampedName = useMemo(() => {
-    return stampDownloadFilename(exportResult.filename)
-  }, [exportResult.filename])
+  const stampedName = preview.filename ? stampDownloadFilename(preview.filename) : ''
 
   const handleDownload = useCallback(() => {
-    const mime = activeFormat === 'markdown' ? 'text/markdown' : 'application/json'
-    const blob = new Blob([exportResult.content], { type: mime })
+    if (preview.error || !preview.content) return
+    const mime = preview.filename.endsWith('.md') ? 'text/markdown;charset=utf-8' : 'application/json'
+    const blob = new Blob([preview.content], { type: mime })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
     a.download = stampedName
     a.click()
     URL.revokeObjectURL(url)
-  }, [exportResult.content, stampedName, activeFormat])
+  }, [preview.content, preview.error, preview.filename, stampedName])
 
   const handleCopy = useCallback(async () => {
+    if (preview.error || !preview.content) return
     try {
-      await navigator.clipboard.writeText(exportResult.content)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      if (!navigator.clipboard?.writeText) throw new Error('Clipboard API not available')
+      await navigator.clipboard.writeText(preview.content)
+      setCopied('已复制')
     } catch {
-      /* ignore */
+      // Fallback: select the code so the user can copy it manually.
+      const node = codeRef.current
+      if (node) {
+        const range = document.createRange()
+        range.selectNodeContents(node)
+        const selection = window.getSelection()
+        selection?.removeAllRanges()
+        selection?.addRange(range)
+      }
+      setCopied('复制失败，已选中内容，请按 ⌘/Ctrl+C 手动复制')
     }
-  }, [exportResult.content])
+    setTimeout(() => setCopied(null), 3000)
+  }, [preview.content, preview.error])
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent id="code-modal" showCloseButton={false} className="sm:max-w-2xl max-h-[min(90dvh,700px)] overflow-y-auto p-5 sm:rounded-2xl">
+      <DialogContent {...focusReturn} id="code-modal" showCloseButton={false} className="sm:max-w-2xl max-h-[min(90dvh,700px)] overflow-y-auto p-4 sm:p-5 sm:rounded-2xl">
         <DialogHeader className="flex flex-row items-center justify-between pb-2 border-b border-border/60">
           <div className="flex flex-col gap-0.5 min-w-0 flex-1">
             <DialogTitle className="text-sm font-semibold text-foreground truncate">
               数据预览与导出
             </DialogTitle>
             <div id="code-modal-meta" className="text-xs text-muted-foreground truncate">
-              {stampedName} ({packsForPreview.length} 个分组 · {exportResult.content.length} 字节)
+              {preview.error
+                ? '当前范围无法导出'
+                : `${stampedName} (${packsForPreview.length} 个分组 · ${preview.bytes} 字节)`}
             </div>
           </div>
-          <button
+          <Button variant="ghost"
             id="code-modal-close"
             type="button"
             className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground shrink-0 ml-2"
@@ -127,81 +174,91 @@ export function CodePreviewDialog() {
             onClick={handleClose}
           >
             <X className="h-4 w-4" />
-          </button>
+          </Button>
         </DialogHeader>
 
-        {/* Format tabs and Scope selector */}
-        <div className="my-2 flex flex-wrap items-center justify-between gap-2">
-          {/* Format Tabs */}
-          <div className="flex overflow-x-auto rounded-lg bg-muted p-0.5 text-xs">
-            {CODE_TABS.map((tab) => {
-              const isSelected = activeFormat === tab.id
-              return (
-                <button
+        {/* Format tabs and Scope selector share one registry-backed Tabs root */}
+        <Tabs
+          value={activeFormat}
+          onValueChange={(next) => dispatch({ type: 'SET_EXPORT_FORMAT', payload: next })}
+          className="my-2 flex flex-col gap-2"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <TabsList aria-label="导出格式">
+              {tabs.map((tab) => (
+                <TabsTrigger
                   key={tab.id}
                   id={`code-tab-${tab.id}`}
-                  type="button"
-                  aria-selected={isSelected}
-                  className={`rounded-md px-2.5 py-1 font-medium transition-colors ${
-                    isSelected
-                      ? 'bg-surface text-foreground shadow-xs'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                  onClick={() => setActiveFormat(tab.id)}
+                  value={tab.id}
                 >
                   {tab.label}
-                </button>
-              )
-            })}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+
+            {/* Scope Selector */}
+            <ToggleGroup aria-label="导出范围" value={scope} onValueChange={(value) => dispatch({ type: 'SET_EXPORT_PREVIEW_SCOPE', payload: value as PreviewScope })}>
+              {scopeOptions.map((option) => (
+                <ToggleGroupItem key={option.id} value={option.id} data-scope={option.id}>{option.label}</ToggleGroupItem>
+              ))}
+            </ToggleGroup>
           </div>
 
-          {/* Scope Selector */}
-          <div className="flex rounded-lg bg-muted p-0.5 text-xs">
-            {(['selected', 'all', 'current'] as PreviewScope[]).map((s) => (
-              <button
-                key={s}
-                type="button"
-                data-scope={s}
-                aria-checked={scope === s}
-                className={`rounded-md px-2 py-0.5 text-[11px] font-medium transition-colors ${
-                  scope === s
-                    ? 'bg-surface text-foreground shadow-xs'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-                onClick={() => setScope(s)}
-              >
-                {s === 'selected' ? '已选择' : s === 'all' ? '全部' : '当前'}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Code Content */}
-        <pre className="max-h-[min(380px,55dvh)] overflow-auto rounded-xl border border-border/80 bg-muted/40 p-3 font-mono text-[11px] text-foreground">
-          <code id="code-preview-content">{exportResult.content}</code>
-        </pre>
+          {/* Code Content / error state */}
+          {preview.error ? (
+            <div
+              id="code-preview-error"
+              role="alert"
+              className="flex flex-col items-start gap-2 rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-xs text-destructive"
+            >
+              <span className="flex items-center gap-1.5 font-medium">
+                <AlertTriangle className="h-4 w-4" />
+                <span>{preview.error}</span>
+              </span>
+              <span className="flex items-center gap-1.5 text-muted-foreground">
+                <MousePointerClick className="h-3.5 w-3.5" />
+                <span>可调整上方范围或格式后重试。</span>
+              </span>
+            </div>
+          ) : (
+            <TabsContent value={activeFormat}>
+              <pre key={`${activeFormat}:${scope}`} className="max-h-[min(380px,55dvh)] overflow-auto rounded-xl border border-border/80 bg-muted/40 p-3 font-mono text-[11px] text-foreground">
+                <code ref={codeRef} id="code-preview-content">{preview.content}</code>
+              </pre>
+            </TabsContent>
+          )}
+        </Tabs>
 
         {/* Actions */}
-        <div className="mt-3 flex items-center justify-between pt-2 border-t border-border/60">
-          <button
+        <div className="mt-1 flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-border/60">
+          <Button variant="ghost"
             type="button"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
+            id="code-preview-copy"
+            className="inline-flex min-w-28 items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted disabled:pointer-events-none disabled:opacity-40"
+            disabled={Boolean(preview.error)}
             onClick={handleCopy}
           >
             <Copy className="h-3.5 w-3.5" />
-            <span>{copied ? '已复制' : '复制内容'}</span>
-          </button>
+            <span>{copied?.startsWith('复制失败') ? '手动复制' : copied ?? '复制内容'}</span>
+          </Button>
 
-          <button
+          <Button variant="ghost"
             id="btn-download-current-code"
             type="button"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90 disabled:pointer-events-none disabled:opacity-40"
+            disabled={Boolean(preview.error)}
             onClick={handleDownload}
           >
             <Download className="h-3.5 w-3.5" />
             <span>下载文件</span>
-          </button>
+          </Button>
         </div>
+
+        {copied && (
+          <div role="status" aria-live="polite" aria-atomic="true" className={copied.startsWith('复制失败') ? 'min-w-0 text-xs text-muted-foreground' : 'sr-only'}>
+            {copied}
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   )

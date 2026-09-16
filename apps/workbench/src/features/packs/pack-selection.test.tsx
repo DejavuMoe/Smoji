@@ -27,48 +27,48 @@ describe('PackList Component & "全选 / 反选" UI contract', () => {
 
     const checkboxes = screen.getAllByRole('checkbox')
     expect(checkboxes).toHaveLength(4)
-    expect(checkboxes.every((cb) => !(cb as HTMLInputElement).checked)).toBe(true)
+    expect(checkboxes.every((cb) => cb.getAttribute('aria-checked') === 'false')).toBe(true)
 
     // Click "全选"
     fireEvent.click(selectAllBtn)
 
     expect(selectAllBtn.textContent).toBe('反选')
-    expect(checkboxes.every((cb) => (cb as HTMLInputElement).checked)).toBe(true)
+    expect(checkboxes.every((cb) => cb.getAttribute('aria-checked') === 'true')).toBe(true)
 
     // Click "反选" when all are selected -> deselects all, button reverts to "全选"
     fireEvent.click(selectAllBtn)
     expect(selectAllBtn.textContent).toBe('全选')
-    expect(checkboxes.every((cb) => !(cb as HTMLInputElement).checked)).toBe(true)
+    expect(checkboxes.every((cb) => cb.getAttribute('aria-checked') === 'false')).toBe(true)
   })
 
   it('preserves partial invert semantics: [A, C] -> [B, D]', () => {
     renderPackList()
     const selectAllBtn = screen.getByRole('button', { name: /表情包/i })
-    const checkboxes = screen.getAllByRole('checkbox') as HTMLInputElement[]
+    const checkboxes = screen.getAllByRole('checkbox')
 
     // Select pack-a (index 0) and pack-c (index 2)
     fireEvent.click(checkboxes[0]!)
     fireEvent.click(checkboxes[2]!)
-    expect(checkboxes[0]!.checked).toBe(true)
-    expect(checkboxes[1]!.checked).toBe(false)
-    expect(checkboxes[2]!.checked).toBe(true)
-    expect(checkboxes[3]!.checked).toBe(false)
+    expect(checkboxes[0]!.getAttribute('aria-checked')).toBe('true')
+    expect(checkboxes[1]!.getAttribute('aria-checked')).toBe('false')
+    expect(checkboxes[2]!.getAttribute('aria-checked')).toBe('true')
+    expect(checkboxes[3]!.getAttribute('aria-checked')).toBe('false')
     expect(selectAllBtn.textContent).toBe('反选')
 
     // Click "反选"
     fireEvent.click(selectAllBtn)
 
-    expect(checkboxes[0]!.checked).toBe(false)
-    expect(checkboxes[1]!.checked).toBe(true)
-    expect(checkboxes[2]!.checked).toBe(false)
-    expect(checkboxes[3]!.checked).toBe(true)
+    expect(checkboxes[0]!.getAttribute('aria-checked')).toBe('false')
+    expect(checkboxes[1]!.getAttribute('aria-checked')).toBe('true')
+    expect(checkboxes[2]!.getAttribute('aria-checked')).toBe('false')
+    expect(checkboxes[3]!.getAttribute('aria-checked')).toBe('true')
     expect(selectAllBtn.textContent).toBe('反选')
 
     // Clear button clears all and disables clear button
     const clearBtn = screen.getByRole('button', { name: '清空' })
     expect((clearBtn as HTMLButtonElement).disabled).toBe(false)
     fireEvent.click(clearBtn)
-    expect(checkboxes.every((cb) => !cb.checked)).toBe(true)
+    expect(checkboxes.every((cb) => cb.getAttribute('aria-checked') === 'false')).toBe(true)
     expect(selectAllBtn.textContent).toBe('全选')
     expect((clearBtn as HTMLButtonElement).disabled).toBe(true)
   })

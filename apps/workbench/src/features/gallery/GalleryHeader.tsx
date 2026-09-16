@@ -1,4 +1,6 @@
-import { LayoutGrid, CheckSquare } from 'lucide-react'
+import { ToggleGroup, ToggleGroupItem } from '../../components/ui/toggle-group'
+import { Button } from '../../components/ui/button'
+import { LayoutGrid } from 'lucide-react'
 import { useWorkbench } from '../../app/WorkbenchContext'
 
 export function GalleryHeader() {
@@ -23,7 +25,7 @@ export function GalleryHeader() {
   }
 
   return (
-    <div className="gallery__header flex flex-wrap items-center justify-between gap-3 border-b border-border bg-surface/40 px-4 py-3 sm:px-6">
+    <div className="gallery__header sticky top-0 z-10 shrink-0 flex flex-wrap items-center justify-between gap-3 border-b border-border bg-surface px-4 py-3 sm:px-6">
       <div className="flex flex-col gap-0.5 min-w-0 flex-1">
         <h2 className="text-sm font-semibold tracking-tight text-foreground truncate">
           {isCustom && isPickedView
@@ -48,34 +50,30 @@ export function GalleryHeader() {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 shrink-0">
+      <div className="flex w-full min-w-0 flex-wrap items-center gap-2 sm:w-auto">
         {/* Custom view toggle: [当前分类] [已入组] */}
         {isCustom && (
-          <div id="gallery-view-picked" className="flex rounded-lg bg-muted p-0.5 text-xs">
-            <button
-              type="button"
-              className={`rounded-md px-2.5 py-1 font-medium transition-colors ${
-                !isPickedView ? 'bg-surface text-foreground shadow-xs' : 'text-muted-foreground hover:text-foreground'
-              }`}
-              onClick={() => dispatch({ type: 'SET_GALLERY_VIEW', payload: 'source' })}
-            >
-              当前分类
-            </button>
-            <button
-              type="button"
-              className={`rounded-md px-2.5 py-1 font-medium transition-colors ${
-                isPickedView ? 'bg-surface text-foreground shadow-xs' : 'text-muted-foreground hover:text-foreground'
-              }`}
-              onClick={() => dispatch({ type: 'SET_GALLERY_VIEW', payload: 'picked' })}
-            >
-              已入组 ({activeCustomGroup?.items.length ?? 0})
-            </button>
-          </div>
+          <ToggleGroup className="shrink-0" id="gallery-view-picked" aria-label="图库范围" value={isPickedView ? 'picked' : 'source'}
+            onValueChange={(value) => dispatch({ type: 'SET_GALLERY_VIEW', payload: value as 'picked' | 'source' })}>
+            <ToggleGroupItem value="source">当前分类</ToggleGroupItem>
+            <ToggleGroupItem value="picked">已入组 ({activeCustomGroup?.items.length ?? 0})</ToggleGroupItem>
+          </ToggleGroup>
+        )}
+
+        {!isCustom && activePack && (
+          <Button variant="ghost"
+            type="button"
+            aria-pressed={state.packSelection.selectedPackIds.has(activePack.id)}
+            className="rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+            onClick={() => dispatch({ type: 'TOGGLE_PACK_SELECTION', payload: activePack.id })}
+          >
+            {state.packSelection.selectedPackIds.has(activePack.id) ? '取消选择本分类' : '选择本分类导出'}
+          </Button>
         )}
 
         {/* Batch action button */}
         {!isCustom ? (
-          <button
+          <Button variant="ghost"
             id="btn-batch-pack-action"
             type="button"
             className="rounded-lg border border-border bg-surface px-2.5 py-1 text-xs font-medium text-foreground hover:bg-muted"
@@ -88,32 +86,32 @@ export function GalleryHeader() {
             }
           >
             {currentPackAllExcluded ? '恢复本分类全部' : '排除本分类全部'}
-          </button>
+          </Button>
         ) : (
           !isPickedView && (
-            <button
+            <Button variant="ghost"
               id="btn-batch-pack-action"
               type="button"
               className="rounded-lg border border-border bg-surface px-2.5 py-1 text-xs font-medium text-foreground hover:bg-muted"
               onClick={() => dispatch({ type: 'ADD_ALL_CURRENT_PACK_TO_CUSTOM' })}
             >
               本分类全部加入
-            </button>
+            </Button>
           )
         )}
 
         {/* Density toggle: 紧凑 / 舒适 */}
-        <button
+        <Button variant="ghost"
           id="density-toggle"
           type="button"
           className="inline-flex h-7 items-center gap-1 rounded-lg border border-border bg-surface px-2 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
-          title={`当前密度：${isComfortable ? '舒适' : '紧凑'}`}
+          tooltip={`当前密度：${isComfortable ? '舒适' : '紧凑'}`}
           aria-label={`切换显示密度，当前为${isComfortable ? '舒适' : '紧凑'}`}
           onClick={toggleDensity}
         >
           <LayoutGrid className="h-3.5 w-3.5" />
           <span>{isComfortable ? '舒适' : '紧凑'}</span>
-        </button>
+        </Button>
       </div>
     </div>
   )

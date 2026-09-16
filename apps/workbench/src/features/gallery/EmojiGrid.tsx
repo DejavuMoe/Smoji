@@ -1,3 +1,4 @@
+import { Button } from '../../components/ui/button'
 import { useCallback, useRef, useEffect } from 'react'
 import type { SmojiItem } from '../../../../../packages/smoji/src/types'
 import { useWorkbench } from '../../app/WorkbenchContext'
@@ -15,7 +16,7 @@ export function EmojiGrid() {
   } = useWorkbench()
 
   const gridRef = useRef<HTMLDivElement | null>(null)
-  const { handleKeyDown } = useRovingGrid(gridRef)
+  const { handleKeyDown, handleFocus } = useRovingGrid(gridRef)
 
   const isCustom = state.mode === 'custom'
   const isPickedView = state.gallery.view === 'picked'
@@ -35,6 +36,11 @@ export function EmojiGrid() {
   const hasMore = items.length > renderLimit
 
   const sentinelRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    const main = gridRef.current?.closest('main')
+    if (main) main.scrollTop = 0
+  }, [state.catalog.activePackIndex, state.customGroups.activeGroupIndex, state.mode, state.gallery.view])
 
   // Expand render limit on scroll / intersection
   useEffect(() => {
@@ -71,7 +77,7 @@ export function EmojiGrid() {
 
     container.addEventListener('scroll', handleScroll, { passive: true })
     return () => container.removeEventListener('scroll', handleScroll)
-  }, [hasMore, dispatch])
+  }, [hasMore, renderLimit, items, dispatch])
 
   const handleCardClick = useCallback(
     (item: SmojiItem) => {
@@ -116,18 +122,20 @@ export function EmojiGrid() {
       <div
         ref={gridRef}
         id="grid"
-        role="grid"
+        role="group"
+        aria-label="表情图库"
         tabIndex={-1}
-        className={`grid gap-2.5 sm:gap-3.5 outline-none ${
+        className={`grid gap-2.5 sm:gap-3.5 ${
           isComfortable
             ? 'grid-cols-[repeat(auto-fill,minmax(5.5rem,1fr))]'
             : 'grid-cols-[repeat(auto-fill,minmax(4.5rem,1fr))]'
         }`}
         onKeyDown={handleKeyDown}
+        onFocus={handleFocus}
       >
         {visibleItems.map((item, index) => {
           const isPicked = activeGroupPickedSrcs.has(item.src)
-          const isExcluded = state.packSelection.excludedItemSrcs.has(item.src)
+          const isExcluded = !isCustom && state.packSelection.excludedItemSrcs.has(item.src)
 
           return (
             <EmojiCard
@@ -147,13 +155,13 @@ export function EmojiGrid() {
 
       {hasMore && (
         <div ref={sentinelRef} className="mt-6 flex justify-center pb-8">
-          <button
+          <Button variant="ghost"
             type="button"
             className="rounded-lg border border-border bg-surface px-4 py-2 text-xs font-medium text-foreground hover:bg-muted"
             onClick={() => dispatch({ type: 'EXPAND_RENDER_LIMIT' })}
           >
             加载更多 ({items.length - visibleItems.length} 张剩余)
-          </button>
+          </Button>
         </div>
       )}
     </div>

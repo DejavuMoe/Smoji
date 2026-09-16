@@ -1,3 +1,4 @@
+import { Button } from '../../components/ui/button'
 import { Smile } from 'lucide-react'
 
 interface EmptyStateProps {
@@ -20,13 +21,14 @@ export function EmptyState({ title, description, actionLabel, onAction }: EmptyS
       <h3 className="mt-3 text-sm font-semibold text-foreground">{title}</h3>
       <p className="mt-1 max-w-sm text-xs text-muted-foreground">{description}</p>
       {actionLabel && onAction && (
-        <button
+        <Button variant="ghost"
+          id="gallery-empty-action"
           type="button"
           className="mt-4 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
           onClick={onAction}
         >
           {actionLabel}
-        </button>
+        </Button>
       )}
     </div>
   )

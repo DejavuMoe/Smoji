@@ -1,4 +1,6 @@
+import { Button } from '../components/ui/button'
 import { lazy, Suspense } from 'react'
+import { useWorkbench } from './WorkbenchContext'
 import { Header } from '../features/shell/Header'
 import { Sidebar } from '../features/shell/Sidebar'
 import { MobileNavSheet } from '../features/shell/MobileNavSheet'
@@ -16,8 +18,9 @@ const HelpDialog = lazy(() =>
 )
 
 export function App() {
+  const { state, storageWarning, dismissStorageWarning } = useWorkbench()
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col antialiased">
+    <div className="h-dvh overflow-hidden bg-background text-foreground flex flex-col antialiased">
       <a
         href="#grid"
         className="skip-link sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-xs focus:font-medium focus:text-primary-foreground focus:shadow-md"
@@ -27,6 +30,24 @@ export function App() {
 
       {/* Header */}
       <Header />
+
+      {/* Storage failure banner: never imply the data was persisted when the browser refused */}
+      {storageWarning && (
+        <div
+          role="alert"
+          className="flex shrink-0 items-start justify-between gap-3 border-b border-warning/40 bg-warning/10 px-4 py-2 text-xs text-foreground"
+        >
+          <span className="min-w-0">{storageWarning}</span>
+          <Button variant="ghost"
+            type="button"
+            className="shrink-0 rounded px-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+            aria-label="忽略存储警告"
+            onClick={dismissStorageWarning}
+          >
+            ✕
+          </Button>
+        </div>
+      )}
 
       {/* Main Body */}
       <div className="flex flex-1 min-h-0 overflow-hidden">
@@ -44,8 +65,8 @@ export function App() {
       <MobileNavSheet />
       <DetailInspectorDialog />
       <Suspense fallback={null}>
-        <CodePreviewDialog />
-        <HelpDialog />
+        {state.export.codeDialogOpen && <CodePreviewDialog />}
+        {state.export.helpDialogOpen && <HelpDialog />}
       </Suspense>
       <ExportDock />
       <ToastContainer />

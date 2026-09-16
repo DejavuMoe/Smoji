@@ -40,6 +40,8 @@ describe('React Workbench Integration Suite', () => {
   beforeEach(() => {
     localStorage.clear()
     vi.stubGlobal('scrollTo', vi.fn())
+    // jsdom has no layout/scrolling; actual Select navigation is covered in Playwright.
+    Element.prototype.scrollIntoView = vi.fn()
   })
 
   it('verifies the full workbench interaction contract in React', async () => {
@@ -65,29 +67,29 @@ describe('React Workbench Integration Suite', () => {
     // Click "全选" -> all 4 selected
     fireEvent.click(selectAllBtn)
     expect(selectAllBtn.textContent).toBe('反选')
-    const checkboxes = screen.getAllByRole('checkbox') as HTMLInputElement[]
-    expect(checkboxes.every((cb) => cb.checked)).toBe(true)
+    const checkboxes = screen.getAllByRole('checkbox')
+    expect(checkboxes.every((cb) => cb.getAttribute('aria-checked') === 'true')).toBe(true)
 
     // Click "反选" when all selected -> 0 selected
     fireEvent.click(selectAllBtn)
     expect(selectAllBtn.textContent).toBe('全选')
-    expect(checkboxes.every((cb) => !cb.checked)).toBe(true)
+    expect(checkboxes.every((cb) => cb.getAttribute('aria-checked') === 'false')).toBe(true)
 
     // Partial Invert: check pack 0 and pack 2
     fireEvent.click(checkboxes[0]!)
     fireEvent.click(checkboxes[2]!)
-    expect(checkboxes[0]!.checked).toBe(true)
-    expect(checkboxes[1]!.checked).toBe(false)
-    expect(checkboxes[2]!.checked).toBe(true)
-    expect(checkboxes[3]!.checked).toBe(false)
+    expect(checkboxes[0]!.getAttribute('aria-checked')).toBe('true')
+    expect(checkboxes[1]!.getAttribute('aria-checked')).toBe('false')
+    expect(checkboxes[2]!.getAttribute('aria-checked')).toBe('true')
+    expect(checkboxes[3]!.getAttribute('aria-checked')).toBe('false')
     expect(selectAllBtn.textContent).toBe('反选')
 
     // Click "反选" -> 0 and 2 become false, 1 and 3 become true
     fireEvent.click(selectAllBtn)
-    expect(checkboxes[0]!.checked).toBe(false)
-    expect(checkboxes[1]!.checked).toBe(true)
-    expect(checkboxes[2]!.checked).toBe(false)
-    expect(checkboxes[3]!.checked).toBe(true)
+    expect(checkboxes[0]!.getAttribute('aria-checked')).toBe('false')
+    expect(checkboxes[1]!.getAttribute('aria-checked')).toBe('true')
+    expect(checkboxes[2]!.getAttribute('aria-checked')).toBe('false')
+    expect(checkboxes[3]!.getAttribute('aria-checked')).toBe('true')
     expect(selectAllBtn.textContent).toBe('反选')
 
     // 3. Selection Dock & Export
@@ -96,9 +98,10 @@ describe('React Workbench Integration Suite', () => {
     expect(screen.getByText(/2 个分类/)).toBeDefined()
 
     // Format select in dock
-    const formatSelect = screen.getByRole('combobox', { name: '导出格式' }) as HTMLSelectElement
-    fireEvent.change(formatSelect, { target: { value: 'twikoo' } })
-    expect(formatSelect.value).toBe('twikoo')
+    const formatSelect = screen.getByRole('combobox', { name: '导出格式' })
+    fireEvent.keyDown(formatSelect, { key: 'Enter' })
+    fireEvent.keyDown(await screen.findByRole('option', { name: 'Twikoo' }), { key: 'Enter' })
+    expect(formatSelect.textContent).toBe('Twikoo')
 
     // Open code preview
     const previewBtn = document.getElementById('selection-dock-preview')!
@@ -108,13 +111,13 @@ describe('React Workbench Integration Suite', () => {
     })
 
     // Code modal tabs
-    const twikooTab = screen.getByRole('button', { name: 'Twikoo' })
+    const twikooTab = screen.getByRole('tab', { name: 'Twikoo' })
     expect(twikooTab.getAttribute('aria-selected')).toBe('true')
     const closeCode = screen.getByRole('button', { name: '关闭预览' })
     fireEvent.click(closeCode)
 
     // 4. Custom Mode
-    const customTab = screen.getByRole('button', { name: '自选分组' })
+    const customTab = screen.getByRole('radio', { name: '自选分组' })
     fireEvent.click(customTab)
 
     // Create group
@@ -143,7 +146,7 @@ describe('React Workbench Integration Suite', () => {
     Object.defineProperty(navigator, 'clipboard', { configurable: true, value: undefined })
     const card = document.querySelector('.card')!
     expect(card.classList.contains('aspect-square')).toBe(true)
-    fireEvent.click(card)
+    fireEvent.click(card.querySelector('.card__open')!)
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: '复制' })).toBeDefined()

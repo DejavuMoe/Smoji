@@ -1,3 +1,4 @@
+import { Button } from '../../components/ui/button'
 import { Moon, Sun, Monitor } from 'lucide-react'
 import { useWorkbench } from '../../app/WorkbenchContext'
 import type { Theme } from '../../domain/state'
@@ -15,11 +16,11 @@ export function ThemeToggle() {
     theme === 'dark' ? '当前：深色模式 (点击切换到跟随系统)' : theme === 'light' ? '当前：浅色模式 (点击切换到深色)' : '当前：跟随系统 (点击切换到浅色)'
 
   return (
-    <button
+    <Button variant="ghost"
       id="theme-toggle"
       type="button"
-      className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-      title={title}
+      className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground "
+      tooltip={title}
       aria-label={title}
       onClick={handleToggle}
     >
@@ -30,6 +31,6 @@ export function ThemeToggle() {
       ) : (
         <Monitor className="h-4 w-4" />
       )}
-    </button>
+    </Button>
   )
 }

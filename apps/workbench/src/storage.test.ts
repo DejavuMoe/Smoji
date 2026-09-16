@@ -1,9 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import {
+  assertCustomGroupBundleSize,
   buildCustomGroupBundle,
   parseCustomGroupBundle,
+  resolvePersistedItems,
   serializeCustomPacks,
   loadCustomPacks,
+  type PersistedCustomPack,
   STORAGE_KEYS,
   type EditableCustomPack,
 } from './storage'
@@ -69,5 +72,28 @@ describe('custom group portability', () => {
     const parsed = parseCustomGroupBundle(bundle)
     expect(parsed).toHaveLength(1)
     expect(parsed[0]?.id).toBe('fav')
+  })
+})
+
+describe('import normalization and size budget', () => {
+  const item = { id: 'a', label: 'A', src: 'https://static.example.test/a.webp' }
+  const resolve = (src: string) => (src === item.src ? item : null)
+
+  it('de-duplicates by canonical src and counts unresolved entries', () => {
+    expect(resolvePersistedItems([item.src, item.src, 'https://legacy.example/gone.webp'], resolve)).toEqual({
+      items: [item],
+      unresolved: 1,
+    })
+  })
+
+  it('rejects oversized bundles before parsing', () => {
+    expect(() => assertCustomGroupBundleSize('x'.repeat(4 * 1024 * 1024 + 1))).toThrow('4MB')
+    expect(() => assertCustomGroupBundleSize(JSON.stringify([{ id: 'a', label: 'A', itemSrcs: [] }]))).not.toThrow()
+  })
+
+  it('keeps valid import ids and reports duplicates to the parser', () => {
+    const bundle: PersistedCustomPack[] = [{ id: 'Team_A.v1', label: '团队', itemSrcs: [] }]
+    expect(parseCustomGroupBundle(bundle)[0]!.id).toBe('Team_A.v1')
+    expect(() => parseCustomGroupBundle([bundle[0]!, bundle[0]!])).toThrow()
   })
 })

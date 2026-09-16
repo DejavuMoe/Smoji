@@ -2,14 +2,14 @@
 
 ## Overview
 
-`@smoji/workbench` is the production-grade Web Application for browsing, organizing, and exporting emoji packs for modern comment systems and document platforms.
+`@smoji/workbench` is the React workbench for browsing, organizing, and exporting emoji packs for modern comment systems and document platforms.
 
 The application has been engineered with a clean, decoupled architecture:
 1. **Core Zero-Dependency Isolation**: `packages/smoji` remains pure TypeScript without external dependencies, maintaining strict size budgets (< 3KB picker core, < 2KB CSS).
 2. **Pure Domain State & Logic**: Isolated in `apps/workbench/src/domain/`, free from React or DOM side effects, fully covered by unit tests.
-3. **Robust Local Persistence**: Synchronous migration, validation, and debounced saving to `smoji-workbench:*` and `smoji-theme` localStorage keys.
+3. **Robust Local Persistence**: Legacy URL/category migration, validation, and synchronous saving on persisted-state changes to `smoji-workbench:*` and `smoji-theme` localStorage keys.
 4. **Accessible Component System**: Built on Tailwind CSS v4 and Radix UI primitives (`dialog`, `sheet`, `alert-dialog`, `dropdown-menu`, `tabs`, `progress`).
-5. **Progressive Rendering & Responsive UX**: Virtualized chunk rendering (72 items per progressive increment), CSS container/media queries across 4 viewport tiers, visual viewport and virtual keyboard offset tracking.
+5. **Progressive Rendering & Responsive UX**: Progressive rendering (72 items per increment; existing DOM is retained, not virtualized), CSS container/media queries across 4 viewport tiers, visual viewport and virtual keyboard offset tracking.
 
 ---
 
@@ -53,7 +53,7 @@ apps/workbench/
     │   ├── use-roving-grid.ts     # 2D arrow roving navigation for emoji cards
     │   └── use-visual-viewport.ts # Tracks visual viewport height, top offset, keyboard inset
     ├── persistence/
-    │   └── storage.ts          # Storage loading, migration, debounce persistence
+    │   └── storage.ts          # Storage loading, migration, synchronous persistence
     └── styles/
         └── globals.css         # Tailwind v4 theme, Smoji neutral + teal design tokens
 ```

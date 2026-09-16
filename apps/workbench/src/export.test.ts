@@ -19,9 +19,9 @@ describe('stampDownloadFilename', () => {
     }
   })
 
-  it('handles markdown and OwO names', () => {
+  it('handles different extensions and OwO names', () => {
     expect(stampDownloadFilename('OwO.json')).toMatch(/^OwO-\d{8}\.json$/)
-    expect(stampDownloadFilename('smoji-markers.md')).toMatch(/^smoji-markers-\d{8}\.md$/)
+    expect(stampDownloadFilename('notes.txt')).toMatch(/^notes-\d{8}\.txt$/)
   })
 
   it('appends stamp when there is no extension', () => {
@@ -37,9 +37,10 @@ describe('export format registry', () => {
   })
 
   it('splits toolbar and preview subsets from the registry', async () => {
-    const { toolbarExportFormats, previewExportFormats } = await import('./export')
+    const { toolbarExportFormats, previewExportFormats, generateFormattedExport } = await import('./export')
     expect(toolbarExportFormats().every((f) => f.toolbar)).toBe(true)
-    expect(previewExportFormats().map((f) => f.id)).toContain('markdown')
+    expect(previewExportFormats().map((f) => f.id)).not.toContain('markdown')
+    expect(() => generateFormattedExport('markdown', [], 'https://example.com/smoji.json')).toThrow('未知导出格式')
     expect(toolbarExportFormats().map((f) => f.id)).not.toContain('markdown')
   })
 

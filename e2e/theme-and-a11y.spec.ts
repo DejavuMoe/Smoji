@@ -34,8 +34,8 @@ test.describe('Theme, Safe Area, and Accessibility E2E', () => {
     const skipLink = page.locator('a[href="#grid"]')
     await expect(skipLink).toHaveText('跳到表情图库')
 
-    // Grid role
-    await expect(page.locator('#grid')).toHaveAttribute('role', 'grid')
+    // A named collection, not an ARIA grid without the required row/gridcell structure.
+    await expect(page.getByRole('group', { name: '表情图库', exact: true })).toBeVisible()
 
     // Open guide dialog and check accessible title
     await page.locator('#btn-open-guide').click()

@@ -90,7 +90,7 @@ it('keeps export scope/format, progressive group creation, overlays and clipboar
   })
   const downloadNames: string[] = []
   vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function (this: HTMLAnchorElement) { downloadNames.push(this.download) })
-  for (const [format, filename] of [['smoji', 'smoji.json'], ['twikoo', 'twikoo.json'], ['markdown', 'smoji-markers.md']]) {
+  for (const [format, filename] of [['smoji', 'smoji.json'], ['twikoo', 'twikoo.json'], ['artalk', 'artalk.json']]) {
     click(`#code-tab-${format}`)
     const expected = stampDownloadFilename(filename!)
     expect(guideNames).toContain(expected)

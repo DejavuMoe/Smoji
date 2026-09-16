@@ -32,7 +32,8 @@ test.describe('Export Workflow and Code Preview E2E', () => {
 
     // Change format to twikoo in dock
     const dockFormatSelect = page.locator('#selection-dock-format')
-    await dockFormatSelect.selectOption('twikoo')
+    await dockFormatSelect.click()
+    await page.getByRole('option', { name: 'Twikoo', exact: true }).click()
 
     // Click preview button on dock
     await page.locator('#selection-dock-preview').click()
@@ -59,10 +60,13 @@ test.describe('Export Workflow and Code Preview E2E', () => {
     await page.keyboard.press('ControlOrMeta+Shift+P')
     await expect(codeModal).toBeVisible()
 
-    // Switch format tab to Markdown
-    await page.locator('#code-tab-markdown').click()
-    const mdContent = await code.textContent()
-    expect(mdContent).toContain('###')
+    // Only supported configuration formats remain in the exporter.
+    await expect(page.locator('#code-tab-markdown')).toHaveCount(0)
+    await page.locator('#code-tab-artalk').click()
+    await expect(page.locator('#code-tab-artalk')).toHaveAttribute('aria-selected', 'true')
+    const artalk = JSON.parse(await code.innerText())
+    expect(artalk[0]).toMatchObject({ type: 'image', items: expect.any(Array) })
+    expect(artalk[0].items.length).toBeGreaterThan(0)
 
     await page.keyboard.press('Escape')
     await expect(codeModal).not.toBeVisible()

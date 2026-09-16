@@ -1,7 +1,11 @@
+import catalog from '../data/smoji.json' with { type: 'json' }
 import { test, expect } from '@playwright/test'
 
 test.describe('Workbench Packs Mode E2E', () => {
   test.beforeEach(async ({ page }) => {
+    // Current local catalog; UI contracts must not depend on the CDN's version or latency.
+    await page.route('**/smoji.json', route => route.fulfill({ json: catalog }))
+    await page.route(/\.(png|gif|webp)$/, route => route.fulfill({ contentType: 'image/svg+xml', body: '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><circle cx="16" cy="16" r="14" fill="teal"/></svg>' }))
     await page.goto('/')
     // Wait for the app to mount and cards to load
     await expect(page.locator('.card').first()).toBeVisible()
@@ -104,7 +108,7 @@ test.describe('Workbench Packs Mode E2E', () => {
     // Click second pack
     const secondPackRow = packRows.nth(1)
     const secondLabel = await secondPackRow.locator('.truncate').textContent()
-    await secondPackRow.locator('button').click()
+    await secondPackRow.locator('button.pack').click()
 
     // Close drawer if on mobile
     const drawerClose = page.locator('#sidebar-close')

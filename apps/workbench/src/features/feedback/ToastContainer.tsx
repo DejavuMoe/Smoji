@@ -1,3 +1,4 @@
+import { Button } from '../../components/ui/button'
 import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
 import { subscribeToasts, dismissToast, type ToastItem } from './toast'
@@ -26,23 +27,23 @@ export function ToastContainer() {
 
           <div className="flex shrink-0 items-center gap-1.5">
             {item.action && (
-              <button
+              <Button variant="ghost"
                 type="button"
                 className="toast__action rounded bg-primary/10 px-2 py-0.5 font-medium text-primary hover:bg-primary/20"
                 onClick={item.action.run}
               >
                 {item.action.label}
-              </button>
+              </Button>
             )}
 
-            <button
+            <Button variant="ghost"
               type="button"
               className="toast__dismiss rounded p-0.5 text-muted-foreground hover:bg-muted hover:text-foreground"
               aria-label="关闭通知"
               onClick={() => dismissToast(item.id)}
             >
               <X className="h-3.5 w-3.5" />
-            </button>
+            </Button>
           </div>
         </div>
       ))}

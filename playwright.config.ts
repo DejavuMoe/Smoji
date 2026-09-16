@@ -9,7 +9,7 @@ export default defineConfig({
   reporter: [['list']],
   use: {
     baseURL: 'http://localhost:4173',
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
     video: 'off',
   },
   projects: [
@@ -38,6 +38,9 @@ export default defineConfig({
       name: 'tablet',
       use: {
         ...devices['iPad (gen 7)'],
+        // The iPad descriptor defaults to WebKit; tablet layout coverage must run on an engine
+        // that actually launches locally and in CI. WebKit stays covered by its own project.
+        browserName: 'chromium',
         viewport: { width: 834, height: 1194 },
       },
     },
@@ -57,8 +60,10 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'pnpm exec vite preview --config apps/workbench/vite.config.ts --port 4173',
+    // Always rebuild: testing a stale dist is how a regression can pass unnoticed.
+    command: 'pnpm build:workbench && pnpm exec vite preview --config apps/workbench/vite.config.ts --port 4173 --strictPort',
     port: 4173,
-    reuseExistingServer: true,
+    reuseExistingServer: false,
+    timeout: 240_000,
   },
 })

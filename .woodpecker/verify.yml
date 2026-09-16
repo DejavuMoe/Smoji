@@ -18,3 +18,12 @@ steps:
       - pnpm check
       - node --experimental-strip-types scripts/verify-site-output.mjs apps/workbench/dist
       - node scripts/test-publish-site.mjs
+
+  # Deterministic browser contracts. `pnpm check` never runs Playwright, and the preview
+  # server rebuilds the workbench so the spec cannot pass against a stale dist.
+  - name: e2e
+    image: mcr.microsoft.com/playwright:v1.63.0-noble
+    commands:
+      - npm install --global pnpm@11.24.0
+      - pnpm install --frozen-lockfile
+      - pnpm exec playwright test e2e/audit-regressions.spec.ts e2e/keyboard-workflow.spec.ts e2e/workbench-export.spec.ts e2e/workbench-custom-groups.spec.ts --project=chromium

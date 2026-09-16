@@ -1,3 +1,4 @@
+import { Button } from './components/ui/button'
 import { StrictMode, useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { loadSmojiManifest } from 'smoji/manifest'
@@ -12,9 +13,19 @@ import './styles/globals.css'
 
 export { showToast } from './features/feedback/toast'
 
-const manifestUrl = import.meta.env.PROD
-  ? new URL('smoji.json', hosting.assetBaseUrl).href
-  : new URL(`${import.meta.env.BASE_URL}smoji.json`, window.location.href).href
+// The build emits the same-version catalog next to the app; the published CDN copy is only a fallback.
+const catalogUrl = new URL(`${import.meta.env.BASE_URL}smoji.json`, window.location.href).href
+const publishedManifestUrl = new URL('smoji.json', hosting.assetBaseUrl).href
+const manifestUrl = import.meta.env.PROD ? publishedManifestUrl : catalogUrl
+
+async function loadCatalog() {
+  try {
+    return await loadSmojiManifest(catalogUrl)
+  } catch (localError) {
+    if (manifestUrl === catalogUrl) throw localError
+    return await loadSmojiManifest(manifestUrl)
+  }
+}
 
 function Root() {
   const [packs, setPacks] = useState<SmojiPack[] | null>(null)
@@ -24,8 +35,12 @@ function Root() {
     let active = true
     async function load() {
       try {
-        await Promise.allSettled([loadAssetAliases()])
-        const manifest = await loadSmojiManifest(manifestUrl)
+        // Aliases must be ready before the provider can migrate saved groups; a failure keeps
+        // the workbench unmounted so filtered data can never overwrite storage.
+        const [manifest] = await Promise.all([
+          loadCatalog(),
+          loadAssetAliases(),
+        ])
         if (active) setPacks(manifest.packs)
       } catch (err: any) {
         if (active) setError(err.message || '清单加载失败')
@@ -43,13 +58,13 @@ function Root() {
         <div className="max-w-md space-y-3 rounded-xl border border-destructive/20 bg-destructive/5 p-6">
           <h2 className="text-base font-semibold text-destructive">无法加载表情清单</h2>
           <p className="text-xs text-muted-foreground">{error}</p>
-          <button
+          <Button variant="ghost"
             type="button"
             className="rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
             onClick={() => window.location.reload()}
           >
             重试加载
-          </button>
+          </Button>
         </div>
       </div>
     )
@@ -58,7 +73,7 @@ function Root() {
   if (!packs) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+        <div role="status" className="flex items-center gap-2 text-xs text-muted-foreground">
           <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
           <span>加载表情工作台...</span>
         </div>

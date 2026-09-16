@@ -1,6 +1,7 @@
 import type { SmojiItem, SmojiPack } from '../../../../packages/smoji/src/types'
 import type {
   CopyFormat,
+  CustomGroupExtensions,
   Density,
   EditableCustomPack,
   GalleryView,
@@ -29,6 +30,7 @@ export type WorkbenchAction =
   | { type: 'SET_ACTIVE_CUSTOM_GROUP'; payload: number }
   | { type: 'CREATE_CUSTOM_GROUP'; payload: { label: string; id?: string } }
   | { type: 'RENAME_CUSTOM_GROUP'; payload: { index: number; label: string } }
+  | { type: 'SET_CUSTOM_GROUP_ID'; payload: { index: number; id: string } }
   | { type: 'DELETE_CUSTOM_GROUP'; payload: number }
   | { type: 'REORDER_CUSTOM_GROUPS'; payload: { fromIndex: number; toIndex: number } }
   | { type: 'MOVE_CUSTOM_GROUP'; payload: { index: number; direction: -1 | 1 } }
@@ -36,13 +38,22 @@ export type WorkbenchAction =
   | { type: 'MERGE_CUSTOM_GROUP'; payload: number }
   | { type: 'SPLIT_CUSTOM_GROUP'; payload: number }
   | { type: 'TOGGLE_CUSTOM_ITEM'; payload: SmojiItem }
+  | { type: 'TOGGLE_CUSTOM_ITEM_IN_GROUP'; payload: { item: SmojiItem; groupIndex: number } }
   | { type: 'REMOVE_CUSTOM_ITEM'; payload: { groupIndex: number; itemIndex: number } }
   | { type: 'REORDER_CUSTOM_ITEMS'; payload: { groupIndex: number; fromIndex: number; toIndex: number } }
-  | { type: 'MOVE_CUSTOM_ITEM_TO_GROUP'; payload: { itemSrc: string; targetGroupIndex: number } }
+  | {
+      type: 'MOVE_CUSTOM_ITEM_TO_GROUP'
+      payload: { itemSrc: string; targetGroupIndex: number; sourceGroupIndex?: number; sourceItemIndex?: number }
+    }
   | { type: 'ADD_ALL_CURRENT_PACK_TO_CUSTOM' }
-  | { type: 'IMPORT_CUSTOM_GROUPS'; payload: readonly EditableCustomPack[] }
+  | {
+      type: 'IMPORT_CUSTOM_GROUPS'
+      payload: { groups: readonly EditableCustomPack[]; notes?: string; extensions?: CustomGroupExtensions }
+    }
   | { type: 'CLEAR_ALL_CUSTOM_GROUPS' }
   | { type: 'SET_CUSTOM_NOTES'; payload: string }
+  | { type: 'SET_CUSTOM_EXTENSIONS'; payload: CustomGroupExtensions }
+  | { type: 'CLEAR_CUSTOM_GROUP_NOTICE' }
   | { type: 'SET_GALLERY_VIEW'; payload: GalleryView }
   | { type: 'SET_GALLERY_DENSITY'; payload: Density }
   | { type: 'EXPAND_RENDER_LIMIT' }

@@ -1,7 +1,8 @@
 import { expect, it } from 'vitest'
-import { canonicalAssetSrc, canonicalPackIds, loadAssetAliases, migratePackSelection } from './asset-paths'
+import { canonicalAssetSrc, canonicalPackIds, loadAssetAliases, migratePackSelection, seedAssetPaths } from './asset-paths'
 import aliases from '../../../data/published-aliases.json'
 import manifest from '../../../data/smoji.json'
+import onionRemoval from '../../../data/removals/onion-duplicates-20260916.json'
 
 it('migrates published URLs and pack selections without rewriting other origins', async () => {
   await loadAssetAliases()
@@ -44,9 +45,26 @@ it('keeps a selected old subcategory from expanding to the whole merged category
 it('migrates saved site URLs to the CDN while preserving unrelated URLs', async () => {
   await loadAssetAliases()
   const base = 'https://s3-cdn.zsh.moe/smoji/smoji.json'
+  const packs = manifest.packs.map((pack) => ({ ...pack, items: pack.items.map((item) => ({
+    ...item, src: new URL(item.src, base).href,
+  })) }))
+  // The runtime seeds known paths from the loaded catalog instead of bundling a second manifest copy.
+  seedAssetPaths(packs, base)
   const path = manifest.packs[0]!.items[0]!.src
   expect(canonicalAssetSrc(new URL(path, window.location.href).href, base)).toBe(new URL(path, base).href)
   const [from, to] = Object.entries(aliases)[0]!
   expect(canonicalAssetSrc(new URL(from, window.location.href).href, base)).toBe(new URL(to, base).href)
   expect(canonicalAssetSrc('https://other.test/unknown.webp', base)).toBe('https://other.test/unknown.webp')
+})
+
+it('keeps saved onion duplicates resolvable after catalog removal', async () => {
+  await loadAssetAliases()
+  const base = 'https://example.test/assets/smoji.json'
+  const live = new Set(manifest.packs.flatMap(pack => pack.items.map(item => item.src.replace(/^\.\//, ''))))
+  for (const { removed } of onionRemoval.entries) {
+    const replacement = (aliases as Record<string, string>)[removed]
+    expect(live.has(removed)).toBe(false)
+    expect(replacement && live.has(replacement)).toBe(true)
+    expect(canonicalAssetSrc(new URL(removed, base).href, base)).toBe(new URL(replacement!, base).href)
+  }
 })

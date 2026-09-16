@@ -1,3 +1,5 @@
+import { Button } from '../../components/ui/button'
+import { Checkbox } from '../../components/ui/checkbox'
 import type { SmojiPack } from '../../../../../packages/smoji/src/types'
 import { useWorkbench } from '../../app/WorkbenchContext'
 
@@ -9,16 +11,13 @@ interface PackRowProps {
 }
 
 export function PackRow({ pack, index, isActive, isChecked }: PackRowProps) {
-  const { dispatch, state } = useWorkbench()
+  const { dispatch, state, setMobileDrawerOpen } = useWorkbench()
   const isCustomMode = state.mode === 'custom'
-
-  function handleCheck(e: React.ChangeEvent<HTMLInputElement>) {
-    e.stopPropagation()
-    dispatch({ type: 'TOGGLE_PACK_SELECTION', payload: pack.id })
-  }
 
   function handleSelect() {
     dispatch({ type: 'SET_ACTIVE_PACK', payload: index })
+    if (isCustomMode) dispatch({ type: 'SET_GALLERY_VIEW', payload: 'source' })
+    setMobileDrawerOpen(false)
   }
 
   return (
@@ -28,23 +27,20 @@ export function PackRow({ pack, index, isActive, isChecked }: PackRowProps) {
       }`}
       data-pack-index={String(index)}
     >
-      <label className="flex shrink-0 cursor-pointer items-center p-0.5">
-        <input
-          type="checkbox"
-          className="pack-check h-4 w-4 rounded border-border text-primary accent-primary focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-40"
+      {!isCustomMode && <label className="flex shrink-0 cursor-pointer items-center p-0.5">
+        <Checkbox
+          className="pack-check"
           data-pack-id={pack.id}
           checked={isChecked}
-          disabled={isCustomMode}
-          tabIndex={-1}
-          aria-checked={isChecked}
           aria-label={`选择 ${pack.label}`}
-          aria-hidden={isCustomMode ? 'true' : undefined}
-          onChange={handleCheck}
+          onCheckedChange={(checked) => {
+            if (typeof checked === 'boolean' && checked !== isChecked) dispatch({ type: 'TOGGLE_PACK_SELECTION', payload: pack.id })
+          }}
         />
-      </label>
-      <button
+      </label>}
+      <Button variant="ghost"
         type="button"
-        className="pack flex min-w-0 flex-1 items-center justify-between py-1 text-left text-xs outline-none focus-visible:ring-1 focus-visible:ring-ring"
+        className="pack flex min-w-0 flex-1 items-center justify-between py-1 text-left text-xs "
         data-pack-index={String(index)}
         aria-current={isActive ? 'true' : undefined}
         onClick={handleSelect}
@@ -53,7 +49,7 @@ export function PackRow({ pack, index, isActive, isChecked }: PackRowProps) {
         <span className="ml-1 shrink-0 text-[11px] tabular-nums text-muted-foreground/80 group-hover:text-muted-foreground">
           {pack.items.length}
         </span>
-      </button>
+      </Button>
     </div>
   )
 }

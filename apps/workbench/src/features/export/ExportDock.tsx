@@ -1,7 +1,10 @@
+import { Button } from '../../components/ui/button'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select'
+import { isEditing, hasOpenOverlay } from '../../keyboard'
 import { useRef, useCallback, useEffect } from 'react'
 import { FileCode, Download, AlertTriangle } from 'lucide-react'
 import { useWorkbench } from '../../app/WorkbenchContext'
-import { dockExportFormats, generateFormattedExport, stampDownloadFilename } from '../../export'
+import { dockExportFormats, listExportFormats, stampDownloadFilename } from '../../export'
 import { useDockOffset } from '../../hooks/use-dock-offset'
 import { SMOJI_MANIFEST_MAX_BYTES } from '../../domain/limits'
 
@@ -12,8 +15,10 @@ export function ExportDock() {
     exportPacks,
     exportItemCount,
     exportBytes,
+    exportContent,
+    exportFilename,
+    exportError,
     isOverBudget,
-    manifestUrl,
   } = useWorkbench()
 
   const dockRef = useRef<HTMLDivElement | null>(null)
@@ -28,39 +33,39 @@ export function ExportDock() {
 
   const formats = dockExportFormats()
   const currentFormat = state.export.format || 'smoji'
+  // A preview-only plugin format can still be the active global format; keep the select valid.
+  const extraFormat =
+    formats.some((format) => format.id === currentFormat)
+      ? null
+      : listExportFormats().find((format) => format.id === currentFormat) ?? null
+
+  const canExport = hasItems && !isOverBudget && !exportError && Boolean(exportContent)
 
   const handleExport = useCallback(() => {
-    if (!hasItems || isOverBudget) return
-    try {
-      const res = generateFormattedExport(currentFormat, exportPacks as any, manifestUrl)
-      const mime = currentFormat === 'markdown' ? 'text/markdown' : 'application/json'
-      const blob = new Blob([res.content], { type: mime })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = stampDownloadFilename(res.filename)
-      a.click()
-      URL.revokeObjectURL(url)
-    } catch (err: any) {
-      alert(err.message || '导出失败')
-    }
-  }, [hasItems, isOverBudget, currentFormat, exportPacks, manifestUrl])
+    if (!canExport || !exportContent) return
+    const mime = exportFilename.endsWith('.md') ? 'text/markdown;charset=utf-8' : 'application/json'
+    const blob = new Blob([exportContent], { type: mime })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = stampDownloadFilename(exportFilename)
+    a.click()
+    URL.revokeObjectURL(url)
+  }, [canExport, exportContent, exportFilename])
 
   // Global Ctrl/Cmd+E export shortcut
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'e') {
-        const isInput =
-          e.target instanceof HTMLInputElement ||
-          e.target instanceof HTMLTextAreaElement
-        if (isInput) return
+        if (e.defaultPrevented || e.isComposing || e.altKey || e.shiftKey ||
+          isEditing(e.target) || hasOpenOverlay() || !canExport) return
         e.preventDefault()
         handleExport()
       }
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [handleExport])
+  }, [handleExport, canExport])
 
   if (!isVisible) return null
 
@@ -100,11 +105,13 @@ export function ExportDock() {
           )}
         </div>
         <span id="selection-dock-hint" className="selection-dock__hint truncate text-[11px] text-muted-foreground">
-          {isOverBudget
-            ? '配置数据超出最大 1MB 限制，请精简表情数量'
-            : isCustom
-              ? '可导出为各评论系统所用的表情配置'
-              : '已排除分类中未选中的表情项'}
+          {exportError
+            ? `无法导出：${exportError}`
+            : isOverBudget
+              ? '配置数据超出最大 1MB 限制，请精简表情数量'
+              : isCustom
+                ? '可导出为各评论系统所用的表情配置'
+                : '已排除分类中未选中的表情项'}
         </span>
 
         {/* Meter bar */}
@@ -112,14 +119,16 @@ export function ExportDock() {
           id="selection-dock-meter"
           className="selection-dock__meter mt-1 h-1 w-full max-w-[200px] overflow-hidden rounded-full bg-muted"
           role="progressbar"
+          aria-label="导出数据体积"
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={budgetPercent}
+          aria-valuetext={`${kb} KB / 1024 KB`}
         >
           <div
             id="selection-dock-meter-bar"
             className={`selection-dock__meter-bar h-full transition-all ${
-              isOverBudget ? 'bg-destructive' : 'bg-primary'
+              isOverBudget || exportError ? 'bg-destructive' : 'bg-primary'
             }`}
             style={{ width: `${budgetPercent}%` }}
           />
@@ -130,45 +139,43 @@ export function ExportDock() {
       <div className="selection-dock__actions flex flex-wrap items-center justify-between sm:justify-end gap-2 w-full sm:w-auto shrink-0">
         <div className="selection-dock__format-wrap relative min-w-0 flex-1 sm:flex-initial">
           <span className="sr-only">导出格式</span>
-          <select
-            id="selection-dock-format"
-            className="selection-dock__format h-8 w-full sm:w-auto rounded-lg border border-input bg-background px-2.5 text-xs font-medium text-foreground outline-none focus:border-primary"
-            aria-label="导出格式"
-            value={currentFormat}
-            onChange={(e) => dispatch({ type: 'SET_EXPORT_FORMAT', payload: e.target.value })}
-          >
-            {formats.map((fmt) => (
-              <option key={fmt.id} value={fmt.id}>
-                {fmt.label}
-              </option>
-            ))}
-          </select>
+          <Select value={currentFormat} onValueChange={(value) => dispatch({ type: 'SET_EXPORT_FORMAT', payload: value })}>
+            <SelectTrigger id="selection-dock-format" aria-label="导出格式" className="w-full sm:w-auto">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent><SelectGroup>
+              {formats.map((fmt) => <SelectItem key={fmt.id} value={fmt.id}>{fmt.label}</SelectItem>)}
+              {extraFormat && <SelectItem value={extraFormat.id}>{extraFormat.label}</SelectItem>}
+            </SelectGroup></SelectContent>
+          </Select>
         </div>
 
-        <button
+        <Button variant="ghost"
           id="selection-dock-preview"
           type="button"
           className="btn-ghost inline-flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-3 text-xs font-medium text-foreground hover:bg-muted"
-          title="预览导出数据 (⌘/Ctrl+Shift+P)"
+          tooltip="预览导出数据 (⌘/Ctrl+Shift+P)"
           aria-keyshortcuts="Control+Shift+P Meta+Shift+P"
-          onClick={() => dispatch({ type: 'SET_CODE_DIALOG_OPEN', payload: true })}
+          onClick={() => {
+            dispatch({ type: 'SET_CODE_DIALOG_OPEN', payload: true })
+          }}
         >
           <FileCode className="h-3.5 w-3.5" />
           <span>预览</span>
-        </button>
+        </Button>
 
-        <button
+        <Button variant="ghost"
           id="selection-dock-export"
           type="button"
           className="btn-primary inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-medium text-primary-foreground hover:bg-primary/90 disabled:pointer-events-none disabled:opacity-40"
-          title="导出当前配置 (⌘/Ctrl+E)"
+          tooltip="导出当前配置 (⌘/Ctrl+E)"
           aria-keyshortcuts="Control+E Meta+E"
-          disabled={!hasItems || isOverBudget}
+          disabled={!canExport}
           onClick={handleExport}
         >
           <Download className="h-3.5 w-3.5" />
           <span>导出</span>
-        </button>
+        </Button>
       </div>
     </div>
   )

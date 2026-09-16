@@ -24,6 +24,8 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
   --color-border: var(--border);
   --color-input: var(--border);
   --color-ring: var(--ring);
@@ -53,6 +55,7 @@
   --destructive-foreground: #ffffff;
   --ring: #0f766e;
   --warning: #89530b;
+  --warning-foreground: #ffffff;
 
   --check-a: #e9edeb;
   --check-b: #ffffff;
@@ -79,6 +82,7 @@
   --destructive-foreground: #14231f;
   --ring: #68d8bf;
   --warning: #f59e0b;
+  --warning-foreground: #14231f;
 
   --check-a: #202a25;
   --check-b: #171f1b;
@@ -94,6 +98,53 @@
     font-family: var(--font-sans);
     min-height: 100dvh;
   }
+}
+
+/* One author-defined focus treatment, including disclosure and programmatic targets.
+   Kept outside Tailwind layers so a component cannot silently suppress it. */
+:where(button, a[href], input, select, textarea, summary, [tabindex]):not([role="dialog"]):not([role="alertdialog"]):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+:where(button, input, select, textarea) {
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--muted-foreground) var(--muted);
+}
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--muted); }
+::-webkit-scrollbar-thumb { background: var(--muted-foreground); border: 2px solid var(--muted); border-radius: 8px; }
+
+/* Informational tooltips and their positioning box must not block neighboring controls. */
+[data-radix-popper-content-wrapper]:has(> [data-slot="tooltip-content"]) {
+  pointer-events: none;
+}
+
+/* Lists clip outer outlines; inset focus remains visible at their edges. */
+:where([data-slot="tabs-trigger"], [data-slot="toggle-group-item"], [role="menuitem"], [role="option"], summary):focus-visible {
+  outline-offset: -2px;
+}
+
+.card.is-excluded:focus-within { opacity: 1; filter: none; }
+
+@media (forced-colors: active) {
+  :where(button, input, summary, [tabindex]):focus-visible { outline-color: Highlight; }
+  [aria-pressed="true"], [aria-selected="true"], [data-slot="checkbox"][data-state="checked"] {
+    border: 1px solid Highlight;
+  }
+  * { scrollbar-color: auto; }
+  ::selection { background: Highlight; color: HighlightText; }
 }
 
 /* Custom functional styles */
@@ -112,12 +163,22 @@
   contain-intrinsic-size: auto 90px;
 }
 
+/* Decoded pixels reveal from blur; opacity/filter never change the card's geometry. */
+.image-reveal { opacity: 0; }
+.image-reveal.is-loaded { opacity: 1; animation: image-reveal 350ms ease-out both; }
+@keyframes image-reveal {
+  from { opacity: .25; filter: blur(10px); }
+  to { opacity: 1; filter: blur(0); }
+}
+
 /* Dock safe area adjustment */
 .selection-dock {
   margin-bottom: max(0px, env(safe-area-inset-bottom));
 }
 
 main {
+  scroll-padding-top: 100px;
+  scrollbar-gutter: stable;
   scroll-padding-bottom: calc(var(--selection-dock-offset, 0px) + 24px);
   padding-bottom: calc(var(--selection-dock-offset, 0px) + 24px);
 }

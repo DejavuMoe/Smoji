@@ -1,3 +1,4 @@
+import { Button } from '../components/ui/button'
 import React, { Component, type ErrorInfo, type ReactNode } from 'react'
 
 interface Props {
@@ -32,13 +33,13 @@ export class ErrorBoundary extends Component<Props, State> {
             <p className="text-sm text-muted-foreground">
               {this.state.error?.message || '发生了意外错误，已保护您的本地数据。'}
             </p>
-            <button
+            <Button variant="ghost"
               type="button"
               className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
               onClick={() => window.location.reload()}
             >
               重新加载
-            </button>
+            </Button>
           </div>
         </div>
       )

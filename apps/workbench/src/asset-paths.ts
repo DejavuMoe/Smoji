@@ -1,10 +1,48 @@
-import manifest from '../../../data/smoji.json'
-const assetPaths = new Set(manifest.packs.flatMap((pack) => pack.items.map((item) => item.src.replace(/^\.\//, ''))))
+import hosting from '../../../data/hosting.json'
 import type { SmojiPack } from 'smoji'
+
+/** Known asset paths of the currently loaded catalog, used to migrate historical site URLs. */
+let assetPaths = new Set<string>()
 
 let paths: Record<string, string> = {}
 export async function loadAssetAliases(): Promise<void> {
   paths = (await import('../../../data/published-aliases.json')).default
+}
+
+function candidateBases(manifestUrl: string): URL[] {
+  const bases = [new URL('./', manifestUrl)]
+  try {
+    bases.push(new URL('./', new URL(import.meta.env.BASE_URL, window.location.href)))
+  } catch { /* no window (tests): keep manifest base only. */ }
+  bases.push(new URL('./', hosting.assetBaseUrl))
+  return bases
+}
+
+/**
+ * Seed the known-path set from the loaded catalog so `canonicalAssetSrc` can normalize saved
+ * site-origin URLs to the published asset base without bundling a second copy of the manifest.
+ */
+export function seedAssetPaths(packs: readonly SmojiPack[], manifestUrl: string): void {
+  const bases = candidateBases(manifestUrl)
+  const next = new Set<string>()
+  for (const pack of packs) {
+    for (const item of pack.items) {
+      let url: URL
+      try {
+        url = new URL(item.src, bases[0])
+      } catch {
+        continue
+      }
+      if (url.search || url.hash || url.username || url.password) continue
+      for (const base of bases) {
+        if (url.origin !== base.origin || !url.pathname.startsWith(base.pathname)) continue
+        const path = decodeURIComponent(url.pathname.slice(base.pathname.length))
+        if (path) next.add(path)
+        break
+      }
+    }
+  }
+  assetPaths = next
 }
 
 /** Resolve only known published paths on the current asset origin and base directory. */

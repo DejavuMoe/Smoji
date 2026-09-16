@@ -4,6 +4,16 @@ import type { SmojiItem, SmojiPack } from '../../../../../packages/smoji/src/typ
 import { WorkbenchProvider } from '../../app/WorkbenchProvider'
 import { CopyTabs } from './CopyTabs'
 import { PreviewBackgroundToggle } from './PreviewBackgroundToggle'
+import { DetailInspectorDialog } from './DetailInspectorDialog'
+import { useWorkbench } from '../../app/WorkbenchContext'
+
+vi.mock('../../images', () => ({
+  thumbnailSrc: () => '/static-thumbnail.webp',
+  loadImage: (image: HTMLImageElement, src: string, callbacks: { load?: () => void } = {}) => {
+    image.src = src
+    callbacks.load?.()
+  },
+}))
 
 const mockItem: SmojiItem = {
   id: 'hello',
@@ -20,6 +30,21 @@ describe('Inspector Components & Clipboard Fallback', () => {
     vi.restoreAllMocks()
   })
 
+  it('previews the original image and preserves text-field arrow navigation', () => {
+    function Inspector() {
+      const { dispatch } = useWorkbench()
+      return <><button onClick={() => dispatch({ type: 'OPEN_INSPECTOR', payload: mockItem.src })}>打开</button><DetailInspectorDialog /></>
+    }
+    const next = { id: 'next', label: '下一张', src: 'https://cdn.example/next.gif' }
+    render(<WorkbenchProvider initialPacks={[{ ...mockPacks[0]!, items: [mockItem, next] }]}><Inspector /></WorkbenchProvider>)
+    fireEvent.click(screen.getByRole('button', { name: '打开' }))
+    expect(screen.getByRole('img').getAttribute('src')).toBe(mockItem.src)
+    fireEvent.keyDown(screen.getByRole('textbox'), { key: 'ArrowRight' })
+    expect(screen.getByRole('img').getAttribute('src')).toBe(mockItem.src)
+    fireEvent.keyDown(screen.getByRole('button', { name: '关闭详情' }), { key: 'ArrowRight' })
+    expect(screen.getByRole('img').getAttribute('src')).toBe(next.src)
+  })
+
   it('formats Hugo shortcodes with properly escaped quotes and labels', () => {
     render(
       <WorkbenchProvider initialPacks={mockPacks}>
@@ -27,8 +52,8 @@ describe('Inspector Components & Clipboard Fallback', () => {
       </WorkbenchProvider>,
     )
 
-    const hugoTab = screen.getByRole('button', { name: 'Hugo' })
-    fireEvent.click(hugoTab)
+    const hugoTab = screen.getByRole('tab', { name: 'Hugo' })
+    fireEvent.mouseDown(hugoTab)
 
     const input = screen.getByRole('textbox') as HTMLInputElement
     expect(input.value).toBe(
@@ -67,17 +92,17 @@ describe('Inspector Components & Clipboard Fallback', () => {
       </WorkbenchProvider>,
     )
 
-    const lightBtn = screen.getByRole('button', { name: '浅底' })
-    const darkBtn = screen.getByRole('button', { name: '深底' })
-    const transBtn = screen.getByRole('button', { name: '透明' })
+    const lightBtn = screen.getByRole('radio', { name: '浅底' })
+    const darkBtn = screen.getByRole('radio', { name: '深底' })
+    const transBtn = screen.getByRole('radio', { name: '透明' })
 
     fireEvent.click(lightBtn)
-    expect(lightBtn.className).toContain('bg-surface')
+    expect(lightBtn.getAttribute('aria-checked')).toBe('true')
 
     fireEvent.click(darkBtn)
-    expect(darkBtn.className).toContain('bg-surface')
+    expect(darkBtn.getAttribute('aria-checked')).toBe('true')
 
     fireEvent.click(transBtn)
-    expect(transBtn.className).toContain('bg-surface')
+    expect(transBtn.getAttribute('aria-checked')).toBe('true')
   })
 })

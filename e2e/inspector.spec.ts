@@ -42,18 +42,18 @@ test.describe('Emoji Detail Inspector E2E', () => {
     expect(bbValue).toMatch(/^\[img\]/)
 
     // 6. Test background toggles: 浅底, 深底, 透明
-    const bgLight = page.getByRole('button', { name: '浅底' })
+    const bgLight = page.getByRole('radio', { name: '浅底' })
     await bgLight.click()
-    const bgDark = page.getByRole('button', { name: '深底' })
+    const bgDark = page.getByRole('radio', { name: '深底' })
     await bgDark.click()
-    const bgTrans = page.getByRole('button', { name: '透明' })
+    const bgTrans = page.getByRole('radio', { name: '透明' })
     await bgTrans.click()
 
     // 7. Test prev / next keyboard navigation
+    await page.locator('#pop-close-btn').focus()
     const initialTitle = await page.locator('[data-slot="dialog-title"]').textContent()
     await page.keyboard.press('ArrowRight')
-    const nextTitle = await page.locator('[data-slot="dialog-title"]').textContent()
-    expect(nextTitle).not.toBe(initialTitle)
+    await expect(page.locator('[data-slot="dialog-title"]')).not.toHaveText(initialTitle ?? '')
 
     await page.keyboard.press('ArrowLeft')
     const prevTitle = await page.locator('[data-slot="dialog-title"]').textContent()

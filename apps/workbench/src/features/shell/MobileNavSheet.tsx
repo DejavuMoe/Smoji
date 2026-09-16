@@ -1,3 +1,5 @@
+import { Button } from '../../components/ui/button'
+import { useEffect } from 'react'
 import { X } from 'lucide-react'
 import {
   Sheet,
@@ -6,23 +8,36 @@ import {
   SheetTitle,
 } from '../../components/ui/sheet'
 import { useWorkbench } from '../../app/WorkbenchContext'
+import { useMediaQuery } from '../../hooks/use-media-query'
+import { useFocusReturn } from '../../focus-return'
 import { SidebarContent } from './Sidebar'
 
 export function MobileNavSheet() {
   const { mobileDrawerOpen, setMobileDrawerOpen } = useWorkbench()
+  const isDesktop = useMediaQuery('(min-width: 901px)')
+
+  // Crossing into the desktop breakpoint must unmount the sheet: two workspace IDs may never coexist.
+  useEffect(() => {
+    if (isDesktop && mobileDrawerOpen) setMobileDrawerOpen(false)
+  }, [isDesktop, mobileDrawerOpen, setMobileDrawerOpen])
+
+  const focusReturn = useFocusReturn('#grid', '#menu-toggle')
 
   return (
     <Sheet open={mobileDrawerOpen} onOpenChange={setMobileDrawerOpen}>
-      <SheetContent
+      <SheetContent {...focusReturn}
+        id="mobile-sidebar"
         side="left"
-        className="w-[min(88vw,340px)] p-4 sm:p-5"
+        showCloseButton={false}
+        style={{ width: 'min(88vw,340px)' }}
+        className="p-4 sm:p-5"
         aria-label="分类导航"
       >
         <SheetHeader className="mb-3 flex flex-row items-center justify-between">
           <SheetTitle className="text-sm font-semibold text-foreground">
             工作区分类
           </SheetTitle>
-          <button
+          <Button variant="ghost"
             id="sidebar-close"
             type="button"
             className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -30,10 +45,10 @@ export function MobileNavSheet() {
             onClick={() => setMobileDrawerOpen(false)}
           >
             <X className="h-4 w-4" />
-          </button>
+          </Button>
         </SheetHeader>
-        <div className="h-[calc(100%-3rem)] min-h-0 flex flex-col">
-          <SidebarContent />
+        <div className="flex-1 min-h-0 flex flex-col">
+          {!isDesktop && <SidebarContent />}
         </div>
       </SheetContent>
     </Sheet>

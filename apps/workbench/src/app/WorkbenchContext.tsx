@@ -21,11 +21,18 @@ export interface WorkbenchContextValue {
   itemLookup: Map<string, SmojiItem>
   activeInspectorItem: { item: SmojiItem; packLabel: string; format: string } | null
   exportBytes: number
+  exportContent: string
+  exportFilename: string
+  exportError: string | null
   isOverBudget: boolean
   manifestUrl: string
 
   mobileDrawerOpen: boolean
   setMobileDrawerOpen: (open: boolean) => void
+
+  /** Non-null while the browser refused to persist; in-memory state and backup download stay usable. */
+  storageWarning: string | null
+  dismissStorageWarning: () => void
 
   canUndo: boolean
   canRedo: boolean

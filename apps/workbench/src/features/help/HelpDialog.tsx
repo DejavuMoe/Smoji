@@ -1,3 +1,4 @@
+import { Button } from '../../components/ui/button'
 import { X, ExternalLink, Keyboard, Layers, FileJson } from 'lucide-react'
 import {
   Dialog,
@@ -6,6 +7,7 @@ import {
   DialogTitle,
 } from '../../components/ui/dialog'
 import { useWorkbench } from '../../app/WorkbenchContext'
+import { useFocusReturn } from '../../focus-return'
 import { dockExportFormats, stampDownloadFilename } from '../../export'
 import { SMOJI_MAX_PACKS, SMOJI_MAX_ITEMS_PER_PACK, SMOJI_MAX_ITEMS } from '../../domain/limits'
 
@@ -13,16 +15,18 @@ export function HelpDialog() {
   const { state, dispatch } = useWorkbench()
   const isOpen = state.export.helpDialogOpen
 
+  const focusReturn = useFocusReturn('#btn-open-guide')
+
   const formats = dockExportFormats()
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => dispatch({ type: 'SET_HELP_DIALOG_OPEN', payload: open })}>
-      <DialogContent id="guide-modal" showCloseButton={false} className="sm:max-w-2xl max-h-[85dvh] overflow-y-auto p-4 sm:p-6 sm:rounded-2xl">
+      <DialogContent {...focusReturn} id="guide-modal" showCloseButton={false} className="sm:max-w-2xl max-h-[85dvh] overflow-y-auto p-4 sm:p-6 sm:rounded-2xl">
         <DialogHeader className="flex flex-row items-center justify-between pb-3 border-b border-border/60">
           <DialogTitle className="text-sm sm:text-base font-semibold text-foreground truncate min-w-0 flex-1">
             Smoji 使用指南与接入规范
           </DialogTitle>
-          <button
+          <Button variant="ghost"
             id="guide-modal-close"
             type="button"
             className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground shrink-0 ml-2"
@@ -30,7 +34,7 @@ export function HelpDialog() {
             onClick={() => dispatch({ type: 'SET_HELP_DIALOG_OPEN', payload: false })}
           >
             <X className="h-4 w-4" />
-          </button>
+          </Button>
         </DialogHeader>
 
         <div className="space-y-6 pt-2 text-xs text-foreground">
@@ -62,24 +66,24 @@ export function HelpDialog() {
               <Keyboard className="h-4 w-4 text-primary" />
               <span>常用快捷键</span>
             </h3>
-            <div className="grid gap-2 sm:grid-cols-2">
-              <div className="flex items-center justify-between rounded-lg border border-border/60 bg-muted/30 px-3 py-1.5 font-mono">
-                <span className="text-muted-foreground font-sans">撤销 / 重做</span>
-                <span>⌘/Ctrl+Z / ⌘/Ctrl+Shift+Z</span>
-              </div>
-              <div className="flex items-center justify-between rounded-lg border border-border/60 bg-muted/30 px-3 py-1.5 font-mono">
-                <span className="text-muted-foreground font-sans">预览导出数据</span>
-                <span>⌘/Ctrl+Shift+P</span>
-              </div>
-              <div className="flex items-center justify-between rounded-lg border border-border/60 bg-muted/30 px-3 py-1.5 font-mono">
-                <span className="text-muted-foreground font-sans">导出当前配置</span>
-                <span>⌘/Ctrl+E</span>
-              </div>
-              <div className="flex items-center justify-between rounded-lg border border-border/60 bg-muted/30 px-3 py-1.5 font-mono">
-                <span className="text-muted-foreground font-sans">详情切换格式</span>
-                <span>数字键 1 ~ 5</span>
-              </div>
-            </div>
+            <dl className="grid gap-2">
+              {[
+                ['Tab / Shift+Tab', '前后移动焦点；弹窗内循环。'],
+                ['方向键 · Home / End', '图库按位置移动；Home/End 到已渲染首/末项，剩余内容用“加载更多”。分类名称用上下键浏览。'],
+                ['Enter / Space', '激活按钮；卡片打开详情后焦点在选择按钮，Space 选择/排除或加入/移出，Esc 关闭。Tab 到其他控件后，Space 执行该控件操作。'],
+                ['← / → · 数字 1–5', '详情普通区域左右翻图；数字依次切 Markdown、URL、Hugo、HTML、BBCode。格式、下拉和菜单的方向键仅操作自身。'],
+                ['Alt+← / → · Delete', '托盘图片左右排序；Delete 或 Backspace 移出，焦点留在相邻项。'],
+                ['⌘/Ctrl+Z · ⌘/Ctrl+Shift+Z', '撤销/重做自选分组操作（也支持 ⌘/Ctrl+Y）；编辑框使用文本自身撤销。'],
+                ['⌘/Ctrl+Shift+P', '页面打开导出预览，预览内再次按下关闭；编辑框或其他弹层内不触发。'],
+                ['⌘/Ctrl+E', '页面有可导出内容时下载；编辑框、菜单或弹窗内不触发。'],
+                ['Escape', '关闭当前弹层/菜单并归还焦点；编辑分组时取消编辑。'],
+              ].map(([key, description]) => (
+                <div key={key} className="flex flex-wrap gap-x-3 gap-y-1 rounded-lg border border-border bg-muted/30 px-3 py-2">
+                  <dt className="font-mono font-medium">{key}</dt>
+                  <dd className="text-muted-foreground">{description}</dd>
+                </div>
+              ))}
+            </dl>
           </section>
 
           {/* Advanced specifications & Limits */}

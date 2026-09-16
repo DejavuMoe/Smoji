@@ -18,13 +18,18 @@ test.describe('Destructive Action Confirmation E2E', () => {
     await page.locator('#custom-name-input').fill('待删除分组')
     await page.locator('#btn-create-custom-pack').click()
 
+    // Creating a group hands the user back to the gallery, so reopen the drawer on mobile.
+    if (await menuToggle.isVisible()) {
+      await menuToggle.click()
+    }
+
     const groups = page.locator('.custom-pack-item')
     await expect(groups).toHaveCount(1)
 
     // Open dropdown menu and trigger delete
-    const moreBtn = groups.first().locator('button[aria-haspopup="menu"]')
+    const moreBtn = groups.first().locator('.group-tools button[aria-haspopup="menu"]')
     await moreBtn.click()
-    await page.locator('[data-group-action="delete"]').click()
+    await page.locator('[role="menu"][data-state="open"] [data-group-action="delete"]').click()
 
     // Modal opens
     const modal = page.locator('#confirm-modal')
@@ -41,7 +46,7 @@ test.describe('Destructive Action Confirmation E2E', () => {
 
     // Trigger delete again
     await moreBtn.click()
-    await page.locator('[data-group-action="delete"]').click()
+    await page.locator('[role="menu"][data-state="open"] [data-group-action="delete"]').click()
     await expect(modal).toBeVisible()
     await expect(cancelBtn).toBeFocused()
 

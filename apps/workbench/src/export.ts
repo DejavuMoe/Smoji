@@ -320,7 +320,7 @@ export function downloadCustomExportManifest(
   URL.revokeObjectURL(url)
 }
 
-export type BuiltInExportFormat = 'smoji' | 'artalk' | 'twikoo' | 'owo' | 'waline' | 'markdown'
+export type BuiltInExportFormat = 'smoji' | 'artalk' | 'twikoo' | 'owo' | 'waline'
 /** Built-in ids plus any runtime-registered format plugins. */
 export type ExportTargetFormat = BuiltInExportFormat | (string & {})
 
@@ -398,13 +398,7 @@ export const EXPORT_FORMAT_REGISTRY: readonly ExportFormatDescriptor[] = [
     guideTarget: 'Waline emoji 配置对象数组',
     guideFilename: 'waline.json',
   },
-  {
-    id: 'markdown',
-    label: 'Markdown 标记',
-    preview: true,
-    guideTarget: 'Markdown / 文档预览用绝对地址标记',
-    guideFilename: 'smoji-markers.md',
-  },
+
 ]
 
 const exportFormatRegistry: ExportFormatDescriptor[] = EXPORT_FORMAT_REGISTRY.map((f) => ({ ...f }))
@@ -458,6 +452,14 @@ export function previewExportFormats(): ExportFormatDescriptor[] {
   return exportFormatRegistry.filter((f) => f.preview)
 }
 
+/** Map raw generator/validator codes to actionable user-facing messages. */
+export function exportErrorMessage(error: unknown): string {
+  const raw = error instanceof Error ? error.message : String(error ?? '')
+  if (raw === 'manifest-too-large') return '导出清单超过 1MB 限制，请精简表情数量'
+  if (raw === 'invalid-manifest') return '导出数据未通过清单校验，请检查分组名称与表情地址'
+  return raw || '导出失败'
+}
+
 export function generateFormattedExport(
   format: ExportTargetFormat,
   packs: readonly CustomPackInput[],
@@ -497,20 +499,6 @@ export function generateFormattedExport(
     case 'waline': {
       content = JSON.stringify(buildWalineExport(packs, manifestUrl), null, 2) + '\n'
       filename = 'waline.json'
-      break
-    }
-    case 'markdown': {
-      const lines: string[] = []
-      for (const pack of packs) {
-        if (!pack.items.length) continue
-        lines.push(`### ${pack.label} (${pack.id})`)
-        for (const item of pack.items) {
-          lines.push(`![smoji:${item.label}](${toExportItemSrc(item.src, manifestUrl)})`)
-        }
-        lines.push('')
-      }
-      content = lines.join('\n')
-      filename = 'smoji-markers.md'
       break
     }
     default:

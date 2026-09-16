@@ -14,11 +14,23 @@ export interface EditableCustomPack {
   readonly items: readonly SmojiItem[]
 }
 
+/** Single shared result channel for custom-group transactions (success info or rejection). */
+export interface CustomGroupNotice {
+  readonly token: number
+  readonly tone: 'error' | 'info'
+  readonly message: string
+}
+
 export interface CustomGroupTransaction {
   readonly groups: readonly EditableCustomPack[]
   readonly activeGroupIndex: number
   readonly description: string
+  /** Notes and extension bag travel with the snapshot so undo/redo restores the whole import. */
+  readonly notes?: string
+  readonly extensions?: Record<string, unknown>
 }
+
+export type CustomGroupExtensions = Record<string, unknown>
 
 export interface WorkbenchState {
   readonly mode: WorkbenchMode
@@ -39,6 +51,10 @@ export interface WorkbenchState {
     readonly groups: readonly EditableCustomPack[]
     readonly activeGroupIndex: number
     readonly notes?: string
+    /** Forward-compatible extension bag preserved across import/export/refresh. */
+    readonly extensions?: CustomGroupExtensions
+    readonly notice?: CustomGroupNotice | null
+    readonly noticeSeq?: number
   }
 
   readonly gallery: {

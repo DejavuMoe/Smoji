@@ -1,7 +1,11 @@
+import catalog from '../data/smoji.json' with { type: 'json' }
 import { test, expect } from '@playwright/test'
 
 test.describe('Workbench Custom Groups Mode E2E', () => {
   test.beforeEach(async ({ page }) => {
+    // Current local catalog; UI contracts must not depend on the CDN's version or latency.
+    await page.route('**/smoji.json', route => route.fulfill({ json: catalog }))
+    await page.route(/\.(png|gif|webp)$/, route => route.fulfill({ contentType: 'image/svg+xml', body: '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><circle cx="16" cy="16" r="14" fill="teal"/></svg>' }))
     await page.goto('/')
     await expect(page.locator('.card').first()).toBeVisible()
 
@@ -21,6 +25,12 @@ test.describe('Workbench Custom Groups Mode E2E', () => {
     const input = page.locator('#custom-name-input')
     await input.fill('我的收藏')
     await page.locator('#btn-create-custom-pack').click()
+
+    // Creating a group hands the user back to the gallery, so reopen the drawer on mobile.
+    const menuToggleAfterCreate = page.locator('#menu-toggle')
+    if (await menuToggleAfterCreate.isVisible()) {
+      await menuToggleAfterCreate.click()
+    }
 
     const groups = page.locator('.custom-pack-item')
     await expect(groups).toHaveCount(1)
@@ -57,22 +67,22 @@ test.describe('Workbench Custom Groups Mode E2E', () => {
     }
 
     // 6. Duplicate group
-    const moreBtn = page.locator('.custom-pack-item button[aria-haspopup="menu"]').first()
+    const moreBtn = page.locator('.custom-pack-item .group-tools button[aria-haspopup="menu"]').first()
     await moreBtn.click()
-    await page.locator('[data-group-action="duplicate"]').click()
+    await page.locator('[role="menu"][data-state="open"] [data-group-action="duplicate"]').click()
     await expect(groups).toHaveCount(2)
     await expect(groups.nth(1)).toContainText('副本')
 
     // 7. Split group
-    const secondMoreBtn = groups.nth(1).locator('button[aria-haspopup="menu"]')
+    const secondMoreBtn = groups.nth(1).locator('.group-tools button[aria-haspopup="menu"]')
     await secondMoreBtn.click()
-    await page.locator('[data-group-action="split"]').click()
+    await page.locator('[role="menu"][data-state="open"] [data-group-action="split"]').click()
     await expect(groups).toHaveCount(3)
 
     // 8. Merge group
-    const thirdMoreBtn = groups.nth(2).locator('button[aria-haspopup="menu"]')
+    const thirdMoreBtn = groups.nth(2).locator('.group-tools button[aria-haspopup="menu"]')
     await thirdMoreBtn.click()
-    await page.locator('[data-group-action="merge"]').click()
+    await page.locator('[role="menu"][data-state="open"] [data-group-action="merge"]').click()
     await expect(groups).toHaveCount(2)
   })
 })

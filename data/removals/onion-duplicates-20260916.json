@@ -1,0 +1,353 @@
+{
+  "date": "2026-09-16",
+  "scope": [
+    "onion",
+    "onion-animated",
+    "onion-static"
+  ],
+  "verifiedDownloads": 403,
+  "screenedCandidatePairs": 55,
+  "removedCount": 15,
+  "policy": "Exact bytes or manually verified same artwork/animation with only corner branding, encoding, or size differences. Different captions, color variants, actions, or frame timing are retained. No CDN objects were modified.",
+  "entries": [
+    {
+      "removed": "onion-animated/myzcrdfyglth.webp",
+      "kept": "onion-animated/tagtbhveqmkl.webp",
+      "reason": "same-animation-corner-mark",
+      "removedSHA256": "144dbe56c4a7f4c60ee8cf5cc900b47014b5e83b16e75d8e613bed248e49c768",
+      "keptSHA256": "4aefbe1cd23b94b5df21fa04e100be2b9af943f23a97a7c2fb1da1e608e2e7e3",
+      "removedSize": [
+        130,
+        130
+      ],
+      "keptSize": [
+        130,
+        130
+      ],
+      "frames": 3,
+      "frameDurationsMs": [
+        1550,
+        50,
+        50
+      ],
+      "loop": 0
+    },
+    {
+      "removed": "onion-animated/vhtxcdadjfro.webp",
+      "kept": "onion-animated/gygurnzozapm.webp",
+      "reason": "same-animation-higher-resolution",
+      "removedSHA256": "e2c37ee6eaf912922a51161c98c6c8cea9c2726a7651b46417e6b018741d8a7f",
+      "keptSHA256": "9cfe5f3b3f62e3ab8da00a310e04cbd7d3a83d5ea624ca246882537812bae686",
+      "removedSize": [
+        130,
+        130
+      ],
+      "keptSize": [
+        150,
+        146
+      ],
+      "frames": 19,
+      "frameDurationsMs": [
+        30,
+        30,
+        30,
+        30,
+        30,
+        1000,
+        30,
+        30,
+        30,
+        30,
+        1000,
+        50,
+        1000,
+        100,
+        10,
+        100,
+        1000,
+        50,
+        1000
+      ],
+      "loop": 0
+    },
+    {
+      "removed": "onion-animated/yziojadtmuhh.webp",
+      "kept": "onion-animated/iehuerzwpvis.webp",
+      "reason": "same-animation-corner-mark",
+      "removedSHA256": "7ad6df6dac1bd10c8954c49193024bd72a4f1b1dbe5cd529f3d7f954b68fbfb6",
+      "keptSHA256": "f93eff4289d5890cc15f5f4810f09080b21a9e5db09b12167d79a8c3567a3f5d",
+      "removedSize": [
+        130,
+        130
+      ],
+      "keptSize": [
+        130,
+        130
+      ],
+      "frames": 6,
+      "frameDurationsMs": [
+        90,
+        100,
+        100,
+        110,
+        110,
+        330
+      ],
+      "loop": 0
+    },
+    {
+      "removed": "onion-static/avqvjswiueie.webp",
+      "kept": "onion-static/khtppdajjpek.webp",
+      "reason": "same-artwork-corner-mark",
+      "removedSHA256": "5649393bddc8d02fe167093f926610502ad2a6c053eb2dd6bf714b991b48cd32",
+      "keptSHA256": "c01317b57823d3f9a938387c2fe2b4712741e3af988aae5a8fd1b4e1f415b972",
+      "removedSize": [
+        130,
+        130
+      ],
+      "keptSize": [
+        130,
+        130
+      ],
+      "frames": 1,
+      "frameDurationsMs": [
+        0
+      ],
+      "loop": 1
+    },
+    {
+      "removed": "onion-static/cfykgkcxiusi.webp",
+      "kept": "onion-static/bdsjzuinvvrt.webp",
+      "reason": "same-artwork-corner-mark",
+      "removedSHA256": "73d1b639e184c8c186aa67ac463d3d8f9267e39a514bdc0e8a63b6a959c7055a",
+      "keptSHA256": "92c3ea63e955372a3b181c930b341561ee187a4dd482767940126086e44897bf",
+      "removedSize": [
+        130,
+        130
+      ],
+      "keptSize": [
+        130,
+        130
+      ],
+      "frames": 1,
+      "frameDurationsMs": [
+        0
+      ],
+      "loop": 1
+    },
+    {
+      "removed": "onion-static/eebhyhvirnyb.webp",
+      "kept": "onion-static/pzwrcnmxozph.webp",
+      "reason": "same-artwork-higher-resolution",
+      "removedSHA256": "8214ae63773f7d713b3e4d95c5c75ac8d333e4f09b216d7f74d86c36d127689d",
+      "keptSHA256": "2f6f3ea4ebd81611345d91e3a4ec9401fc8d904ea1401290f6bdb0cabfa7b799",
+      "removedSize": [
+        145,
+        208
+      ],
+      "keptSize": [
+        237,
+        335
+      ],
+      "frames": 1,
+      "frameDurationsMs": [
+        0
+      ],
+      "loop": 1
+    },
+    {
+      "removed": "onion-static/fmjlemvduaer.webp",
+      "kept": "onion-static/pzycrbeorowz.webp",
+      "reason": "same-artwork-higher-resolution",
+      "removedSHA256": "e971dece74203d417ad147c5c255fec92c599e7e7cc52bd4d8f6b27e09480ce2",
+      "keptSHA256": "6d1939cd67b2280533cf25c53e20e8de8358cc47ed1925120945ca8d6c805df7",
+      "removedSize": [
+        215,
+        270
+      ],
+      "keptSize": [
+        224,
+        281
+      ],
+      "frames": 1,
+      "frameDurationsMs": [
+        0
+      ],
+      "loop": 1
+    },
+    {
+      "removed": "onion-static/ictgbhpawtxm.webp",
+      "kept": "onion-static/hvgntasiciws.webp",
+      "reason": "same-artwork-corner-mark",
+      "removedSHA256": "f1b2b1d1e7787d02b3af2d20ab2e79991e30cccae20c7352952dfdc02157853e",
+      "keptSHA256": "c69a98bb3a040f4cd8a9912da4d318137c556417cc194200eb909f70ce117b5b",
+      "removedSize": [
+        130,
+        130
+      ],
+      "keptSize": [
+        130,
+        130
+      ],
+      "frames": 1,
+      "frameDurationsMs": [
+        0
+      ],
+      "loop": 1
+    },
+    {
+      "removed": "onion-static/nbpvwpilmfor.webp",
+      "kept": "onion-static/wazludzdidwt.webp",
+      "reason": "same-artwork-corner-mark",
+      "removedSHA256": "cf6a860ed3e7fdc07e173b9f94f1c8a65056458893ec5566363a36704afa1dc4",
+      "keptSHA256": "c1ed485aab2394abaf3abc846a2eccc3ce4304cec323b453d54c6f109d365d4d",
+      "removedSize": [
+        130,
+        130
+      ],
+      "keptSize": [
+        130,
+        130
+      ],
+      "frames": 1,
+      "frameDurationsMs": [
+        0
+      ],
+      "loop": 1
+    },
+    {
+      "removed": "onion-static/noodqigjvhqa.webp",
+      "kept": "onion-static/ximyzdhnxppj.webp",
+      "reason": "same-artwork-corner-mark",
+      "removedSHA256": "100eefd0398fb787602622b5d30f6569843a3e85b74bfab47e660189099eb929",
+      "keptSHA256": "0e4f489ab96e8e0dd01722487579c1a7242dffa9b3340b786442f46b1ad072aa",
+      "removedSize": [
+        130,
+        130
+      ],
+      "keptSize": [
+        130,
+        130
+      ],
+      "frames": 1,
+      "frameDurationsMs": [
+        0
+      ],
+      "loop": 1
+    },
+    {
+      "removed": "onion-static/oxqslhqubnns.webp",
+      "kept": "onion-static/ixkpbqfgpicn.webp",
+      "reason": "same-artwork-corner-mark",
+      "removedSHA256": "ef208ef9cb027da6a04d56b3040f4c245996895e41fa2dc59e34ba307661b753",
+      "keptSHA256": "aac95fbea8543e8cda671c60fc679664208731840662883582560d4798bb8b44",
+      "removedSize": [
+        130,
+        130
+      ],
+      "keptSize": [
+        130,
+        130
+      ],
+      "frames": 1,
+      "frameDurationsMs": [
+        0
+      ],
+      "loop": 1
+    },
+    {
+      "removed": "onion-static/qnkpqundfmer.webp",
+      "kept": "onion-static/gxqfsuqgnzdr.webp",
+      "reason": "same-artwork-higher-resolution",
+      "removedSHA256": "267971b66fecf4ff465d57345026ac9dc89a85799b49a0770a511d94debf017c",
+      "keptSHA256": "c8d123fe9fb58f186a4eae6e95216ed2dc955d4345009bae7cb458d14426ccbf",
+      "removedSize": [
+        173,
+        177
+      ],
+      "keptSize": [
+        191,
+        186
+      ],
+      "frames": 1,
+      "frameDurationsMs": [
+        0
+      ],
+      "loop": 1
+    },
+    {
+      "removed": "onion-static/rptwnoirpydn.webp",
+      "kept": "onion-static/ixgkbbzpdpxk.webp",
+      "reason": "same-artwork-corner-mark",
+      "removedSHA256": "4bf2abebac202dab58f75ee68a1c4963af0ae586dedee7fc43363a0ebb492900",
+      "keptSHA256": "9bf1f19a1219321ecd3a25ef74f53c53478de054d011977eff6ad624fad83347",
+      "removedSize": [
+        130,
+        130
+      ],
+      "keptSize": [
+        130,
+        130
+      ],
+      "frames": 1,
+      "frameDurationsMs": [
+        0
+      ],
+      "loop": 1
+    },
+    {
+      "removed": "onion-static/twkgpyfpxtus.webp",
+      "kept": "onion-static/hcatfirozxoo.webp",
+      "reason": "same-artwork-corner-mark",
+      "removedSHA256": "eb854f588a29b5b52f7cd79eaa51070519deeef48b8ced5516cc8578d10c3a1d",
+      "keptSHA256": "4db2bd049ce0739b81fef088139f72f527c32e45b36792e065f532af3c6817c5",
+      "removedSize": [
+        130,
+        130
+      ],
+      "keptSize": [
+        130,
+        130
+      ],
+      "frames": 1,
+      "frameDurationsMs": [
+        0
+      ],
+      "loop": 1
+    },
+    {
+      "removed": "onion/sxwjwomktwwr.webp",
+      "kept": "onion/dtwnyozxtbaw.webp",
+      "reason": "byte-identical",
+      "removedSHA256": "427e2a48e3822dbeb46ddf09bf13e598d572e1fc6afcb755932b560c2a45c5ee",
+      "keptSHA256": "427e2a48e3822dbeb46ddf09bf13e598d572e1fc6afcb755932b560c2a45c5ee",
+      "removedSize": [
+        50,
+        50
+      ],
+      "keptSize": [
+        50,
+        50
+      ],
+      "frames": 5,
+      "frameDurationsMs": [
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "loop": 0
+    }
+  ],
+  "beforeCounts": {
+    "onion": 191,
+    "onion-animated": 81,
+    "onion-static": 131
+  },
+  "afterCounts": {
+    "onion": 190,
+    "onion-animated": 78,
+    "onion-static": 120
+  }
+}

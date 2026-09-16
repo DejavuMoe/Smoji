@@ -1,3 +1,4 @@
+import { ToggleGroup, ToggleGroupItem } from '../../components/ui/toggle-group'
 import { useWorkbench } from '../../app/WorkbenchContext'
 import type { PreviewBackground } from '../../domain/state'
 
@@ -12,21 +13,8 @@ export function PreviewBackgroundToggle() {
   ]
 
   return (
-    <div className="flex rounded-lg bg-muted p-0.5 text-xs">
-      {options.map((opt) => (
-        <button
-          key={opt.value}
-          type="button"
-          className={`flex-1 rounded-md py-1 text-center font-medium transition-colors ${
-            currentBg === opt.value
-              ? 'bg-surface text-foreground shadow-xs'
-              : 'text-muted-foreground hover:text-foreground'
-          }`}
-          onClick={() => dispatch({ type: 'SET_INSPECTOR_BG', payload: opt.value })}
-        >
-          {opt.label}
-        </button>
-      ))}
-    </div>
+    <ToggleGroup aria-label="预览背景" value={currentBg} onValueChange={(value) => dispatch({ type: 'SET_INSPECTOR_BG', payload: value as PreviewBackground })} className="flex">
+      {options.map((opt) => <ToggleGroupItem key={opt.value} value={opt.value}>{opt.label}</ToggleGroupItem>)}
+    </ToggleGroup>
   )
 }
