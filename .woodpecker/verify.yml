@@ -25,5 +25,7 @@ steps:
     image: mcr.microsoft.com/playwright:v1.63.0-noble
     commands:
       - npm install --global pnpm@11.24.0
+      # The shared workspace contains Alpine/musl addons; reinstall for Ubuntu/glibc.
+      - rm -rf node_modules apps/workbench/node_modules packages/smoji/node_modules
       - pnpm install --frozen-lockfile
       - pnpm exec playwright test e2e/audit-regressions.spec.ts e2e/keyboard-workflow.spec.ts e2e/workbench-export.spec.ts e2e/workbench-custom-groups.spec.ts --project=chromium
