@@ -278,7 +278,7 @@ renderSmojiContent(commentBox, rawText, manifestUrl)
     └── <commit>-<pipeline>-<rerun>/
 ```
 
-Nginx 的站点根目录为 `/var/www/smoji.zsh.moe/html`。发布脚本校验产物、加锁并原子替换 `html`，拒绝旧流水线覆盖新版本；保留旧版本供手动回滚，并延续旧的哈希资源以支持已经打开的页面。发布验证覆盖文件与软链接，线上 HTTP 状态另行检查。
+Nginx 的站点根目录为 `/var/www/smoji.zsh.moe/html`。发布脚本校验产物、加锁并原子替换 `html`，拒绝旧流水线覆盖新版本；成功后仅保留当前版和刚被替换的上一版，清理更早版本；失败或过期发布不触发清理。当前版仅延续上一版构建清单列出的哈希资源，更早页面需要刷新。发布验证覆盖文件与软链接，线上 HTTP 状态另行检查。
 
 从旧布局迁移时，先确保没有 Smoji 发布任务正在执行或等待执行，再移除 `/var/www/smoji.zsh.moe` 旧软链接、清理 `/var/www/.smoji.zsh.moe-releases` 并创建同名实体站点目录。清理会删除旧静态产物，站点在新 CI 发布完成前暂时不可用。将 Nginx 原有 `root /var/www/smoji.zsh.moe;` 改为 `root /var/www/smoji.zsh.moe/html;`，执行 `sudo nginx -t && sudo systemctl reload nginx`，准备完成后再推送新版 CI；不要重跑旧布局的发布任务。
 

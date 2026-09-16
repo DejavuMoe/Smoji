@@ -125,7 +125,24 @@ fi
 
 # Carry immutable assets forward so already-open pages can still fetch old chunks.
 if [ -n "$old_link_target" ]; then
-  cp -a -n "$old_link_target/assets"/. "$candidate_dir/assets"/
+  # The Vite manifest lists only that version's own assets, excluding inherited chunks.
+  node --input-type=module - "$old_link_target" "$candidate_dir" <<'JS'
+import assert from 'node:assert/strict'
+import { readFileSync, lstatSync, mkdirSync, copyFileSync, existsSync } from 'node:fs'
+import { join, dirname } from 'node:path'
+const [previous, candidate] = process.argv.slice(2)
+const manifest = JSON.parse(readFileSync(join(previous, '.vite/manifest.json'), 'utf8'))
+const files = new Set(Object.values(manifest).flatMap(chunk => [chunk.file, ...(chunk.css ?? []), ...(chunk.assets ?? [])]))
+for (const file of files) {
+  assert(typeof file === 'string' && !file.startsWith('/') && !file.split('/').includes('..'), 'Invalid previous asset path')
+  if (!file.startsWith('assets/')) continue
+  assert(lstatSync(join(previous, file)).isFile(), 'Previous asset must be a regular file')
+  const target = join(candidate, file)
+  if (existsSync(target)) continue
+  mkdirSync(dirname(target), { recursive: true })
+  copyFileSync(join(previous, file), target)
+}
+JS
 fi
 
 candidate_name="$(basename "$candidate_dir")"
@@ -158,7 +175,16 @@ if [ ! -L "$live_path" ] || [ "$live_real" != "$candidate_real" ] || [ ! -s "$li
   exit 74
 fi
 
-# Keep earlier releases available for an operator-controlled rollback.
+# After successful activation, keep the current and immediately previous release.
+for obsolete in "$release_root"/*; do
+  [ -d "$obsolete" ] && [ ! -L "$obsolete" ] || continue
+  printf '%s\n' "$(basename "$obsolete")" | grep -Eq '^[0-9a-f]{40}-[0-9]+-[0-9]+$' || continue
+  obsolete_real="$(readlink -f "$obsolete")"
+  [ "$obsolete_real" != "$candidate_real" ] && [ "$obsolete_real" != "$old_link_target" ] || continue
+  if ! rm -r -- "$obsolete"; then
+    echo "warning: release is active, but could not remove old release: $obsolete" >&2
+  fi
+done
 
 trap - EXIT HUP INT TERM
 cleanup_temporary_paths
