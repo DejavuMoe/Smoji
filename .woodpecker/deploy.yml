@@ -22,10 +22,8 @@ steps:
 
   - name: publish-site
     image: node:24.19.0-alpine3.24
-    environment:
-      SMOJI_DEPLOY_SITE: smoji.zsh.moe
     volumes:
-      - /var/www:/deploy
+      - /var/www/smoji.zsh.moe:/deploy
     commands:
       - apk add --no-cache coreutils util-linux
       - reruns="$CI_PIPELINE_RERUNS"; test -n "$reruns" || reruns=0; release_id="$CI_COMMIT_SHA-$CI_PIPELINE_NUMBER-$reruns"; sh scripts/publish-site.sh apps/workbench/dist "$release_id"

@@ -4,8 +4,7 @@ set -eu
 
 source_dir="${1:-}"
 release_id="${2:-}"
-deploy_parent="${SMOJI_DEPLOY_PARENT:-/deploy}"
-site_name="${SMOJI_DEPLOY_SITE:-smoji.zsh.moe}"
+deploy_root="${SMOJI_DEPLOY_ROOT:-/deploy}"
 
 if [ -z "$source_dir" ] || [ -z "$release_id" ]; then
   echo "usage: $0 SITE_DIR RELEASE_ID" >&2
@@ -15,30 +14,31 @@ if ! printf '%s' "$release_id" | grep -Eq '^[0-9a-f]{40}-[0-9]+-[0-9]+$'; then
   echo "invalid release id: $release_id" >&2
   exit 64
 fi
-if ! printf '%s' "$site_name" | grep -Eq '^[a-z0-9]+([.-][a-z0-9]+)*$'; then
-  echo "invalid SMOJI_DEPLOY_SITE: $site_name" >&2
-  exit 64
-fi
-case "$deploy_parent" in
+case "$deploy_root" in
   /*) ;;
-  *) echo "SMOJI_DEPLOY_PARENT must be absolute: $deploy_parent" >&2; exit 64 ;;
+  *) echo "SMOJI_DEPLOY_ROOT must be absolute: $deploy_root" >&2; exit 64 ;;
 esac
-if [ "$deploy_parent" = "/" ]; then
-  echo "refusing to use the filesystem root as SMOJI_DEPLOY_PARENT" >&2
+if [ "$deploy_root" = "/" ]; then
+  echo "refusing to use the filesystem root as SMOJI_DEPLOY_ROOT" >&2
   exit 64
 fi
-if [ ! -d "$deploy_parent" ] || [ -L "$deploy_parent" ]; then
-  echo "deployment parent is not a directory: $deploy_parent" >&2
+if [ ! -d "$deploy_root" ] || [ -L "$deploy_root" ]; then
+  echo "deployment root is not a directory: $deploy_root" >&2
+  exit 66
+fi
+# Docker resolves an old site symlink before mounting it; reject that old release too.
+if [ -e "$deploy_root/index.html" ] || [ -L "$deploy_root/index.html" ]; then
+  echo "deployment root contains a legacy site; prepare the html/releases layout first" >&2
   exit 66
 fi
 
-release_root="$deploy_parent/.$site_name-releases"
-live_path="$deploy_parent/$site_name"
+release_root="$deploy_root/releases"
+live_path="$deploy_root/html"
 build_dir="$release_root/.build-$release_id"
-candidate_dir="$release_root/.site-$release_id"
-next_link="$deploy_parent/.$site_name-next-$release_id"
-rollback_link="$deploy_parent/.$site_name-rollback-$release_id"
-lock_file="$release_root/.deploy.lock"
+candidate_dir="$release_root/$release_id"
+next_link="$deploy_root/.next-$release_id"
+rollback_link="$deploy_root/.rollback-$release_id"
+lock_file="$deploy_root/.deploy.lock"
 
 owns_paths=false
 cleanup_temporary_paths() {
@@ -92,12 +92,12 @@ if [ -L "$live_path" ]; then
   old_link_value="$(readlink "$live_path")"
   old_link_target="$(readlink -f "$live_path")"
   case "$old_link_target" in
-    "$release_root_real"/.site-*) ;;
+    "$release_root_real"/*) ;;
     *) echo "current site target is outside the release root: $old_link_target" >&2; exit 67 ;;
   esac
 
   current_name="$(basename "$old_link_target")"
-  current_id="${current_name#.site-}"
+  current_id="$current_name"
   if ! printf '%s' "$current_id" | grep -Eq '^[0-9a-f]{40}-[0-9]+-[0-9]+$'; then
     echo "current site target has an invalid release id: $current_name" >&2
     exit 67
@@ -129,7 +129,7 @@ if [ -n "$old_link_target" ]; then
 fi
 
 candidate_name="$(basename "$candidate_dir")"
-candidate_link_value=".$site_name-releases/$candidate_name"
+candidate_link_value="releases/$candidate_name"
 ln -s "$candidate_link_value" "$next_link"
 if [ ! -s "$next_link/index.html" ]; then
   echo "new site symlink does not resolve to the candidate" >&2
@@ -162,4 +162,4 @@ fi
 
 trap - EXIT HUP INT TERM
 cleanup_temporary_paths
-echo "site activated atomically: $site_name -> $candidate_link_value"
+echo "site activated atomically: html -> $candidate_link_value"

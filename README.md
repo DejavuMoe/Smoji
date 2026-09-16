@@ -266,6 +266,26 @@ renderSmojiContent(commentBox, rawText, manifestUrl)
 
 ---
 
+## 工作台 CI 部署
+
+`master` push 通过 `.woodpecker/verify.yml` 验证后，由 `.woodpecker/deploy.yml` 在 `netcup-nano` 构建并发布站点。发布容器仅挂载 `/var/www/smoji.zsh.moe:/deploy`；宿主机该路径必须是实体目录。
+
+```text
+/var/www/smoji.zsh.moe/
+├── .deploy.lock
+├── html -> releases/<commit>-<pipeline>-<rerun>
+└── releases/
+    └── <commit>-<pipeline>-<rerun>/
+```
+
+Nginx 的站点根目录为 `/var/www/smoji.zsh.moe/html`。发布脚本校验产物、加锁并原子替换 `html`，拒绝旧流水线覆盖新版本；保留旧版本供手动回滚，并延续旧的哈希资源以支持已经打开的页面。发布验证覆盖文件与软链接，线上 HTTP 状态另行检查。
+
+从旧布局迁移时，先确保没有 Smoji 发布任务正在执行或等待执行，再移除 `/var/www/smoji.zsh.moe` 旧软链接、清理 `/var/www/.smoji.zsh.moe-releases` 并创建同名实体站点目录。清理会删除旧静态产物，站点在新 CI 发布完成前暂时不可用。将 Nginx 原有 `root /var/www/smoji.zsh.moe;` 改为 `root /var/www/smoji.zsh.moe/html;`，执行 `sudo nginx -t && sudo systemctl reload nginx`，准备完成后再推送新版 CI；不要重跑旧布局的发布任务。
+
+本地验证：先执行 `pnpm build:workbench`，再运行 `sh -n scripts/publish-site.sh && node scripts/test-publish-site.mjs`。隔离验证使用临时目录并自动清理。`SMOJI_DEPLOY_ROOT` 可覆盖默认 `/deploy`，替代旧的 `SMOJI_DEPLOY_PARENT` / `SMOJI_DEPLOY_SITE`。
+
+---
+
 ## 📄 许可证与版权说明
 
 - **代码许可**：本项目代码基于 [MIT License](LICENSE) 开源。
