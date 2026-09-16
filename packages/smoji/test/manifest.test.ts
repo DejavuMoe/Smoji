@@ -59,6 +59,26 @@ describe('smoji manifest loader', () => {
       .rejects.toThrow(SmojiManifestError)
   })
 
+  it('loads a mirrored catalog only with the explicitly trusted image base', async () => {
+    const catalogUrl = 'https://app.example.test/smoji.json'
+    const imageBaseUrl = 'https://static.example.test/packs/smoji.json'
+    const fetchMock = vi.fn<typeof fetch>()
+    vi.stubGlobal('fetch', fetchMock)
+    const response = (src: string) => jsonResponse({
+      version: 1,
+      packs: [{ id: 'demo', label: '示例', items: [{ id: 'wave', label: '挥手', src }] }],
+    })
+    fetchMock.mockImplementation(async () => response('https://static.example.test/packs/wave.webp'))
+    await expect(loadSmojiManifest(catalogUrl)).rejects.toThrow('invalid-manifest')
+    const manifest = await loadSmojiManifest(catalogUrl, { imageBaseUrl })
+    expect(manifest.packs[0]!.items[0]!.src).toBe('https://static.example.test/packs/wave.webp')
+    expect(fetchMock.mock.calls.every(([url]) => url === catalogUrl)).toBe(true)
+    for (const src of ['https://tracker.example/wave.webp', 'https://user:pass@static.example.test/wave.webp', './wave.webp?track=1', './wave.webp#fragment']) {
+      fetchMock.mockImplementation(async () => response(src))
+      await expect(loadSmojiManifest(catalogUrl, { imageBaseUrl })).rejects.toThrow('invalid-manifest')
+    }
+  })
+
   it('rejects credentials, query, and fragment in image URLs', async () => {
     for (const src of [
       'https://user:pass@static.example.test/x.webp',

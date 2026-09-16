@@ -249,6 +249,8 @@ const manifest = await loadSmojiManifest('https://s3-cdn.zsh.moe/smoji/smoji.jso
 console.log(`成功加载 ${manifest.packs.length} 个表情包`)
 ```
 
+清单镜像在站点、图片托管在 CDN 时，可通过 `imageBaseUrl` 指定受信任的图片基准 URL。图片仍须与该 URL 同源；此选项应来自应用配置，不能取自远程清单内容。默认仍按清单请求地址校验。
+
 ### 3. 安全渲染评论表情 (Zero XSS)
 
 ```typescript

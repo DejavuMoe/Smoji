@@ -85,7 +85,7 @@ export async function loadSmojiManifest(
       throw new SmojiManifestError('invalid-manifest')
     }
 
-    return parseSmojiManifest(value, manifestUrl)
+    return parseSmojiManifest(value, options.imageBaseUrl ?? manifestUrl)
   } finally {
     clearTimeout(timeout)
     options.signal?.removeEventListener('abort', onAbort)

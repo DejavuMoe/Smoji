@@ -50,6 +50,8 @@ export interface SmojiPicker {
 export interface LoadSmojiOptions {
   readonly signal?: AbortSignal
   readonly timeoutMs?: number
+  /** Trusted image URL base for a mirrored manifest; defaults to the fetched manifest URL. */
+  readonly imageBaseUrl?: string
 }
 
 export type SmojiSerialize = (item: SmojiItem, pack: SmojiPack) => string

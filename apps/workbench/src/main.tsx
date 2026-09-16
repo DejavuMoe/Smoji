@@ -20,7 +20,7 @@ const manifestUrl = import.meta.env.PROD ? publishedManifestUrl : catalogUrl
 
 async function loadCatalog() {
   try {
-    return await loadSmojiManifest(catalogUrl)
+    return await loadSmojiManifest(catalogUrl, { imageBaseUrl: manifestUrl })
   } catch (localError) {
     if (manifestUrl === catalogUrl) throw localError
     return await loadSmojiManifest(manifestUrl)

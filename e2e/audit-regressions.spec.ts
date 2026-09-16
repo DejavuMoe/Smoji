@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test'
+import catalog from '../data/smoji.json' with { type: 'json' }
 
 // A deterministic catalog: browser interaction checks must not depend on CDN uptime.
 // Item URLs are absolute on the published asset origin, exactly like the built smoji.json.
@@ -333,8 +334,23 @@ test('reports storage write failures without pretending the data was saved', asy
   await expect(page.locator('.custom-pack-item')).toHaveCount(1)
 })
 
-// A18 · the same-origin catalog is used and the published CDN copy is a fallback
-test('boots from the same-origin catalog and falls back to the published copy', async ({ page }) => {
+// Use the actual built catalog: mocking both origins with identical data hides accidental fallback.
+test('boots the complete built catalog without requesting the CDN fallback', async ({ page }) => {
+  const fallbackRequests: string[] = []
+  await page.route('**/smoji.json', route => {
+    const url = new URL(route.request().url())
+    if (url.origin === new URL(page.url()).origin) return route.continue()
+    fallbackRequests.push(url.href)
+    return route.abort()
+  })
+  await page.reload()
+  await expect(page.locator('#pack-nav button.pack')).toHaveCount(catalog.packs.length)
+  await expect(page.locator('.gallery__header h2')).toHaveText(catalog.packs[0]!.label)
+  expect(fallbackRequests).toEqual([])
+})
+
+// A18 · the published CDN copy is only used when the same-origin catalog fails.
+test('falls back to the published copy when the same-origin catalog is unavailable', async ({ page }) => {
   await page.route('**/smoji.json', route => {
     const url = new URL(route.request().url())
     // Only the app's own origin is missing; the published CDN copy must still boot the workbench.
