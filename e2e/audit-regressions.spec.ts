@@ -31,6 +31,7 @@ async function createGroup(page: Page, name: string, id?: string) {
   await page.locator('#custom-name-input').fill(name)
   if (id !== undefined) await page.locator('#custom-id-input').fill(id)
   await page.locator('#btn-create-custom-pack').click()
+  await expect(page.locator('#mobile-sidebar')).not.toBeVisible()
 }
 
 async function closeDrawer(page: Page) {
@@ -41,6 +42,13 @@ async function closeDrawer(page: Page) {
 async function openDrawer(page: Page) {
   const menu = page.locator('#menu-toggle')
   if (await menu.isVisible()) await menu.click()
+}
+
+// Keyboard actions also work when a touch device has no hover affordance.
+async function activateCardAction(page: Page, index = 0) {
+  const card = page.locator('.card').nth(index)
+  await card.locator('.card__action-btn').focus()
+  await page.keyboard.press('Enter')
 }
 
 async function readGroups(page: Page): Promise<Array<{ id: string; label: string; itemSrcs: string[] }>> {
@@ -131,8 +139,7 @@ test('created groups survive refresh and invalid input is rejected with a reason
   await expect(page.locator('#custom-name-input')).toHaveValue('坏]名称')
 
   // A name that reduces to an illegal auto ID must still produce a valid ID.
-  await page.locator('#custom-name-input').fill('-')
-  await page.locator('#btn-create-custom-pack').click()
+  await createGroup(page, '-')
   // Creating a group returns to the gallery; reopen the drawer to inspect it on mobile.
   await openDrawer(page)
   await expect(page.locator('.custom-pack-item')).toHaveCount(1)
@@ -142,7 +149,7 @@ test('created groups survive refresh and invalid input is rejected with a reason
   // Rename to a legal name, add an item, then reload: the group and its item must persist.
   await closeDrawer(page)
   const firstCard = page.locator('.card').first()
-  await firstCard.locator('.card__action-btn').click({ force: true })
+  await activateCardAction(page)
   await expect(firstCard.locator('.card__badge')).toBeVisible()
   await page.reload()
   await expect(page.locator('.card').first()).toBeVisible()
@@ -192,8 +199,8 @@ test('dragging a tray item across groups moves it and keeps the total stable', a
   await openCustomMode(page)
   await createGroup(page, '来源')
   await closeDrawer(page)
-  await page.locator('.card').nth(0).locator('.card__action-btn').click({ force: true })
-  await page.locator('.card').nth(1).locator('.card__action-btn').click({ force: true })
+  await activateCardAction(page, 0)
+  await activateCardAction(page, 1)
 
   await openCustomMode(page)
   await createGroup(page, '目标')
@@ -211,7 +218,7 @@ test('dragging a tray item across groups moves it and keeps the total stable', a
 
 // A06 · custom batch add is independent from hidden pack exclusions
 test('custom batch add includes items excluded in packs mode', async ({ page }) => {
-  await page.locator('.card__action-btn').first().click({ force: true })
+  await activateCardAction(page)
   await expect(page.locator('.card').first()).toHaveClass(/is-excluded/)
 
   await openCustomMode(page)
@@ -224,7 +231,7 @@ test('custom batch add includes items excluded in packs mode', async ({ page }) 
 
 // A07 · preview scopes agree with the visible exclusion state
 test('preview excludes excluded items in the current scope', async ({ page }) => {
-  await page.locator('.card__action-btn').first().click({ force: true })
+  await activateCardAction(page)
   await page.getByRole('button', { name: '选择本分类导出' }).click()
   await page.locator('#selection-dock-preview').click()
   const code = page.locator('#code-preview-content')
@@ -278,8 +285,8 @@ test('removing the inspected item moves the inspector to a neighbor', async ({ p
   await openCustomMode(page)
   await createGroup(page, '翻页')
   await closeDrawer(page)
-  await page.locator('.card').nth(0).locator('.card__action-btn').click({ force: true })
-  await page.locator('.card').nth(1).locator('.card__action-btn').click({ force: true })
+  await activateCardAction(page, 0)
+  await activateCardAction(page, 1)
   await page.locator('#gallery-view-picked button').nth(1).click()
 
   await page.locator('.card__open').first().click()

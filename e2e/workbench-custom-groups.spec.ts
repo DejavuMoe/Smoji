@@ -25,6 +25,7 @@ test.describe('Workbench Custom Groups Mode E2E', () => {
     const input = page.locator('#custom-name-input')
     await input.fill('我的收藏')
     await page.locator('#btn-create-custom-pack').click()
+    await expect(page.locator('#mobile-sidebar')).not.toBeVisible()
 
     // Creating a group hands the user back to the gallery, so reopen the drawer on mobile.
     const menuToggleAfterCreate = page.locator('#menu-toggle')
@@ -44,7 +45,8 @@ test.describe('Workbench Custom Groups Mode E2E', () => {
 
     const firstCard = page.locator('.card').first()
     const addBtn = firstCard.locator('.card__action-btn')
-    await addBtn.click({ force: true })
+    await addBtn.focus()
+    await page.keyboard.press('Enter')
 
     // Card should now have badge (✓)
     await expect(firstCard.locator('.card__badge')).toBeVisible()

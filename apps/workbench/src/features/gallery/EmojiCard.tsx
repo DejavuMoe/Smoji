@@ -72,10 +72,10 @@ export const EmojiCard = memo(function EmojiCard({
         onClick={() => onCardClick(item)}
       />
 
-      {/* Mouse/touch action stays pointer-accessible; keyboard uses the preview dialog action. */}
+      {/* Reveal quick actions on hover/keyboard focus; tapping the image opens the same actions in the preview. */}
       <Button variant="ghost" size="icon"
         type="button"
-        className="card__check-hover card__action-btn p-0 absolute top-1.5 right-1.5 z-10 flex h-7 w-7 items-center justify-center rounded-md border border-border/80 bg-surface text-foreground opacity-0 transition-opacity hover:border-primary hover:text-primary group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100 max-[900px]:opacity-100"
+        className="card__check-hover card__action-btn p-0 absolute top-1.5 right-1.5 z-10 flex h-7 w-7 items-center justify-center rounded-md border border-border/80 bg-surface text-foreground pointer-events-none opacity-0 transition-opacity hover:border-primary hover:text-primary group-hover:pointer-events-auto group-hover:opacity-100 group-has-[:focus-visible]:pointer-events-auto group-has-[:focus-visible]:opacity-100"
         data-check-item-index={String(index)}
         tabIndex={-1}
         tooltip={

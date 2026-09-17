@@ -73,14 +73,14 @@ test.describe('Workbench Packs Mode E2E', () => {
     await expect(firstCard).not.toHaveClass(/is-excluded/)
 
     // Exclude item via action button
-    await firstCard.hover()
     const actionBtn = firstCard.locator('.card__action-btn')
-    await actionBtn.click({ force: true })
+    await actionBtn.focus()
+    await page.keyboard.press('Enter')
     await expect(firstCard).toHaveClass(/is-excluded/)
 
     // Restore item
-    await firstCard.hover()
-    await actionBtn.click({ force: true })
+    await actionBtn.focus()
+    await page.keyboard.press('Enter')
     await expect(firstCard).not.toHaveClass(/is-excluded/)
 
     // Exclude whole pack
