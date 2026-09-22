@@ -1,0 +1,527 @@
+- link "跳到表情图库":
+  - /url: "#grid"
+- banner:
+  - link "Smoji 首页":
+    - /url: ./
+    - text: Smoji 表情工作台
+  - button "撤销" [disabled]
+  - button "重做" [disabled]
+  - button "数据预览"
+  - button "帮助"
+  - button "当前：跟随系统 (点击切换到浅色)"
+- complementary "侧边栏工作区":
+  - radiogroup "工作模式":
+    - radio "按分类导出" [checked]
+    - radio "自选分组"
+  - text: 表情分类
+  - button "全选表情包": 全选
+  - button "清空" [disabled]
+  - checkbox "选择 哔哩哔哩"
+  - button "哔哩哔哩 144"
+  - checkbox "选择 嗷大喵小表情"
+  - button "嗷大喵小表情 6"
+  - checkbox "选择 哔哩哔哩 · 小电视"
+  - button "哔哩哔哩 · 小电视 6"
+  - checkbox "选择 酷安"
+  - button "酷安 6"
+  - checkbox "选择 呆猫八条"
+  - button "呆猫八条 6"
+  - checkbox "选择 钉钉"
+  - button "钉钉 6"
+  - checkbox "选择 抖音 · 经典"
+  - button "抖音 · 经典 6"
+  - checkbox "选择 抖音 · 新版"
+  - button "抖音 · 新版 6"
+  - checkbox "选择 抖音 · 限时"
+  - button "抖音 · 限时 6"
+  - checkbox "选择 EveOneCat · 动图"
+  - button "EveOneCat · 动图 6"
+  - checkbox "选择 EveOneCat · 静态"
+  - button "EveOneCat · 静态 6"
+  - checkbox "选择 Heo"
+  - button "Heo 6"
+  - checkbox "选择 IT之家"
+  - button "IT之家 6"
+  - checkbox "选择 美叽和大鼠"
+  - button "美叽和大鼠 6"
+  - checkbox "选择 抹茶旦旦"
+  - button "抹茶旦旦 6"
+  - checkbox "选择 洋葱头-小"
+  - button "洋葱头-小 6"
+  - checkbox "选择 洋葱头-动态"
+  - button "洋葱头-动态 6"
+  - checkbox "选择 洋葱头-静态"
+  - button "洋葱头-静态 6"
+  - checkbox "选择 坡坡popo"
+  - button "坡坡popo 6"
+  - checkbox "选择 QQ · 动态"
+  - button "QQ · 动态 6"
+  - checkbox "选择 QQ · 静态"
+  - button "QQ · 静态 6"
+  - checkbox "选择 水豚噜噜"
+  - button "水豚噜噜 6"
+  - checkbox "选择 百度贴吧"
+  - button "百度贴吧 6"
+  - checkbox "选择 汪蛋"
+  - button "汪蛋 6"
+  - checkbox "选择 微信"
+  - button "微信 6"
+  - checkbox "选择 微博"
+  - button "微博 6"
+  - checkbox "选择 闲鱼"
+  - button "闲鱼 6"
+  - checkbox "选择 小红书"
+  - button "小红书 6"
+  - checkbox "选择 小黄鸡"
+  - button "小黄鸡 6"
+  - checkbox "选择 卡皮巴拉小黄豚"
+  - button "卡皮巴拉小黄豚 6"
+  - checkbox "选择 小哭猫的心情日记"
+  - button "小哭猫的心情日记 6"
+  - checkbox "选择 小熊虫"
+  - button "小熊虫 6"
+  - checkbox "选择 长草颜团子"
+  - button "长草颜团子 6"
+  - checkbox "选择 一二和布布"
+  - button "一二和布布 6"
+  - checkbox "选择 月薪喵"
+  - button "月薪喵 6"
+- main:
+  - heading "哔哩哔哩" [level=2]
+  - text: 144 张
+  - button "选择本分类导出"
+  - button "排除本分类全部"
+  - button "切换显示密度，当前为紧凑": 紧凑
+  - group "表情图库":
+    - button "doge，打开预览并复制"
+    - button "排除 doge": ✕
+    - img "doge"
+    - button "脱单doge，打开预览并复制"
+    - button "排除 脱单doge": ✕
+    - img "脱单doge"
+    - button "doge_金箍，打开预览并复制"
+    - button "排除 doge_金箍": ✕
+    - img "doge_金箍"
+    - button "doge_绿色，打开预览并复制"
+    - button "排除 doge_绿色": ✕
+    - img "doge_绿色"
+    - button "doge_春节，打开预览并复制"
+    - button "排除 doge_春节": ✕
+    - img "doge_春节"
+    - button "doge_圣诞，打开预览并复制"
+    - button "排除 doge_圣诞": ✕
+    - img "doge_圣诞"
+    - button "doge_彩色，打开预览并复制"
+    - button "排除 doge_彩色": ✕
+    - img "doge_彩色"
+    - button "笑哭，打开预览并复制"
+    - button "排除 笑哭": ✕
+    - img "笑哭"
+    - button "蹲蹲，打开预览并复制"
+    - button "排除 蹲蹲": ✕
+    - img "蹲蹲"
+    - button "星星眼，打开预览并复制"
+    - button "排除 星星眼": ✕
+    - img "星星眼"
+    - button "星星眼_绿色，打开预览并复制"
+    - button "排除 星星眼_绿色": ✕
+    - img "星星眼_绿色"
+    - button "星星眼_春节，打开预览并复制"
+    - button "排除 星星眼_春节": ✕
+    - img "星星眼_春节"
+    - button "星星眼_圣诞，打开预览并复制"
+    - button "排除 星星眼_圣诞": ✕
+    - img "星星眼_圣诞"
+    - button "星星眼_彩色，打开预览并复制"
+    - button "排除 星星眼_彩色": ✕
+    - img "星星眼_彩色"
+    - button "微笑，打开预览并复制"
+    - button "排除 微笑": ✕
+    - img "微笑"
+    - button "微笑_绿色，打开预览并复制"
+    - button "排除 微笑_绿色": ✕
+    - img "微笑_绿色"
+    - button "微笑_春节，打开预览并复制"
+    - button "排除 微笑_春节": ✕
+    - img "微笑_春节"
+    - button "微笑_彩色，打开预览并复制"
+    - button "排除 微笑_彩色": ✕
+    - img "微笑_彩色"
+    - button "吃瓜，打开预览并复制"
+    - button "排除 吃瓜": ✕
+    - img "吃瓜"
+    - button "吃瓜_绿色，打开预览并复制"
+    - button "排除 吃瓜_绿色": ✕
+    - img "吃瓜_绿色"
+    - button "吃瓜_春节，打开预览并复制"
+    - button "排除 吃瓜_春节": ✕
+    - img "吃瓜_春节"
+    - button "吃瓜_圣诞，打开预览并复制"
+    - button "排除 吃瓜_圣诞": ✕
+    - img "吃瓜_圣诞"
+    - button "吃瓜_彩色，打开预览并复制"
+    - button "排除 吃瓜_彩色": ✕
+    - img "吃瓜_彩色"
+    - button "打call，打开预览并复制"
+    - button "排除 打call": ✕
+    - img "打call"
+    - button "打call_绿色，打开预览并复制"
+    - button "排除 打call_绿色": ✕
+    - img "打call_绿色"
+    - button "打call_春节，打开预览并复制"
+    - button "排除 打call_春节": ✕
+    - img "打call_春节"
+    - button "打call_圣诞，打开预览并复制"
+    - button "排除 打call_圣诞": ✕
+    - img "打call_圣诞"
+    - button "打call_彩色，打开预览并复制"
+    - button "排除 打call_彩色": ✕
+    - img "打call_彩色"
+    - button "OK，打开预览并复制"
+    - button "排除 OK": ✕
+    - img "OK"
+    - button "OK_绿色，打开预览并复制"
+    - button "排除 OK_绿色": ✕
+    - img "OK_绿色"
+    - button "OK_春节，打开预览并复制"
+    - button "排除 OK_春节": ✕
+    - img "OK_春节"
+    - button "OK_圣诞，打开预览并复制"
+    - button "排除 OK_圣诞": ✕
+    - img "OK_圣诞"
+    - button "OK_彩色，打开预览并复制"
+    - button "排除 OK_彩色": ✕
+    - img "OK_彩色"
+    - button "大哭，打开预览并复制"
+    - button "排除 大哭": ✕
+    - img "大哭"
+    - button "辣眼睛，打开预览并复制"
+    - button "排除 辣眼睛": ✕
+    - img "辣眼睛"
+    - button "滑稽，打开预览并复制"
+    - button "排除 滑稽": ✕
+    - img "滑稽"
+    - button "喜极而泣，打开预览并复制"
+    - button "排除 喜极而泣": ✕
+    - img "喜极而泣"
+    - button "呲牙，打开预览并复制"
+    - button "排除 呲牙": ✕
+    - img "呲牙"
+    - button "呲牙_绿色，打开预览并复制"
+    - button "排除 呲牙_绿色": ✕
+    - img "呲牙_绿色"
+    - button "呲牙_春节，打开预览并复制"
+    - button "排除 呲牙_春节": ✕
+    - img "呲牙_春节"
+    - button "呲牙_圣诞，打开预览并复制"
+    - button "排除 呲牙_圣诞": ✕
+    - img "呲牙_圣诞"
+    - button "呲牙_彩色，打开预览并复制"
+    - button "排除 呲牙_彩色": ✕
+    - img "呲牙_彩色"
+    - button "歪嘴，打开预览并复制"
+    - button "排除 歪嘴": ✕
+    - img "歪嘴"
+    - button "歪嘴_绿色，打开预览并复制"
+    - button "排除 歪嘴_绿色": ✕
+    - img "歪嘴_绿色"
+    - button "歪嘴_彩色，打开预览并复制"
+    - button "排除 歪嘴_彩色": ✕
+    - img "歪嘴_彩色"
+    - button "调皮，打开预览并复制"
+    - button "排除 调皮": ✕
+    - img "调皮"
+    - button "调皮_绿色，打开预览并复制"
+    - button "排除 调皮_绿色": ✕
+    - img "调皮_绿色"
+    - button "调皮_彩色，打开预览并复制"
+    - button "排除 调皮_彩色": ✕
+    - img "调皮_彩色"
+    - button "妙啊，打开预览并复制"
+    - button "排除 妙啊": ✕
+    - img "妙啊"
+    - button "妙啊_绿色，打开预览并复制"
+    - button "排除 妙啊_绿色": ✕
+    - img "妙啊_绿色"
+    - button "妙啊_春节，打开预览并复制"
+    - button "排除 妙啊_春节": ✕
+    - img "妙啊_春节"
+    - button "妙啊_圣诞，打开预览并复制"
+    - button "排除 妙啊_圣诞": ✕
+    - img "妙啊_圣诞"
+    - button "妙啊_彩色，打开预览并复制"
+    - button "排除 妙啊_彩色": ✕
+    - img "妙啊_彩色"
+    - button "嗑瓜子，打开预览并复制"
+    - button "排除 嗑瓜子": ✕
+    - img "嗑瓜子"
+    - button "嗑瓜子_春节，打开预览并复制"
+    - button "排除 嗑瓜子_春节": ✕
+    - img "嗑瓜子_春节"
+    - button "藏狐，打开预览并复制"
+    - button "排除 藏狐": ✕
+    - img "藏狐"
+    - button "笑，打开预览并复制"
+    - button "排除 笑": ✕
+    - img "笑"
+    - button "笑_绿色，打开预览并复制"
+    - button "排除 笑_绿色": ✕
+    - img "笑_绿色"
+    - button "笑_春节，打开预览并复制"
+    - button "排除 笑_春节": ✕
+    - img "笑_春节"
+    - button "笑_圣诞，打开预览并复制"
+    - button "排除 笑_圣诞": ✕
+    - img "笑_圣诞"
+    - button "笑_彩色，打开预览并复制"
+    - button "排除 笑_彩色": ✕
+    - img "笑_彩色"
+    - button "给心心，打开预览并复制"
+    - button "排除 给心心": ✕
+    - img "给心心"
+    - button "脸红，打开预览并复制"
+    - button "排除 脸红": ✕
+    - img "脸红"
+    - button "嘟嘟，打开预览并复制"
+    - button "排除 嘟嘟": ✕
+    - img "嘟嘟"
+    - button "哦呼，打开预览并复制"
+    - button "排除 哦呼": ✕
+    - img "哦呼"
+    - button "喜欢，打开预览并复制"
+    - button "排除 喜欢": ✕
+    - img "喜欢"
+    - button "酸了，打开预览并复制"
+    - button "排除 酸了": ✕
+    - img "酸了"
+    - button "害羞，打开预览并复制"
+    - button "排除 害羞": ✕
+    - img "害羞"
+    - button "嫌弃，打开预览并复制"
+    - button "排除 嫌弃": ✕
+    - img "嫌弃"
+    - button "疑惑，打开预览并复制"
+    - button "排除 疑惑": ✕
+    - img "疑惑"
+    - button "偷笑，打开预览并复制"
+    - button "排除 偷笑": ✕
+    - img "偷笑"
+    - button "惊讶，打开预览并复制"
+    - button "排除 惊讶": ✕
+    - img "惊讶"
+    - button "捂脸，打开预览并复制"
+    - button "排除 捂脸": ✕
+    - img "捂脸"
+    - button "捂脸_春节，打开预览并复制"
+    - button "排除 捂脸_春节": ✕
+    - img "捂脸_春节"
+    - button "捂脸_圣诞，打开预览并复制"
+    - button "排除 捂脸_圣诞": ✕
+    - img "捂脸_圣诞"
+    - button "阴险，打开预览并复制"
+    - button "排除 阴险": ✕
+    - img "阴险"
+    - button "呆，打开预览并复制"
+    - button "排除 呆": ✕
+    - img "呆"
+    - button "抠鼻，打开预览并复制"
+    - button "排除 抠鼻": ✕
+    - img "抠鼻"
+    - button "抠鼻_绿色，打开预览并复制"
+    - button "排除 抠鼻_绿色": ✕
+    - img "抠鼻_绿色"
+    - button "抠鼻_春节，打开预览并复制"
+    - button "排除 抠鼻_春节": ✕
+    - img "抠鼻_春节"
+    - button "抠鼻_圣诞，打开预览并复制"
+    - button "排除 抠鼻_圣诞": ✕
+    - img "抠鼻_圣诞"
+    - button "抠鼻_彩色，打开预览并复制"
+    - button "排除 抠鼻_彩色": ✕
+    - img "抠鼻_彩色"
+    - button "大笑，打开预览并复制"
+    - button "排除 大笑": ✕
+    - img "大笑"
+    - button "大笑_爱心眼，打开预览并复制"
+    - button "排除 大笑_爱心眼": ✕
+    - img "大笑_爱心眼"
+    - button "惊喜，打开预览并复制"
+    - button "排除 惊喜": ✕
+    - img "惊喜"
+    - button "点赞，打开预览并复制"
+    - button "排除 点赞": ✕
+    - img "点赞"
+    - button "无语，打开预览并复制"
+    - button "排除 无语": ✕
+    - img "无语"
+    - button "鼓掌，打开预览并复制"
+    - button "排除 鼓掌": ✕
+    - img "鼓掌"
+    - button "尴尬，打开预览并复制"
+    - button "排除 尴尬": ✕
+    - img "尴尬"
+    - button "灵魂出窍，打开预览并复制"
+    - button "排除 灵魂出窍": ✕
+    - img "灵魂出窍"
+    - button "傲娇，打开预览并复制"
+    - button "排除 傲娇": ✕
+    - img "傲娇"
+    - button "委屈，打开预览并复制"
+    - button "排除 委屈": ✕
+    - img "委屈"
+    - button "疼，打开预览并复制"
+    - button "排除 疼": ✕
+    - img "疼"
+    - button "冷，打开预览并复制"
+    - button "排除 冷": ✕
+    - img "冷"
+    - button "热，打开预览并复制"
+    - button "排除 热": ✕
+    - img "热"
+    - button "生病，打开预览并复制"
+    - button "排除 生病": ✕
+    - img "生病"
+    - button "生气，打开预览并复制"
+    - button "排除 生气": ✕
+    - img "生气"
+    - button "生气_金箍，打开预览并复制"
+    - button "排除 生气_金箍": ✕
+    - img "生气_金箍"
+    - button "生气_考试，打开预览并复制"
+    - button "排除 生气_考试": ✕
+    - img "生气_考试"
+    - button "捂眼，打开预览并复制"
+    - button "排除 捂眼": ✕
+    - img "捂眼"
+    - button "嘘声，打开预览并复制"
+    - button "排除 嘘声": ✕
+    - img "嘘声"
+    - button "思考，打开预览并复制"
+    - button "排除 思考": ✕
+    - img "思考"
+    - button "再见，打开预览并复制"
+    - button "排除 再见": ✕
+    - img "再见"
+    - button "翻白眼，打开预览并复制"
+    - button "排除 翻白眼": ✕
+    - img "翻白眼"
+    - button "抓狂，打开预览并复制"
+    - button "排除 抓狂": ✕
+    - img "抓狂"
+    - button "哈欠，打开预览并复制"
+    - button "排除 哈欠": ✕
+    - img "哈欠"
+    - button "奋斗，打开预览并复制"
+    - button "排除 奋斗": ✕
+    - img "奋斗"
+    - button "墨镜，打开预览并复制"
+    - button "排除 墨镜": ✕
+    - img "墨镜"
+    - button "难过，打开预览并复制"
+    - button "排除 难过": ✕
+    - img "难过"
+    - button "口罩，打开预览并复制"
+    - button "排除 口罩": ✕
+    - img "口罩"
+    - button "撇嘴，打开预览并复制"
+    - button "排除 撇嘴": ✕
+    - img "撇嘴"
+    - button "黑眼圈_金箍，打开预览并复制"
+    - button "排除 黑眼圈_金箍": ✕
+    - img "黑眼圈_金箍"
+    - button "猴哥，打开预览并复制"
+    - button "排除 猴哥": ✕
+    - img "猴哥"
+    - button "黑猫，打开预览并复制"
+    - button "排除 黑猫": ✕
+    - img "黑猫"
+    - button "三花猫，打开预览并复制"
+    - button "排除 三花猫": ✕
+    - img "三花猫"
+    - button "折耳猫，打开预览并复制"
+    - button "排除 折耳猫": ✕
+    - img "折耳猫"
+    - button "龙年，打开预览并复制"
+    - button "排除 龙年": ✕
+    - img "龙年"
+    - button "豹富，打开预览并复制"
+    - button "排除 豹富": ✕
+    - img "豹富"
+    - button "水稻，打开预览并复制"
+    - button "排除 水稻": ✕
+    - img "水稻"
+    - button "奶茶干杯，打开预览并复制"
+    - button "排除 奶茶干杯": ✕
+    - img "奶茶干杯"
+    - button "汤圆，打开预览并复制"
+    - button "排除 汤圆": ✕
+    - img "汤圆"
+    - button "锦鲤，打开预览并复制"
+    - button "排除 锦鲤": ✕
+    - img "锦鲤"
+    - button "锦鲤_绿色，打开预览并复制"
+    - button "排除 锦鲤_绿色": ✕
+    - img "锦鲤_绿色"
+    - button "福到了，打开预览并复制"
+    - button "排除 福到了": ✕
+    - img "福到了"
+    - button "鸡腿，打开预览并复制"
+    - button "排除 鸡腿": ✕
+    - img "鸡腿"
+    - button "雪花，打开预览并复制"
+    - button "排除 雪花": ✕
+    - img "雪花"
+    - button "视频卫星，打开预览并复制"
+    - button "排除 视频卫星": ✕
+    - img "视频卫星"
+    - button "干杯，打开预览并复制"
+    - button "排除 干杯": ✕
+    - img "干杯"
+    - button "黑洞，打开预览并复制"
+    - button "排除 黑洞": ✕
+    - img "黑洞"
+    - button "爱心，打开预览并复制"
+    - button "排除 爱心": ✕
+    - img "爱心"
+    - button "胜利，打开预览并复制"
+    - button "排除 胜利": ✕
+    - img "胜利"
+    - button "加油，打开预览并复制"
+    - button "排除 加油": ✕
+    - img "加油"
+    - button "抱拳，打开预览并复制"
+    - button "排除 抱拳": ✕
+    - img "抱拳"
+    - button "响指，打开预览并复制"
+    - button "排除 响指": ✕
+    - img "响指"
+    - button "保佑，打开预览并复制"
+    - button "排除 保佑": ✕
+    - img "保佑"
+    - button "福，打开预览并复制"
+    - button "排除 福": ✕
+    - img "福"
+    - button "支持，打开预览并复制"
+    - button "排除 支持": ✕
+    - img "支持"
+    - button "拥抱，打开预览并复制"
+    - button "排除 拥抱": ✕
+    - img "拥抱"
+    - button "跪了，打开预览并复制"
+    - button "排除 跪了": ✕
+    - img "跪了"
+    - button "怪我咯，打开预览并复制"
+    - button "排除 怪我咯": ✕
+    - img "怪我咯"
+    - button "老鼠，打开预览并复制"
+    - button "排除 老鼠": ✕
+    - img "老鼠"
+    - button "牛年，打开预览并复制"
+    - button "排除 牛年": ✕
+    - img "牛年"
+    - button "兔年，打开预览并复制"
+    - button "排除 兔年": ✕
+    - img "兔年"
+    - button "三星堆，打开预览并复制"
+    - button "排除 三星堆": ✕
+    - img "三星堆"

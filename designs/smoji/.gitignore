@@ -1,0 +1,13 @@
+# Full raw captures are preserved together in evidence/v0/dom-captures.json.gz.
+evidence/v0/*.json
+!evidence/v0/verification.json
+# Keep representative review screenshots; the verifier can reproduce every state.
+evidence/v0/*.png
+!evidence/v0/ready-1440.png
+!evidence/v0/ready-390.png
+!evidence/v0/inspector-390.png
+!evidence/v0/custom-selected-1440.png
+!evidence/v0/export-1440.png
+!evidence/v0/dark-390.png
+!evidence/v0/delete-confirm-390.png
+!evidence/v0/catalog-error.png

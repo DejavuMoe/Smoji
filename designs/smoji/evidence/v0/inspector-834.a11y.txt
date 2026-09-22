@@ -1,0 +1,22 @@
+- dialog "doge_金箍":
+  - heading "doge_金箍" [level=2]
+  - text: 哔哩哔哩 · WEBP
+  - button "关闭详情"
+  - button "上一个表情"
+  - img "doge_金箍"
+  - button "下一个表情"
+  - tablist:
+    - tab "Markdown" [selected]
+    - tab "URL"
+    - tab "Hugo"
+    - tab "HTML"
+    - tab "BBCode"
+  - tabpanel:
+    - textbox "Markdown 复制内容": "![smoji:doge_金箍](http://127.0.0.1:41586/v0/images/bilibili/lihoogmcdepb.webp)"
+    - button "复制"
+  - radiogroup "预览背景":
+    - radio "透明" [checked]
+    - radio "浅底"
+    - radio "深底"
+  - button "选择「哔哩哔哩」整包导出"
+  - paragraph: 空格执行当前选择操作 · ←/→ 翻图 · 1–5 选格式 · Esc 关闭

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="system">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
+    <meta name="description" content="Smoji 表情库 — 轻量图片表情管理、多格式导出与配置工作台" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="./favicon.svg?v=2" type="image/svg+xml" />
+    <script>
+      try {
+        const theme = localStorage.getItem('smoji-prototype-v0:theme') || 'system'
+        const isDark =
+          theme === 'dark' ||
+          (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        if (isDark) {
+          document.documentElement.classList.add('dark')
+          document.documentElement.setAttribute('data-theme', 'dark')
+          document.documentElement.style.colorScheme = 'dark'
+        } else {
+          document.documentElement.classList.remove('dark')
+          document.documentElement.setAttribute('data-theme', 'light')
+          document.documentElement.style.colorScheme = 'light'
+        }
+      } catch (e) {}
+    </script>
+    <script type="module" crossorigin src="./assets/index-CSDRveNs.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-BmihP80C.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

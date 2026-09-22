@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 2,
+  "project": { "name": "Smoji", "slug": "smoji", "surfaceType": "operational" },
+  "content": { "defaultProfile": "operational-strict", "inventory": "content-inventory.json", "approvedCopySources": [] },
+  "designSources": "design-sources.json",
+  "surfaces": [{
+    "id": "workbench",
+    "contentProfile": "operational-strict",
+    "prototype": {
+      "entry": "v0/index.html",
+      "assetPath": "v0/index.html",
+      "files": ["v0/index.html", "v0/smoji.json", "build-v0.mjs", "source-fingerprint.json"],
+      "states": ["packs-ready", "pack-selected", "custom-empty", "custom-selected", "inspector", "export-preview", "delete-confirm", "help", "dark", "comfortable", "loading", "catalog-error", "storage-error"],
+      "stableIds": ["grid", "pack-nav", "custom-builder", "selection-dock", "pop-close-btn", "code-modal"]
+    },
+    "production": {
+      "routeOrWindow": "/",
+      "files": ["apps/workbench/src/main.tsx", "apps/workbench/src/app/App.tsx", "apps/workbench/src/app/WorkbenchProvider.tsx", "apps/workbench/src/domain/reducer.ts", "apps/workbench/src/styles/globals.css"],
+      "interfaces": ["workbenchReducer", "loadSmojiManifest", "persistWorkbenchState", "generateFormattedExport", "navigator.clipboard", "browser download"],
+      "tests": ["e2e/keyboard-workflow.spec.ts", "e2e/workbench-custom-groups.spec.ts", "e2e/workbench-export.spec.ts", "e2e/responsive-viewports.spec.ts"]
+    },
+    "status": "needs-review"
+  }]
+}

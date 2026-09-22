@@ -1,0 +1,58 @@
+- dialog "工作区分类":
+  - heading "工作区分类" [level=2]
+  - button "关闭侧边栏"
+  - radiogroup "工作模式":
+    - radio "按分类导出"
+    - radio "自选分组" [checked]
+  - button "撤销" [disabled]
+  - button "重做" [disabled]
+  - group:
+    - text: 新建分组 分组名称
+    - textbox "分组名称":
+      - /placeholder: 分组名称，如：常用
+    - button "添加"
+    - text: 分组 ID（可选）
+    - textbox "分组 ID（可选）":
+      - /placeholder: 分组 ID（可选，默认按名称生成）
+  - textbox "分组配置备注":
+    - /placeholder: 分组配置备注 (可选)
+  - button "导入分组"
+  - button "清空全部" [disabled]
+  - button "备份分组" [disabled]
+  - list "自选分组列表": 尚未创建分组，点击上方新建
+  - text: 表情分类
+  - button "哔哩哔哩 144"
+  - button "嗷大喵小表情 6"
+  - button "哔哩哔哩 · 小电视 6"
+  - button "酷安 6"
+  - button "呆猫八条 6"
+  - button "钉钉 6"
+  - button "抖音 · 经典 6"
+  - button "抖音 · 新版 6"
+  - button "抖音 · 限时 6"
+  - button "EveOneCat · 动图 6"
+  - button "EveOneCat · 静态 6"
+  - button "Heo 6"
+  - button "IT之家 6"
+  - button "美叽和大鼠 6"
+  - button "抹茶旦旦 6"
+  - button "洋葱头-小 6"
+  - button "洋葱头-动态 6"
+  - button "洋葱头-静态 6"
+  - button "坡坡popo 6"
+  - button "QQ · 动态 6"
+  - button "QQ · 静态 6"
+  - button "水豚噜噜 6"
+  - button "百度贴吧 6"
+  - button "汪蛋 6"
+  - button "微信 6"
+  - button "微博 6"
+  - button "闲鱼 6"
+  - button "小红书 6"
+  - button "小黄鸡 6"
+  - button "卡皮巴拉小黄豚 6"
+  - button "小哭猫的心情日记 6"
+  - button "小熊虫 6"
+  - button "长草颜团子 6"
+  - button "一二和布布 6"
+  - button "月薪喵 6"

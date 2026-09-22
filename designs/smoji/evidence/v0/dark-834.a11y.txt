@@ -1,0 +1,318 @@
+- link "跳到表情图库":
+  - /url: "#grid"
+- banner:
+  - link "Smoji 首页":
+    - /url: ./
+    - text: Smoji
+  - button "打开侧边栏菜单": 分类
+  - button "撤销"
+  - button "重做" [disabled]
+  - button "数据预览"
+  - button "帮助"
+  - button "当前：跟随系统 (点击切换到浅色)"
+- main:
+  - heading "哔哩哔哩" [level=2]
+  - text: 添加到「常用」 · 当前分组 144 张
+  - radiogroup "图库范围":
+    - radio "当前分类" [checked]
+    - radio "已入组 (144)"
+  - button "本分类全部加入"
+  - button "切换显示密度，当前为舒适": 舒适
+  - group "表情图库":
+    - text: ✓
+    - button "doge，打开预览并复制"
+    - button "移出 doge": −
+    - img "doge"
+    - text: doge ✓
+    - button "脱单doge，打开预览并复制"
+    - button "移出 脱单doge": −
+    - img "脱单doge"
+    - text: 脱单doge ✓
+    - button "doge_金箍，打开预览并复制"
+    - button "移出 doge_金箍": −
+    - img "doge_金箍"
+    - text: doge_金箍 ✓
+    - button "doge_绿色，打开预览并复制"
+    - button "移出 doge_绿色": −
+    - img "doge_绿色"
+    - text: doge_绿色 ✓
+    - button "doge_春节，打开预览并复制"
+    - button "移出 doge_春节": −
+    - img "doge_春节"
+    - text: doge_春节 ✓
+    - button "doge_圣诞，打开预览并复制"
+    - button "移出 doge_圣诞": −
+    - img "doge_圣诞"
+    - text: doge_圣诞 ✓
+    - button "doge_彩色，打开预览并复制"
+    - button "移出 doge_彩色": −
+    - img "doge_彩色"
+    - text: doge_彩色 ✓
+    - button "笑哭，打开预览并复制"
+    - button "移出 笑哭": −
+    - img "笑哭"
+    - text: 笑哭 ✓
+    - button "蹲蹲，打开预览并复制"
+    - button "移出 蹲蹲": −
+    - img "蹲蹲"
+    - text: 蹲蹲 ✓
+    - button "星星眼，打开预览并复制"
+    - button "移出 星星眼": −
+    - img "星星眼"
+    - text: 星星眼 ✓
+    - button "星星眼_绿色，打开预览并复制"
+    - button "移出 星星眼_绿色": −
+    - img "星星眼_绿色"
+    - text: 星星眼_绿色 ✓
+    - button "星星眼_春节，打开预览并复制"
+    - button "移出 星星眼_春节": −
+    - img "星星眼_春节"
+    - text: 星星眼_春节 ✓
+    - button "星星眼_圣诞，打开预览并复制"
+    - button "移出 星星眼_圣诞": −
+    - img "星星眼_圣诞"
+    - text: 星星眼_圣诞 ✓
+    - button "星星眼_彩色，打开预览并复制"
+    - button "移出 星星眼_彩色": −
+    - img "星星眼_彩色"
+    - text: 星星眼_彩色 ✓
+    - button "微笑，打开预览并复制"
+    - button "移出 微笑": −
+    - img "微笑"
+    - text: 微笑 ✓
+    - button "微笑_绿色，打开预览并复制"
+    - button "移出 微笑_绿色": −
+    - img "微笑_绿色"
+    - text: 微笑_绿色 ✓
+    - button "微笑_春节，打开预览并复制"
+    - button "移出 微笑_春节": −
+    - img "微笑_春节"
+    - text: 微笑_春节 ✓
+    - button "微笑_彩色，打开预览并复制"
+    - button "移出 微笑_彩色": −
+    - img "微笑_彩色"
+    - text: 微笑_彩色 ✓
+    - button "吃瓜，打开预览并复制"
+    - button "移出 吃瓜": −
+    - img "吃瓜"
+    - text: 吃瓜 ✓
+    - button "吃瓜_绿色，打开预览并复制"
+    - button "移出 吃瓜_绿色": −
+    - img "吃瓜_绿色"
+    - text: 吃瓜_绿色 ✓
+    - button "吃瓜_春节，打开预览并复制"
+    - button "移出 吃瓜_春节": −
+    - img "吃瓜_春节"
+    - text: 吃瓜_春节 ✓
+    - button "吃瓜_圣诞，打开预览并复制"
+    - button "移出 吃瓜_圣诞": −
+    - img "吃瓜_圣诞"
+    - text: 吃瓜_圣诞 ✓
+    - button "吃瓜_彩色，打开预览并复制"
+    - button "移出 吃瓜_彩色": −
+    - img "吃瓜_彩色"
+    - text: 吃瓜_彩色 ✓
+    - button "打call，打开预览并复制"
+    - button "移出 打call": −
+    - img "打call"
+    - text: 打call ✓
+    - button "打call_绿色，打开预览并复制"
+    - button "移出 打call_绿色": −
+    - img "打call_绿色"
+    - text: 打call_绿色 ✓
+    - button "打call_春节，打开预览并复制"
+    - button "移出 打call_春节": −
+    - img "打call_春节"
+    - text: 打call_春节 ✓
+    - button "打call_圣诞，打开预览并复制"
+    - button "移出 打call_圣诞": −
+    - img "打call_圣诞"
+    - text: 打call_圣诞 ✓
+    - button "打call_彩色，打开预览并复制"
+    - button "移出 打call_彩色": −
+    - img "打call_彩色"
+    - text: 打call_彩色 ✓
+    - button "OK，打开预览并复制"
+    - button "移出 OK": −
+    - img "OK"
+    - text: OK ✓
+    - button "OK_绿色，打开预览并复制"
+    - button "移出 OK_绿色": −
+    - img "OK_绿色"
+    - text: OK_绿色 ✓
+    - button "OK_春节，打开预览并复制"
+    - button "移出 OK_春节": −
+    - img "OK_春节"
+    - text: OK_春节 ✓
+    - button "OK_圣诞，打开预览并复制"
+    - button "移出 OK_圣诞": −
+    - img "OK_圣诞"
+    - text: OK_圣诞 ✓
+    - button "OK_彩色，打开预览并复制"
+    - button "移出 OK_彩色": −
+    - img "OK_彩色"
+    - text: OK_彩色 ✓
+    - button "大哭，打开预览并复制"
+    - button "移出 大哭": −
+    - img "大哭"
+    - text: 大哭 ✓
+    - button "辣眼睛，打开预览并复制"
+    - button "移出 辣眼睛": −
+    - img "辣眼睛"
+    - text: 辣眼睛 ✓
+    - button "滑稽，打开预览并复制"
+    - button "移出 滑稽": −
+    - img "滑稽"
+    - text: 滑稽 ✓
+    - button "喜极而泣，打开预览并复制"
+    - button "移出 喜极而泣": −
+    - img "喜极而泣"
+    - text: 喜极而泣 ✓
+    - button "呲牙，打开预览并复制"
+    - button "移出 呲牙": −
+    - img "呲牙"
+    - text: 呲牙 ✓
+    - button "呲牙_绿色，打开预览并复制"
+    - button "移出 呲牙_绿色": −
+    - img "呲牙_绿色"
+    - text: 呲牙_绿色 ✓
+    - button "呲牙_春节，打开预览并复制"
+    - button "移出 呲牙_春节": −
+    - img "呲牙_春节"
+    - text: 呲牙_春节 ✓
+    - button "呲牙_圣诞，打开预览并复制"
+    - button "移出 呲牙_圣诞": −
+    - img "呲牙_圣诞"
+    - text: 呲牙_圣诞 ✓
+    - button "呲牙_彩色，打开预览并复制"
+    - button "移出 呲牙_彩色": −
+    - img "呲牙_彩色"
+    - text: 呲牙_彩色 ✓
+    - button "歪嘴，打开预览并复制"
+    - button "移出 歪嘴": −
+    - img "歪嘴"
+    - text: 歪嘴 ✓
+    - button "歪嘴_绿色，打开预览并复制"
+    - button "移出 歪嘴_绿色": −
+    - img "歪嘴_绿色"
+    - text: 歪嘴_绿色 ✓
+    - button "歪嘴_彩色，打开预览并复制"
+    - button "移出 歪嘴_彩色": −
+    - img "歪嘴_彩色"
+    - text: 歪嘴_彩色 ✓
+    - button "调皮，打开预览并复制"
+    - button "移出 调皮": −
+    - img "调皮"
+    - text: 调皮 ✓
+    - button "调皮_绿色，打开预览并复制"
+    - button "移出 调皮_绿色": −
+    - img "调皮_绿色"
+    - text: 调皮_绿色 ✓
+    - button "调皮_彩色，打开预览并复制"
+    - button "移出 调皮_彩色": −
+    - img "调皮_彩色"
+    - text: 调皮_彩色 ✓
+    - button "妙啊，打开预览并复制"
+    - button "移出 妙啊": −
+    - img "妙啊"
+    - text: 妙啊 ✓
+    - button "妙啊_绿色，打开预览并复制"
+    - button "移出 妙啊_绿色": −
+    - img "妙啊_绿色"
+    - text: 妙啊_绿色 ✓
+    - button "妙啊_春节，打开预览并复制"
+    - button "移出 妙啊_春节": −
+    - img "妙啊_春节"
+    - text: 妙啊_春节 ✓
+    - button "妙啊_圣诞，打开预览并复制"
+    - button "移出 妙啊_圣诞": −
+    - img "妙啊_圣诞"
+    - text: 妙啊_圣诞 ✓
+    - button "妙啊_彩色，打开预览并复制"
+    - button "移出 妙啊_彩色": −
+    - img "妙啊_彩色"
+    - text: 妙啊_彩色 ✓
+    - button "嗑瓜子，打开预览并复制"
+    - button "移出 嗑瓜子": −
+    - img "嗑瓜子"
+    - text: 嗑瓜子 ✓
+    - button "嗑瓜子_春节，打开预览并复制"
+    - button "移出 嗑瓜子_春节": −
+    - img "嗑瓜子_春节"
+    - text: 嗑瓜子_春节 ✓
+    - button "藏狐，打开预览并复制"
+    - button "移出 藏狐": −
+    - img "藏狐"
+    - text: 藏狐 ✓
+    - button "笑，打开预览并复制"
+    - button "移出 笑": −
+    - img "笑"
+    - text: 笑 ✓
+    - button "笑_绿色，打开预览并复制"
+    - button "移出 笑_绿色": −
+    - img "笑_绿色"
+    - text: 笑_绿色 ✓
+    - button "笑_春节，打开预览并复制"
+    - button "移出 笑_春节": −
+    - img "笑_春节"
+    - text: 笑_春节 ✓
+    - button "笑_圣诞，打开预览并复制"
+    - button "移出 笑_圣诞": −
+    - img "笑_圣诞"
+    - text: 笑_圣诞 ✓
+    - button "笑_彩色，打开预览并复制"
+    - button "移出 笑_彩色": −
+    - img "笑_彩色"
+    - text: 笑_彩色 ✓
+    - button "给心心，打开预览并复制"
+    - button "移出 给心心": −
+    - img "给心心"
+    - text: 给心心 ✓
+    - button "脸红，打开预览并复制"
+    - button "移出 脸红": −
+    - img "脸红"
+    - text: 脸红 ✓
+    - button "嘟嘟，打开预览并复制"
+    - button "移出 嘟嘟": −
+    - img "嘟嘟"
+    - text: 嘟嘟 ✓
+    - button "哦呼，打开预览并复制"
+    - button "移出 哦呼": −
+    - img "哦呼"
+    - text: 哦呼 ✓
+    - button "喜欢，打开预览并复制"
+    - button "移出 喜欢": −
+    - img "喜欢"
+    - text: 喜欢 ✓
+    - button "酸了，打开预览并复制"
+    - button "移出 酸了": −
+    - img "酸了"
+    - text: 酸了 ✓
+    - button "害羞，打开预览并复制"
+    - button "移出 害羞": −
+    - img "害羞"
+    - text: 害羞 ✓
+    - button "嫌弃，打开预览并复制"
+    - button "移出 嫌弃": −
+    - img "嫌弃"
+    - text: 嫌弃 ✓
+    - button "疑惑，打开预览并复制"
+    - button "移出 疑惑": −
+    - img "疑惑"
+    - text: 疑惑 ✓
+    - button "偷笑，打开预览并复制"
+    - button "移出 偷笑": −
+    - img "偷笑"
+    - text: 偷笑 ✓
+    - button "惊讶，打开预览并复制"
+    - button "移出 惊讶": −
+    - img "惊讶"
+    - text: 惊讶
+  - button "加载更多 (72 张剩余)"
+- region "导出状态":
+  - text: 1 个自选组 · 144 张表情 (23 KB) 可导出为各评论系统所用的表情配置
+  - progressbar "导出数据体积"
+  - text: 导出格式
+  - combobox "导出格式": Smoji
+  - button "预览"
+  - button "导出"

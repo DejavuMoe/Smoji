@@ -1,0 +1,6 @@
+- region "导出状态": 1 个自选组 · 144 张表情
+- alertdialog "删除分组确认":
+  - heading "删除分组确认" [level=2]
+  - paragraph: 确定要删除分组「常用」吗？包含 144 张表情。此操作可通过撤销 (⌘/Ctrl+Z) 恢复。
+  - button "取消"
+  - button "确定"

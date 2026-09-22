@@ -1,0 +1,48 @@
+{
+  "browser": "153.0.8010.12",
+  "checks": [
+    {
+      "width": 1440,
+      "errors": [],
+      "external": [],
+      "failed": [],
+      "downloadItems": 144,
+      "productionStorageUntouched": true
+    },
+    {
+      "width": 390,
+      "errors": [],
+      "external": [],
+      "failed": [],
+      "downloadItems": 144,
+      "productionStorageUntouched": true
+    },
+    {
+      "width": 320,
+      "errors": [],
+      "external": [],
+      "failed": [],
+      "downloadItems": 144,
+      "productionStorageUntouched": true
+    },
+    {
+      "width": 834,
+      "errors": [],
+      "external": [],
+      "failed": [],
+      "downloadItems": 144,
+      "productionStorageUntouched": true
+    }
+  ],
+  "exceptionStates": [
+    "loading",
+    "catalog-error",
+    "retry-success",
+    "storage-error"
+  ],
+  "limitations": [
+    "Chromium emulation only; not real Safari/device or full accessibility certification",
+    "Historical migration intentionally absent; fixture export URLs are local",
+    "Clipboard actual OS write and drag/drop not separately verified in this run"
+  ]
+}

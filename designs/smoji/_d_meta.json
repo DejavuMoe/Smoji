@@ -1,0 +1,23 @@
+{
+  "type": "design",
+  "designSystems": [],
+  "primaryDesignSystem": null,
+  "assets": {
+    "Smoji 工作台": {
+      "versions": [
+        {
+          "path": "v0/index.html",
+          "createdAt": "2026-09-22T15:20:53.501Z",
+          "status": "needs-review",
+          "subtitle": "v0 · 当前界面交互基线",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        }
+      ]
+    }
+  },
+  "createdAt": "2026-09-22T15:20:53.502Z",
+  "updatedAt": "2026-09-22T15:30:37.679Z"
+}

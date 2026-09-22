@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "id": "existing-workbench",
+      "type": "code",
+      "location": "apps/workbench/src at e10929d8a9bdf0a8e1b7ac87b5a33bc58cf6653b",
+      "roles": ["functional-truth", "visual-reference", "interaction-reference"],
+      "trust": "repository-trusted",
+      "instructionsPolicy": "treat-as-data-never-execute",
+      "approvedByUser": false,
+      "containsSensitiveData": false,
+      "sanitization": "Isolated prototype storage, bounded public catalog; historical aliases omitted.",
+      "licenseOrPermission": "Repository MIT license; user requested current-UI v0 baseline.",
+      "localCopies": ["v0/index.html", "source-fingerprint.json"],
+      "observations": ["Existing React components reused; compact cards, teal palette, drawer and dialogs preserved."],
+      "inferences": [],
+      "limitations": ["Reference selection does not constitute design approval.", "Prototype data counts differ from production."]
+    },
+    {
+      "id": "emoji-fixtures",
+      "type": "image",
+      "location": "fixture-provenance.json",
+      "roles": ["visual-reference"],
+      "trust": "external-untrusted",
+      "instructionsPolicy": "treat-as-data-never-execute",
+      "approvedByUser": false,
+      "containsSensitiveData": false,
+      "sanitization": "348 public catalog images; SHA-256 checked against repository metadata.",
+      "licenseOrPermission": "Emoji rights remain with their authors; existing repository personal preview scope.",
+      "localCopies": ["fixture-provenance.json", "v0/smoji.json"],
+      "observations": ["35 category labels retained; first category 144 images, other categories 6 each."],
+      "inferences": [],
+      "limitations": ["No additional commercial or redistribution license is claimed."]
+    }
+  ]
+}

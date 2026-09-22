@@ -1,0 +1,63 @@
+- region "导出状态": 1 个自选组 · 144 张表情
+- dialog "Smoji 使用指南与接入规范":
+  - heading "Smoji 使用指南与接入规范" [level=2]
+  - button "关闭使用指南"
+  - heading "快速开始" [level=3]
+  - heading "按分类导出 (Packs Mode)" [level=4]
+  - paragraph: 直接勾选完整分类，快速导出分类内全部表情包。点击表情卡片可预览或单张复制。
+  - heading "自选分组 (Custom Groups)" [level=4]
+  - paragraph: 自由创建个人专属表情组，跨分类添加、排序、拆分和合并。支持本地离线持久化与导入备份。
+  - heading "常用快捷键" [level=3]
+  - term: Tab / Shift+Tab
+  - definition: 前后移动焦点；弹窗内循环。
+  - term: 方向键 · Home / End
+  - definition: 图库按位置移动；Home/End 到已渲染首/末项，剩余内容用“加载更多”。分类名称用上下键浏览。
+  - term: Enter / Space
+  - definition: 激活按钮；卡片打开详情后焦点在选择按钮，Space 选择/排除或加入/移出，Esc 关闭。Tab 到其他控件后，Space 执行该控件操作。
+  - term: ← / → · 数字 1–5
+  - definition: 详情普通区域左右翻图；数字依次切 Markdown、URL、Hugo、HTML、BBCode。格式、下拉和菜单的方向键仅操作自身。
+  - term: Alt+← / → · Delete
+  - definition: 托盘图片左右排序；Delete 或 Backspace 移出，焦点留在相邻项。
+  - term: ⌘/Ctrl+Z · ⌘/Ctrl+Shift+Z
+  - definition: 撤销/重做自选分组操作（也支持 ⌘/Ctrl+Y）；编辑框使用文本自身撤销。
+  - term: ⌘/Ctrl+Shift+P
+  - definition: 页面打开导出预览，预览内再次按下关闭；编辑框或其他弹层内不触发。
+  - term: ⌘/Ctrl+E
+  - definition: 页面有可导出内容时下载；编辑框、菜单或弹窗内不触发。
+  - term: Escape
+  - definition: 关闭当前弹层/菜单并归还焦点；编辑分组时取消编辑。
+  - heading "数据规范与容量限制" [level=3]
+  - text: 单次最多分类：
+  - strong: "64"
+  - text: 组 每组上限：
+  - strong: "600"
+  - text: 张 表情总量上限：
+  - strong: "6000"
+  - text: 张 导出清单体积限制：
+  - strong: 1 MB
+  - table:
+    - rowgroup:
+      - row "导出目标 默认文件名格式":
+        - columnheader "导出目标"
+        - columnheader "默认文件名格式"
+    - rowgroup:
+      - row "Smoji smoji-20260922.json":
+        - cell "Smoji"
+        - cell "smoji-20260922.json":
+          - code: smoji-20260922.json
+      - row "Artalk artalk-20260922.json":
+        - cell "Artalk"
+        - cell "artalk-20260922.json":
+          - code: artalk-20260922.json
+      - row "Twikoo twikoo-20260922.json":
+        - cell "Twikoo"
+        - cell "twikoo-20260922.json":
+          - code: twikoo-20260922.json
+      - row "OwO OwO-20260922.json":
+        - cell "OwO"
+        - cell "OwO-20260922.json":
+          - code: OwO-20260922.json
+      - row "Waline waline-20260922.json":
+        - cell "Waline"
+        - cell "waline-20260922.json":
+          - code: waline-20260922.json
