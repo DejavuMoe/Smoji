@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 2,
+  "project": {
+    "name": "{{PROJECT_NAME}}",
+    "slug": "{{PROJECT_SLUG}}",
+    "surfaceType": "{{SURFACE_TYPE}}"
+  },
+  "content": {
+    "defaultProfile": "{{CONTENT_PROFILE}}",
+    "inventory": "content-inventory.json",
+    "approvedCopySources": []
+  },
+  "designSources": null,
+  "surfaces": [
+    {
+      "id": "replace-with-stable-surface-id",
+      "contentProfile": "{{CONTENT_PROFILE}}",
+      "prototype": {
+        "entry": "index.html",
+        "assetPath": "index.html",
+        "files": [],
+        "states": [],
+        "stableIds": []
+      },
+      "production": {
+        "routeOrWindow": null,
+        "files": [],
+        "interfaces": [],
+        "tests": []
+      },
+      "status": "prototype"
+    }
+  ]
+}

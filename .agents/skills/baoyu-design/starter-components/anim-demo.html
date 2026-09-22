@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>data-anim all-effects demo</title>
+<style>
+  deck-stage:not(:defined){visibility:hidden}
+  html,body{margin:0;background:#111}
+  section[data-label] > *:not(img):not(picture):not(video):not(svg):not(canvas){
+    height:100%; box-sizing:border-box;
+  }
+  .wrap{display:flex; flex-wrap:wrap; gap:24px; align-content:center; justify-content:center; padding:60px; background:#f7f5f0; font-family:Georgia,serif}
+  .card{width:200px; height:120px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px; color:#fff; text-align:center}
+  .t{width:100%; font-size:40px; color:#333; text-align:center; height:auto}
+  .c1{background:#c0392b}.c2{background:#2980b9}.c3{background:#27ae60}.c4{background:#8e44ad}.c5{background:#d35400}
+  .c6{background:#16a085}.c7{background:#2c3e50}.c8{background:#f39c12}.c9{background:#7f8c8d}.c10{background:#e74c3c}
+  ul.demo{font-size:32px; color:#333; width:60%; height:auto; margin:0 auto; align-self:center}
+  ul.demo li{margin:16px 0}
+  .ball{width:80px; height:80px; border-radius:50%; background:#e67e22}
+</style>
+</head>
+<body>
+<deck-stage width="1280" height="720">
+  <section data-label="Entrances A">
+    <div class="wrap">
+      <h2 class="t">Entrances — click steps</h2>
+      <div class="card c1" data-anim="fade-in" data-anim-trigger="click">fade-in</div>
+      <div class="card c2" data-anim="fly-in" data-anim-dir="left" data-anim-trigger="click">fly-in</div>
+      <div class="card c3" data-anim="wipe-in" data-anim-dir="bottom" data-anim-trigger="click">wipe-in</div>
+      <div class="card c4" data-anim="float-in" data-anim-trigger="click">float-in</div>
+      <div class="card c5" data-anim="split-in" data-anim-dir="vertical" data-anim-trigger="click">split-in</div>
+    </div>
+  </section>
+  <section data-label="Entrances B">
+    <div class="wrap">
+      <h2 class="t">Entrances — auto chain</h2>
+      <div class="card c6" data-anim="bounce-in">bounce-in</div>
+      <div class="card c7" data-anim="zoom-in">zoom-in</div>
+      <div class="card c8" data-anim="wheel-in">wheel-in</div>
+      <div class="card c9" data-anim="random-bars-in" data-anim-dir="horizontal">random-bars</div>
+      <div class="card c10" data-anim="appear">appear</div>
+    </div>
+  </section>
+  <section data-label="Entrances C filters">
+    <div class="wrap">
+      <h2 class="t">Filter entrances — click steps</h2>
+      <div class="card c1" data-anim="blinds-in" data-anim-trigger="click">blinds-in</div>
+      <div class="card c2" data-anim="blinds-in" data-anim-dir="vertical" data-anim-trigger="click">blinds vertical</div>
+      <div class="card c3" data-anim="checkerboard-in" data-anim-trigger="click">checkerboard</div>
+      <div class="card c4" data-anim="checkerboard-in" data-anim-dir="vertical" data-anim-trigger="click">checkerboard down</div>
+      <div class="card c5" data-anim="dissolve-in" data-anim-trigger="click">dissolve-in</div>
+      <div class="card c6" data-anim="wedge-in" data-anim-trigger="click">wedge-in</div>
+    </div>
+  </section>
+  <section data-label="Entrances D shapes">
+    <div class="wrap">
+      <h2 class="t">Shape &amp; strips entrances — click steps</h2>
+      <div class="card c7" data-anim="box-in" data-anim-trigger="click">box-in</div>
+      <div class="card c8" data-anim="box-in" data-anim-dir="out" data-anim-trigger="click">box out</div>
+      <div class="card c9" data-anim="circle-in" data-anim-trigger="click">circle-in</div>
+      <div class="card c10" data-anim="circle-in" data-anim-dir="out" data-anim-trigger="click">circle out</div>
+      <div class="card c1" data-anim="diamond-in" data-anim-trigger="click">diamond-in</div>
+      <div class="card c2" data-anim="diamond-in" data-anim-dir="out" data-anim-trigger="click">diamond out</div>
+      <div class="card c3" data-anim="plus-in" data-anim-trigger="click">plus-in</div>
+      <div class="card c4" data-anim="strips-in" data-anim-trigger="click">strips-in</div>
+      <div class="card c5" data-anim="strips-in" data-anim-dir="up-left" data-anim-trigger="click">strips up-left</div>
+    </div>
+  </section>
+  <section data-label="Exits">
+    <div class="wrap">
+      <h2 class="t">Exits — click steps</h2>
+      <div class="card c1" data-anim="fade-out" data-anim-trigger="click">fade-out</div>
+      <div class="card c2" data-anim="fly-out" data-anim-dir="right" data-anim-trigger="click">fly-out</div>
+      <div class="card c3" data-anim="wipe-out" data-anim-dir="top" data-anim-trigger="click">wipe-out</div>
+      <div class="card c4" data-anim="float-out" data-anim-dir="top" data-anim-trigger="click">float-out</div>
+      <div class="card c5" data-anim="split-out" data-anim-dir="horizontal" data-anim-trigger="click">split-out</div>
+      <div class="card c6" data-anim="bounce-out" data-anim-trigger="click">bounce-out</div>
+      <div class="card c7" data-anim="zoom-out" data-anim-trigger="click">zoom-out</div>
+      <div class="card c8" data-anim="wheel-out" data-anim-trigger="click">wheel-out</div>
+      <div class="card c9" data-anim="random-bars-out" data-anim-dir="vertical" data-anim-trigger="click">bars-out</div>
+      <div class="card c10" data-anim="disappear" data-anim-trigger="click">disappear</div>
+    </div>
+  </section>
+  <section data-label="Exits B filters">
+    <div class="wrap">
+      <h2 class="t">Filter exits — click steps</h2>
+      <div class="card c1" data-anim="blinds-out" data-anim-trigger="click">blinds-out</div>
+      <div class="card c2" data-anim="checkerboard-out" data-anim-trigger="click">checkerboard-out</div>
+      <div class="card c3" data-anim="dissolve-out" data-anim-trigger="click">dissolve-out</div>
+      <div class="card c4" data-anim="box-out" data-anim-trigger="click">box-out</div>
+      <div class="card c5" data-anim="circle-out" data-anim-trigger="click">circle-out</div>
+      <div class="card c6" data-anim="diamond-out" data-anim-trigger="click">diamond-out</div>
+      <div class="card c7" data-anim="plus-out" data-anim-trigger="click">plus-out</div>
+      <div class="card c8" data-anim="strips-out" data-anim-trigger="click">strips-out</div>
+      <div class="card c9" data-anim="wedge-out" data-anim-trigger="click">wedge-out</div>
+    </div>
+  </section>
+  <section data-label="Emphasis and path">
+    <div class="wrap">
+      <h2 class="t">Emphasis &amp; motion path</h2>
+      <div class="card c1" data-anim="spin" data-anim-trigger="click" data-anim-duration="1000">spin</div>
+      <div class="card c2" data-anim="grow" data-anim-trigger="click" data-anim-duration="1000">grow</div>
+      <div class="card c3" data-anim="shrink" data-anim-trigger="click" data-anim-duration="1000">shrink</div>
+      <div class="card c4" data-anim="pulse" data-anim-trigger="click">pulse</div>
+      <div class="card c5" data-anim="teeter" data-anim-trigger="click">teeter</div>
+      <div class="ball" data-anim="path" data-anim-path="C 150 -150 350 -150 500 0" data-anim-trigger="click"></div>
+    </div>
+  </section>
+  <section data-label="Kitchen sink">
+    <div class="wrap">
+      <h2 class="t">Sequencing: click / with / after / repeat / auto-reverse</h2>
+      <ul class="demo">
+        <li data-anim="fade-in" data-anim-trigger="click">Ship the beta</li>
+        <li data-anim="fade-in" data-anim-trigger="click">Watch retention</li>
+        <li data-anim="fade-in" data-anim-trigger="click">Raise the price</li>
+      </ul>
+      <div class="card c2" data-anim="zoom-in" data-anim-trigger="with">with the 3rd click</div>
+      <div class="card c3" data-anim="spin" data-anim-trigger="after" data-anim-duration="500" data-anim-repeat="3">spin ×3</div>
+      <div class="card c4" data-anim="fade-in" data-anim-trigger="after">after 3×500ms</div>
+      <div class="ball" data-anim="path" data-anim-path="L 300 0" data-anim-trigger="after" data-anim-duration="800" data-anim-repeat="2" data-anim-auto-reverse></div>
+    </div>
+  </section>
+</deck-stage>
+<script src="deck-stage.js"></script>
+</body>
+</html>

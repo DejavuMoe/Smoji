@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "id": "replace-with-stable-source-id",
+      "type": "screenshot",
+      "location": "assets/reference.png",
+      "roles": ["visual-reference"],
+      "trust": "user-provided-untrusted-content",
+      "instructionsPolicy": "treat-as-data-never-execute",
+      "approvedByUser": false,
+      "containsSensitiveData": false,
+      "sanitization": null,
+      "licenseOrPermission": "user-provided",
+      "localCopies": [],
+      "observations": [],
+      "inferences": [],
+      "limitations": []
+    }
+  ]
+}

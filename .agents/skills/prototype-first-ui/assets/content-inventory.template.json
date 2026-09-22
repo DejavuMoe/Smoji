@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "profile": "{{CONTENT_PROFILE}}",
+  "capture": {
+    "method": "rendered-dom",
+    "sources": ["dom-content.json"],
+    "capturedAt": null,
+    "surfaces": [],
+    "limitations": []
+  },
+  "briefSources": [],
+  "approvedCopySources": [],
+  "items": [
+    {
+      "id": "replace-with-generated-id",
+      "text": "Replace with captured UI text",
+      "channels": ["text"],
+      "locations": ["body"],
+      "visibility": ["visible"],
+      "captures": ["dom-content.json"],
+      "purpose": "unclassified",
+      "origin": "unknown",
+      "decision": "review",
+      "evidence": null,
+      "flags": [],
+      "notes": null
+    }
+  ]
+}
