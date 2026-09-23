@@ -4,40 +4,49 @@
     {
       "width": 1440,
       "errors": [],
+      "externalRequestCount": 104,
+      "externalOrigin": "https://s3-cdn.zsh.moe",
       "failed": [],
       "downloadItems": 104,
-      "productionStorageUntouched": true,
-      "externalRequestCount": 104,
-      "externalOrigin": "https://s3-cdn.zsh.moe"
+      "productionStorageUntouched": true
     },
     {
       "width": 390,
       "errors": [],
+      "externalRequestCount": 72,
+      "externalOrigin": "https://s3-cdn.zsh.moe",
       "failed": [],
       "downloadItems": 104,
-      "productionStorageUntouched": true,
-      "externalRequestCount": 72,
-      "externalOrigin": "https://s3-cdn.zsh.moe"
+      "productionStorageUntouched": true
     },
     {
       "width": 320,
       "errors": [],
+      "externalRequestCount": 72,
+      "externalOrigin": "https://s3-cdn.zsh.moe",
       "failed": [],
       "downloadItems": 104,
-      "productionStorageUntouched": true,
-      "externalRequestCount": 72,
-      "externalOrigin": "https://s3-cdn.zsh.moe"
+      "productionStorageUntouched": true
     },
     {
       "width": 834,
       "errors": [],
+      "externalRequestCount": 72,
+      "externalOrigin": "https://s3-cdn.zsh.moe",
       "failed": [],
       "downloadItems": 104,
-      "productionStorageUntouched": true,
-      "externalRequestCount": 72,
-      "externalOrigin": "https://s3-cdn.zsh.moe"
+      "productionStorageUntouched": true
     }
   ],
+  "catalog": {
+    "packs": 36,
+    "items": 5934,
+    "preservedProductionPacks": 35,
+    "preservedProductionItems": 5830,
+    "liveManifest": "https://smoji.zsh.moe/smoji.json",
+    "liveCatalogEqual": true,
+    "newWebpHeadChecks": 104
+  },
   "exceptionStates": [
     "loading",
     "catalog-error",
@@ -48,14 +57,5 @@
     "Chromium emulation only; not real Safari/device or full accessibility certification",
     "CDN originals; CI thumbnails not included; historical migration not separately tested",
     "Clipboard actual OS write and drag/drop not separately verified in this run"
-  ],
-  "catalog": {
-    "packs": 36,
-    "items": 5934,
-    "preservedProductionPacks": 35,
-    "preservedProductionItems": 5830,
-    "liveManifest": "https://smoji.zsh.moe/smoji.json",
-    "liveCatalogEqual": true,
-    "newWebpHeadChecks": 104
-  }
+  ]
 }

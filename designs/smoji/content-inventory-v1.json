@@ -6,11 +6,11 @@
     "sources": [
       "evidence/v1/dom-captures.json.gz"
     ],
-    "capturedAt": "2026-09-23T11:01:06Z",
+    "capturedAt": "2026-09-23T11:09:50Z",
     "surfaces": [
       {
         "source": "evidence/v1/dom-captures.json.gz#catalog-error.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 390,
@@ -20,7 +20,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#comfortable-1440.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 1440,
@@ -30,7 +30,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#comfortable-320.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 320,
@@ -40,7 +40,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#comfortable-390.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 390,
@@ -50,7 +50,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#comfortable-834.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 834,
@@ -60,7 +60,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#custom-empty-1440.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 1440,
@@ -70,7 +70,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#custom-empty-320.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 320,
@@ -80,7 +80,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#custom-empty-390.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 390,
@@ -90,7 +90,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#custom-empty-834.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 834,
@@ -100,7 +100,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#custom-selected-1440.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 1440,
@@ -110,7 +110,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#custom-selected-320.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 320,
@@ -120,7 +120,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#custom-selected-390.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 390,
@@ -130,7 +130,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#custom-selected-834.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 834,
@@ -140,7 +140,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#dark-1440.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 1440,
@@ -150,7 +150,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#dark-320.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 320,
@@ -160,7 +160,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#dark-390.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 390,
@@ -170,7 +170,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#dark-834.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 834,
@@ -180,7 +180,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#delete-confirm-1440.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 1440,
@@ -190,7 +190,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#delete-confirm-320.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 320,
@@ -200,7 +200,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#delete-confirm-390.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 390,
@@ -210,7 +210,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#delete-confirm-834.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 834,
@@ -220,7 +220,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#export-1440.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 1440,
@@ -230,7 +230,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#export-320.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 320,
@@ -240,7 +240,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#export-390.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 390,
@@ -250,7 +250,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#export-834.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 834,
@@ -260,7 +260,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#group-menu-1440.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 1440,
@@ -270,7 +270,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#group-menu-320.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 320,
@@ -280,7 +280,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#group-menu-390.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 390,
@@ -290,7 +290,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#group-menu-834.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 834,
@@ -300,7 +300,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#help-1440.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 1440,
@@ -310,7 +310,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#help-320.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 320,
@@ -320,7 +320,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#help-390.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 390,
@@ -330,7 +330,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#help-834.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 834,
@@ -340,7 +340,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#inspector-1440.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 1440,
@@ -350,7 +350,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#inspector-320.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 320,
@@ -360,7 +360,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#inspector-390.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 390,
@@ -370,7 +370,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#inspector-834.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 834,
@@ -380,7 +380,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#loading.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 390,
@@ -390,7 +390,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#ready-1440.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 1440,
@@ -400,7 +400,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#ready-320.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 320,
@@ -410,7 +410,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#ready-390.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 390,
@@ -420,7 +420,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#ready-834.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 834,
@@ -430,7 +430,7 @@
       },
       {
         "source": "evidence/v1/dom-captures.json.gz#storage-error.json",
-        "url": "http://127.0.0.1:41320/v1/",
+        "url": "http://127.0.0.1:41292/v1/",
         "title": "",
         "viewport": {
           "width": 390,
@@ -22615,7 +22615,7 @@
         "h2#radix-_r_4c_",
         "h2#radix-_r_6i_",
         "h2#radix-_r_b1_",
-        "h2#radix-_r_h7_"
+        "h2#radix-_r_ha_"
       ],
       "visibility": [
         "visible"
@@ -26833,7 +26833,7 @@
         "div#guide-modal",
         "h2#radix-_r_6i_",
         "h2#radix-_r_b1_",
-        "h2#radix-_r_h7_"
+        "h2#radix-_r_ha_"
       ],
       "visibility": [
         "visible"

@@ -18,7 +18,7 @@
         {
           "path": "v1/index.html",
           "createdAt": "2026-09-23T10:58:19.204Z",
-          "status": "needs-review",
+          "status": "approved",
           "subtitle": "v1 · 全量表情包与大肥鱼",
           "viewport": {
             "width": 1440,
@@ -29,5 +29,5 @@
     }
   },
   "createdAt": "2026-09-22T15:20:53.502Z",
-  "updatedAt": "2026-09-23T10:58:19.205Z"
+  "updatedAt": "2026-09-23T11:08:49.320Z"
 }
