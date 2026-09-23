@@ -65,3 +65,32 @@ it('rescans conversions, moves and deletions while preserving stable IDs and lab
     await rm(root, { recursive: true, force: true })
   }
 })
+
+it('adds numbered WebP files while retaining published packs and rejects invalid names atomically', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'smoji-generator-numbered-'))
+  const run = () => execFileSync(process.execPath, ['--experimental-strip-types', resolve('scripts/generate-packs.mjs'), root], { stdio: 'pipe' })
+  const read = async (path: string) => JSON.parse(await readFile(join(root, path), 'utf8'))
+  try {
+    await mkdir(join(root, 'data'))
+    await mkdir(join(root, 'packs/deepseek-wale-girl'), { recursive: true })
+    const old = { id: 'old-pack', label: '旧分类', items: [{ file: 'abcdefghijkl.webp', label: '保留', series: '旧系列' }] }
+    const oldAsset = { 'old-pack/abcdefghijkl.webp': { sha256: 'a'.repeat(64), bytes: 42, preview: false } }
+    await writeFile(join(root, 'data/packs.json'), JSON.stringify([old, {
+      id: 'deepseek-wale-girl', label: '大肥鱼', items: [{ file: '001_hehe.webp', label: '嘿嘿', series: '大肥鱼' }],
+    }]))
+    await writeFile(join(root, 'data/assets.json'), JSON.stringify(oldAsset))
+    await writeFile(join(root, 'data/published-aliases.json'), '{}')
+    await writeFile(join(root, 'packs/deepseek-wale-girl/001_hehe.webp'), Buffer.from('RIFF....WEBP'))
+    run()
+    expect((await read('data/packs.json')).map((pack: { id: string }) => pack.id)).toEqual(['deepseek-wale-girl', 'old-pack'])
+    expect((await read('data/packs.json'))[0].items[0]).toEqual({ file: '001_hehe.webp', label: '嘿嘿', series: '大肥鱼' })
+    expect((await read('data/assets.json'))['old-pack/abcdefghijkl.webp']).toEqual(oldAsset['old-pack/abcdefghijkl.webp'])
+    expect((await read('data/smoji.json')).packs[0].items[0]).toEqual({ id: '001_hehe', label: '嘿嘿', src: './deepseek-wale-girl/001_hehe.webp' })
+    const before = await readFile(join(root, 'data/smoji.json'), 'utf8')
+    await writeFile(join(root, 'packs/deepseek-wale-girl/bad_name.webp'), Buffer.from('RIFF....WEBP'))
+    expect(run).toThrow()
+    expect(await readFile(join(root, 'data/smoji.json'), 'utf8')).toBe(before)
+  } finally {
+    await rm(root, { recursive: true, force: true })
+  }
+})

@@ -56,7 +56,13 @@
           "apps/workbench/src/app/App.tsx",
           "apps/workbench/src/app/WorkbenchProvider.tsx",
           "apps/workbench/src/domain/reducer.ts",
-          "apps/workbench/src/styles/globals.css"
+          "apps/workbench/src/styles/globals.css",
+          "data/packs.json",
+          "data/smoji.json",
+          "data/assets.json",
+          "scripts/generate-packs.mjs",
+          "scripts/generate-previews.mjs",
+          "apps/workbench/vite.config.ts"
         ],
         "interfaces": [
           "workbenchReducer",
@@ -70,10 +76,15 @@
           "e2e/keyboard-workflow.spec.ts",
           "e2e/workbench-custom-groups.spec.ts",
           "e2e/workbench-export.spec.ts",
-          "e2e/responsive-viewports.spec.ts"
+          "e2e/responsive-viewports.spec.ts",
+          "packages/smoji/test/generator.test.ts",
+          "packages/smoji/test/catalog-quality.test.ts",
+          "packages/smoji/test/packs.test.ts",
+          "packages/smoji/test/previews.test.ts",
+          "designs/smoji/verify-v0.mjs production"
         ]
       },
-      "status": "approved"
+      "status": "implemented"
     }
   ]
 }

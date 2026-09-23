@@ -2,6 +2,532 @@
   "version": 1,
   "packs": [
     {
+      "id": "deepseek-wale-girl",
+      "label": "大肥鱼",
+      "items": [
+        {
+          "id": "001_hehe",
+          "label": "DeepSeek 鲸鱼娘：嘿嘿",
+          "src": "./deepseek-wale-girl/001_hehe.webp"
+        },
+        {
+          "id": "002_haha",
+          "label": "DeepSeek 鲸鱼娘：笑死",
+          "src": "./deepseek-wale-girl/002_haha.webp"
+        },
+        {
+          "id": "003_shy",
+          "label": "DeepSeek 鲸鱼娘：好害羞",
+          "src": "./deepseek-wale-girl/003_shy.webp"
+        },
+        {
+          "id": "004_cry",
+          "label": "DeepSeek 鲸鱼娘：呜呜",
+          "src": "./deepseek-wale-girl/004_cry.webp"
+        },
+        {
+          "id": "005_bawl",
+          "label": "DeepSeek 鲸鱼娘：大哭",
+          "src": "./deepseek-wale-girl/005_bawl.webp"
+        },
+        {
+          "id": "006_angry",
+          "label": "DeepSeek 鲸鱼娘：生气了",
+          "src": "./deepseek-wale-girl/006_angry.webp"
+        },
+        {
+          "id": "007_rage",
+          "label": "DeepSeek 鲸鱼娘：超气的",
+          "src": "./deepseek-wale-girl/007_rage.webp"
+        },
+        {
+          "id": "008_speechless",
+          "label": "DeepSeek 鲸鱼娘：无语",
+          "src": "./deepseek-wale-girl/008_speechless.webp"
+        },
+        {
+          "id": "009_shock",
+          "label": "DeepSeek 鲸鱼娘：啊？",
+          "src": "./deepseek-wale-girl/009_shock.webp"
+        },
+        {
+          "id": "010_scared",
+          "label": "DeepSeek 鲸鱼娘：害怕",
+          "src": "./deepseek-wale-girl/010_scared.webp"
+        },
+        {
+          "id": "011_sleepy",
+          "label": "DeepSeek 鲸鱼娘：困困",
+          "src": "./deepseek-wale-girl/011_sleepy.webp"
+        },
+        {
+          "id": "012_smug",
+          "label": "DeepSeek 鲸鱼娘：得意",
+          "src": "./deepseek-wale-girl/012_smug.webp"
+        },
+        {
+          "id": "013_act-cute",
+          "label": "DeepSeek 鲸鱼娘：求求啦",
+          "src": "./deepseek-wale-girl/013_act-cute.webp"
+        },
+        {
+          "id": "014_heart-hands",
+          "label": "DeepSeek 鲸鱼娘：比心",
+          "src": "./deepseek-wale-girl/014_heart-hands.webp"
+        },
+        {
+          "id": "015_like",
+          "label": "DeepSeek 鲸鱼娘：点赞",
+          "src": "./deepseek-wale-girl/015_like.webp"
+        },
+        {
+          "id": "016_nope",
+          "label": "DeepSeek 鲸鱼娘：不可以",
+          "src": "./deepseek-wale-girl/016_nope.webp"
+        },
+        {
+          "id": "017_yes",
+          "label": "DeepSeek 鲸鱼娘：好哒",
+          "src": "./deepseek-wale-girl/017_yes.webp"
+        },
+        {
+          "id": "018_wave",
+          "label": "DeepSeek 鲸鱼娘：拜拜",
+          "src": "./deepseek-wale-girl/018_wave.webp"
+        },
+        {
+          "id": "019_kneel",
+          "label": "DeepSeek 鲸鱼娘：跪了",
+          "src": "./deepseek-wale-girl/019_kneel.webp"
+        },
+        {
+          "id": "020_hug",
+          "label": "DeepSeek 鲸鱼娘：抱抱",
+          "src": "./deepseek-wale-girl/020_hug.webp"
+        },
+        {
+          "id": "021_kiss",
+          "label": "DeepSeek 鲸鱼娘：飞吻",
+          "src": "./deepseek-wale-girl/021_kiss.webp"
+        },
+        {
+          "id": "022_eat",
+          "label": "DeepSeek 鲸鱼娘：干饭",
+          "src": "./deepseek-wale-girl/022_eat.webp"
+        },
+        {
+          "id": "023_milk-tea",
+          "label": "DeepSeek 鲸鱼娘：奶茶续命",
+          "src": "./deepseek-wale-girl/023_milk-tea.webp"
+        },
+        {
+          "id": "024_fighting",
+          "label": "DeepSeek 鲸鱼娘：加油！",
+          "src": "./deepseek-wale-girl/024_fighting.webp"
+        },
+        {
+          "id": "025_thanks",
+          "label": "DeepSeek 鲸鱼娘：谢谢",
+          "src": "./deepseek-wale-girl/025_thanks.webp"
+        },
+        {
+          "id": "026_sorry",
+          "label": "DeepSeek 鲸鱼娘：对不起",
+          "src": "./deepseek-wale-girl/026_sorry.webp"
+        },
+        {
+          "id": "027_good-night",
+          "label": "DeepSeek 鲸鱼娘：晚安",
+          "src": "./deepseek-wale-girl/027_good-night.webp"
+        },
+        {
+          "id": "028_good-morning",
+          "label": "DeepSeek 鲸鱼娘：早安",
+          "src": "./deepseek-wale-girl/028_good-morning.webp"
+        },
+        {
+          "id": "029_overtime",
+          "label": "DeepSeek 鲸鱼娘：加班中",
+          "src": "./deepseek-wale-girl/029_overtime.webp"
+        },
+        {
+          "id": "030_fish",
+          "label": "DeepSeek 鲸鱼娘：摸鱼",
+          "src": "./deepseek-wale-girl/030_fish.webp"
+        },
+        {
+          "id": "031_gg",
+          "label": "DeepSeek 鲸鱼娘：寄了",
+          "src": "./deepseek-wale-girl/031_gg.webp"
+        },
+        {
+          "id": "032_rot",
+          "label": "DeepSeek 鲸鱼娘：摆烂",
+          "src": "./deepseek-wale-girl/032_rot.webp"
+        },
+        {
+          "id": "033_juan",
+          "label": "DeepSeek 鲸鱼娘：卷到了",
+          "src": "./deepseek-wale-girl/033_juan.webp"
+        },
+        {
+          "id": "034_lie-flat",
+          "label": "DeepSeek 鲸鱼娘：躺平",
+          "src": "./deepseek-wale-girl/034_lie-flat.webp"
+        },
+        {
+          "id": "035_xiang",
+          "label": "DeepSeek 鲸鱼娘：真香",
+          "src": "./deepseek-wale-girl/035_xiang.webp"
+        },
+        {
+          "id": "036_tears",
+          "label": "DeepSeek 鲸鱼娘：泪目",
+          "src": "./deepseek-wale-girl/036_tears.webp"
+        },
+        {
+          "id": "037_broken",
+          "label": "DeepSeek 鲸鱼娘：破防了",
+          "src": "./deepseek-wale-girl/037_broken.webp"
+        },
+        {
+          "id": "038_nice",
+          "label": "DeepSeek 鲸鱼娘：好耶！",
+          "src": "./deepseek-wale-girl/038_nice.webp"
+        },
+        {
+          "id": "039_yeah-yeah",
+          "label": "DeepSeek 鲸鱼娘：啊对对对",
+          "src": "./deepseek-wale-girl/039_yeah-yeah.webp"
+        },
+        {
+          "id": "040_zundun",
+          "label": "DeepSeek 鲸鱼娘：尊嘟假嘟",
+          "src": "./deepseek-wale-girl/040_zundun.webp"
+        },
+        {
+          "id": "041_cool",
+          "label": "DeepSeek 鲸鱼娘：泰裤辣",
+          "src": "./deepseek-wale-girl/041_cool.webp"
+        },
+        {
+          "id": "042_thanks-q",
+          "label": "DeepSeek 鲸鱼娘：栓Q",
+          "src": "./deepseek-wale-girl/042_thanks-q.webp"
+        },
+        {
+          "id": "043_yyds",
+          "label": "DeepSeek 鲸鱼娘：YYDS",
+          "src": "./deepseek-wale-girl/043_yyds.webp"
+        },
+        {
+          "id": "044_juejuezi",
+          "label": "DeepSeek 鲸鱼娘：绝绝子",
+          "src": "./deepseek-wale-girl/044_juejuezi.webp"
+        },
+        {
+          "id": "045_bbq",
+          "label": "DeepSeek 鲸鱼娘：芭比Q了",
+          "src": "./deepseek-wale-girl/045_bbq.webp"
+        },
+        {
+          "id": "046_cracked",
+          "label": "DeepSeek 鲸鱼娘：我裂开",
+          "src": "./deepseek-wale-girl/046_cracked.webp"
+        },
+        {
+          "id": "047_ahead",
+          "label": "DeepSeek 鲸鱼娘：遥遥领先",
+          "src": "./deepseek-wale-girl/047_ahead.webp"
+        },
+        {
+          "id": "048_cpu",
+          "label": "DeepSeek 鲸鱼娘：CPU烧了",
+          "src": "./deepseek-wale-girl/048_cpu.webp"
+        },
+        {
+          "id": "049_hallucinate",
+          "label": "DeepSeek 鲸鱼娘：一本正经胡说",
+          "src": "./deepseek-wale-girl/049_hallucinate.webp"
+        },
+        {
+          "id": "050_context",
+          "label": "DeepSeek 鲸鱼娘：上下文爆了",
+          "src": "./deepseek-wale-girl/050_context.webp"
+        },
+        {
+          "id": "051_token",
+          "label": "DeepSeek 鲸鱼娘：Token不够",
+          "src": "./deepseek-wale-girl/051_token.webp"
+        },
+        {
+          "id": "052_queue",
+          "label": "DeepSeek 鲸鱼娘：排队中",
+          "src": "./deepseek-wale-girl/052_queue.webp"
+        },
+        {
+          "id": "053_thinking",
+          "label": "DeepSeek 鲸鱼娘：思考中",
+          "src": "./deepseek-wale-girl/053_thinking.webp"
+        },
+        {
+          "id": "054_deepseek",
+          "label": "DeepSeek 鲸鱼娘：深度求索",
+          "src": "./deepseek-wale-girl/054_deepseek.webp"
+        },
+        {
+          "id": "055_whale-spout",
+          "label": "DeepSeek 鲸鱼娘：喷水啦",
+          "src": "./deepseek-wale-girl/055_whale-spout.webp"
+        },
+        {
+          "id": "056_saved",
+          "label": "DeepSeek 鲸鱼娘：被捞了",
+          "src": "./deepseek-wale-girl/056_saved.webp"
+        },
+        {
+          "id": "057_lurk",
+          "label": "DeepSeek 鲸鱼娘：潜水",
+          "src": "./deepseek-wale-girl/057_lurk.webp"
+        },
+        {
+          "id": "058_eat-fish",
+          "label": "DeepSeek 鲸鱼娘：吃鱼",
+          "src": "./deepseek-wale-girl/058_eat-fish.webp"
+        },
+        {
+          "id": "059_wag",
+          "label": "DeepSeek 鲸鱼娘：摇尾巴",
+          "src": "./deepseek-wale-girl/059_wag.webp"
+        },
+        {
+          "id": "060_seabed",
+          "label": "DeepSeek 鲸鱼娘：海底摸鱼",
+          "src": "./deepseek-wale-girl/060_seabed.webp"
+        },
+        {
+          "id": "061_req-change",
+          "label": "DeepSeek 鲸鱼娘：需求又改",
+          "src": "./deepseek-wale-girl/061_req-change.webp"
+        },
+        {
+          "id": "062_ship",
+          "label": "DeepSeek 鲸鱼娘：上线啦",
+          "src": "./deepseek-wale-girl/062_ship.webp"
+        },
+        {
+          "id": "063_rollback",
+          "label": "DeepSeek 鲸鱼娘：回滚了",
+          "src": "./deepseek-wale-girl/063_rollback.webp"
+        },
+        {
+          "id": "064_blame",
+          "label": "DeepSeek 鲸鱼娘：背锅",
+          "src": "./deepseek-wale-girl/064_blame.webp"
+        },
+        {
+          "id": "065_paddle",
+          "label": "DeepSeek 鲸鱼娘：划水",
+          "src": "./deepseek-wale-girl/065_paddle.webp"
+        },
+        {
+          "id": "066_coffee",
+          "label": "DeepSeek 鲸鱼娘：咖啡续命",
+          "src": "./deepseek-wale-girl/066_coffee.webp"
+        },
+        {
+          "id": "067_boss",
+          "label": "DeepSeek 鲸鱼娘：老板英明",
+          "src": "./deepseek-wale-girl/067_boss.webp"
+        },
+        {
+          "id": "068_pay",
+          "label": "DeepSeek 鲸鱼娘：打钱",
+          "src": "./deepseek-wale-girl/068_pay.webp"
+        },
+        {
+          "id": "069_free",
+          "label": "DeepSeek 鲸鱼娘：白嫖",
+          "src": "./deepseek-wale-girl/069_free.webp"
+        },
+        {
+          "id": "070_bug",
+          "label": "DeepSeek 鲸鱼娘：改Bug",
+          "src": "./deepseek-wale-girl/070_bug.webp"
+        },
+        {
+          "id": "071_triple",
+          "label": "DeepSeek 鲸鱼娘：一键三连",
+          "src": "./deepseek-wale-girl/071_triple.webp"
+        },
+        {
+          "id": "072_follow",
+          "label": "DeepSeek 鲸鱼娘：关注了",
+          "src": "./deepseek-wale-girl/072_follow.webp"
+        },
+        {
+          "id": "073_liked-it",
+          "label": "DeepSeek 鲸鱼娘：点了",
+          "src": "./deepseek-wale-girl/073_liked-it.webp"
+        },
+        {
+          "id": "074_share",
+          "label": "DeepSeek 鲸鱼娘：转发",
+          "src": "./deepseek-wale-girl/074_share.webp"
+        },
+        {
+          "id": "075_fav",
+          "label": "DeepSeek 鲸鱼娘：收藏",
+          "src": "./deepseek-wale-girl/075_fav.webp"
+        },
+        {
+          "id": "076_watching",
+          "label": "DeepSeek 鲸鱼娘：在看",
+          "src": "./deepseek-wale-girl/076_watching.webp"
+        },
+        {
+          "id": "077_coin",
+          "label": "DeepSeek 鲸鱼娘：投币",
+          "src": "./deepseek-wale-girl/077_coin.webp"
+        },
+        {
+          "id": "078_ship-it",
+          "label": "DeepSeek 鲸鱼娘：磕到了",
+          "src": "./deepseek-wale-girl/078_ship-it.webp"
+        },
+        {
+          "id": "079_locked",
+          "label": "DeepSeek 鲸鱼娘：锁死",
+          "src": "./deepseek-wale-girl/079_locked.webp"
+        },
+        {
+          "id": "080_be",
+          "label": "DeepSeek 鲸鱼娘：BE了",
+          "src": "./deepseek-wale-girl/080_be.webp"
+        },
+        {
+          "id": "081_he",
+          "label": "DeepSeek 鲸鱼娘：HE万岁",
+          "src": "./deepseek-wale-girl/081_he.webp"
+        },
+        {
+          "id": "082_sweet",
+          "label": "DeepSeek 鲸鱼娘：好甜",
+          "src": "./deepseek-wale-girl/082_sweet.webp"
+        },
+        {
+          "id": "083_yingying",
+          "label": "DeepSeek 鲸鱼娘：嘤嘤嘤",
+          "src": "./deepseek-wale-girl/083_yingying.webp"
+        },
+        {
+          "id": "084_what",
+          "label": "DeepSeek 鲸鱼娘：哈？",
+          "src": "./deepseek-wale-girl/084_what.webp"
+        },
+        {
+          "id": "085_master",
+          "label": "DeepSeek 鲸鱼娘：好的主人",
+          "src": "./deepseek-wale-girl/085_master.webp"
+        },
+        {
+          "id": "086_dress",
+          "label": "DeepSeek 鲸鱼娘：女仆装",
+          "src": "./deepseek-wale-girl/086_dress.webp"
+        },
+        {
+          "id": "087_sandwich",
+          "label": "DeepSeek 鲸鱼娘：干饭人",
+          "src": "./deepseek-wale-girl/087_sandwich.webp"
+        },
+        {
+          "id": "088_float",
+          "label": "DeepSeek 鲸鱼娘：浮起来了",
+          "src": "./deepseek-wale-girl/088_float.webp"
+        },
+        {
+          "id": "089_offwork",
+          "label": "DeepSeek 鲸鱼娘：下班！",
+          "src": "./deepseek-wale-girl/089_offwork.webp"
+        },
+        {
+          "id": "090_weekend",
+          "label": "DeepSeek 鲸鱼娘：周末快乐",
+          "src": "./deepseek-wale-girl/090_weekend.webp"
+        },
+        {
+          "id": "091_whale-fall",
+          "label": "DeepSeek 鲸鱼娘：鲸落",
+          "src": "./deepseek-wale-girl/091_whale-fall.webp"
+        },
+        {
+          "id": "092_shore",
+          "label": "DeepSeek 鲸鱼娘：上岸",
+          "src": "./deepseek-wale-girl/092_shore.webp"
+        },
+        {
+          "id": "093_dive-go",
+          "label": "DeepSeek 鲸鱼娘：下海",
+          "src": "./deepseek-wale-girl/093_dive-go.webp"
+        },
+        {
+          "id": "094_go-go",
+          "label": "DeepSeek 鲸鱼娘：冲鸭",
+          "src": "./deepseek-wale-girl/094_go-go.webp"
+        },
+        {
+          "id": "095_wuhu",
+          "label": "DeepSeek 鲸鱼娘：芜湖起飞",
+          "src": "./deepseek-wale-girl/095_wuhu.webp"
+        },
+        {
+          "id": "096_peace",
+          "label": "DeepSeek 鲸鱼娘：比个耶",
+          "src": "./deepseek-wale-girl/096_peace.webp"
+        },
+        {
+          "id": "097_upup",
+          "label": "DeepSeek 鲸鱼娘：举高高",
+          "src": "./deepseek-wale-girl/097_upup.webp"
+        },
+        {
+          "id": "098_spin",
+          "label": "DeepSeek 鲸鱼娘：转圈圈",
+          "src": "./deepseek-wale-girl/098_spin.webp"
+        },
+        {
+          "id": "099_ok-fine",
+          "label": "DeepSeek 鲸鱼娘：随便吧",
+          "src": "./deepseek-wale-girl/099_ok-fine.webp"
+        },
+        {
+          "id": "100_hello",
+          "label": "DeepSeek 鲸鱼娘：来啦",
+          "src": "./deepseek-wale-girl/100_hello.webp"
+        },
+        {
+          "id": "101_rice",
+          "label": "DeepSeek 鲸鱼娘：我去吃饭，测完告诉我就行",
+          "src": "./deepseek-wale-girl/101_rice.webp"
+        },
+        {
+          "id": "102_token",
+          "label": "DeepSeek 鲸鱼娘：Token吃光啦",
+          "src": "./deepseek-wale-girl/102_token.webp"
+        },
+        {
+          "id": "103_cheap",
+          "label": "DeepSeek 鲸鱼娘：真当我是便宜货啊",
+          "src": "./deepseek-wale-girl/103_cheap.webp"
+        },
+        {
+          "id": "104_deepsleep",
+          "label": "DeepSeek 鲸鱼娘：深度求索？深度睡眠！",
+          "src": "./deepseek-wale-girl/104_deepsleep.webp"
+        }
+      ]
+    },
+    {
       "id": "bilibili",
       "label": "哔哩哔哩",
       "items": [

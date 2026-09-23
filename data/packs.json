@@ -1,5 +1,531 @@
 [
   {
+    "id": "deepseek-wale-girl",
+    "label": "大肥鱼",
+    "items": [
+      {
+        "file": "001_hehe.webp",
+        "label": "DeepSeek 鲸鱼娘：嘿嘿",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "002_haha.webp",
+        "label": "DeepSeek 鲸鱼娘：笑死",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "003_shy.webp",
+        "label": "DeepSeek 鲸鱼娘：好害羞",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "004_cry.webp",
+        "label": "DeepSeek 鲸鱼娘：呜呜",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "005_bawl.webp",
+        "label": "DeepSeek 鲸鱼娘：大哭",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "006_angry.webp",
+        "label": "DeepSeek 鲸鱼娘：生气了",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "007_rage.webp",
+        "label": "DeepSeek 鲸鱼娘：超气的",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "008_speechless.webp",
+        "label": "DeepSeek 鲸鱼娘：无语",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "009_shock.webp",
+        "label": "DeepSeek 鲸鱼娘：啊？",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "010_scared.webp",
+        "label": "DeepSeek 鲸鱼娘：害怕",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "011_sleepy.webp",
+        "label": "DeepSeek 鲸鱼娘：困困",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "012_smug.webp",
+        "label": "DeepSeek 鲸鱼娘：得意",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "013_act-cute.webp",
+        "label": "DeepSeek 鲸鱼娘：求求啦",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "014_heart-hands.webp",
+        "label": "DeepSeek 鲸鱼娘：比心",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "015_like.webp",
+        "label": "DeepSeek 鲸鱼娘：点赞",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "016_nope.webp",
+        "label": "DeepSeek 鲸鱼娘：不可以",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "017_yes.webp",
+        "label": "DeepSeek 鲸鱼娘：好哒",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "018_wave.webp",
+        "label": "DeepSeek 鲸鱼娘：拜拜",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "019_kneel.webp",
+        "label": "DeepSeek 鲸鱼娘：跪了",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "020_hug.webp",
+        "label": "DeepSeek 鲸鱼娘：抱抱",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "021_kiss.webp",
+        "label": "DeepSeek 鲸鱼娘：飞吻",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "022_eat.webp",
+        "label": "DeepSeek 鲸鱼娘：干饭",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "023_milk-tea.webp",
+        "label": "DeepSeek 鲸鱼娘：奶茶续命",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "024_fighting.webp",
+        "label": "DeepSeek 鲸鱼娘：加油！",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "025_thanks.webp",
+        "label": "DeepSeek 鲸鱼娘：谢谢",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "026_sorry.webp",
+        "label": "DeepSeek 鲸鱼娘：对不起",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "027_good-night.webp",
+        "label": "DeepSeek 鲸鱼娘：晚安",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "028_good-morning.webp",
+        "label": "DeepSeek 鲸鱼娘：早安",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "029_overtime.webp",
+        "label": "DeepSeek 鲸鱼娘：加班中",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "030_fish.webp",
+        "label": "DeepSeek 鲸鱼娘：摸鱼",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "031_gg.webp",
+        "label": "DeepSeek 鲸鱼娘：寄了",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "032_rot.webp",
+        "label": "DeepSeek 鲸鱼娘：摆烂",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "033_juan.webp",
+        "label": "DeepSeek 鲸鱼娘：卷到了",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "034_lie-flat.webp",
+        "label": "DeepSeek 鲸鱼娘：躺平",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "035_xiang.webp",
+        "label": "DeepSeek 鲸鱼娘：真香",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "036_tears.webp",
+        "label": "DeepSeek 鲸鱼娘：泪目",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "037_broken.webp",
+        "label": "DeepSeek 鲸鱼娘：破防了",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "038_nice.webp",
+        "label": "DeepSeek 鲸鱼娘：好耶！",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "039_yeah-yeah.webp",
+        "label": "DeepSeek 鲸鱼娘：啊对对对",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "040_zundun.webp",
+        "label": "DeepSeek 鲸鱼娘：尊嘟假嘟",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "041_cool.webp",
+        "label": "DeepSeek 鲸鱼娘：泰裤辣",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "042_thanks-q.webp",
+        "label": "DeepSeek 鲸鱼娘：栓Q",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "043_yyds.webp",
+        "label": "DeepSeek 鲸鱼娘：YYDS",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "044_juejuezi.webp",
+        "label": "DeepSeek 鲸鱼娘：绝绝子",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "045_bbq.webp",
+        "label": "DeepSeek 鲸鱼娘：芭比Q了",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "046_cracked.webp",
+        "label": "DeepSeek 鲸鱼娘：我裂开",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "047_ahead.webp",
+        "label": "DeepSeek 鲸鱼娘：遥遥领先",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "048_cpu.webp",
+        "label": "DeepSeek 鲸鱼娘：CPU烧了",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "049_hallucinate.webp",
+        "label": "DeepSeek 鲸鱼娘：一本正经胡说",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "050_context.webp",
+        "label": "DeepSeek 鲸鱼娘：上下文爆了",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "051_token.webp",
+        "label": "DeepSeek 鲸鱼娘：Token不够",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "052_queue.webp",
+        "label": "DeepSeek 鲸鱼娘：排队中",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "053_thinking.webp",
+        "label": "DeepSeek 鲸鱼娘：思考中",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "054_deepseek.webp",
+        "label": "DeepSeek 鲸鱼娘：深度求索",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "055_whale-spout.webp",
+        "label": "DeepSeek 鲸鱼娘：喷水啦",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "056_saved.webp",
+        "label": "DeepSeek 鲸鱼娘：被捞了",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "057_lurk.webp",
+        "label": "DeepSeek 鲸鱼娘：潜水",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "058_eat-fish.webp",
+        "label": "DeepSeek 鲸鱼娘：吃鱼",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "059_wag.webp",
+        "label": "DeepSeek 鲸鱼娘：摇尾巴",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "060_seabed.webp",
+        "label": "DeepSeek 鲸鱼娘：海底摸鱼",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "061_req-change.webp",
+        "label": "DeepSeek 鲸鱼娘：需求又改",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "062_ship.webp",
+        "label": "DeepSeek 鲸鱼娘：上线啦",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "063_rollback.webp",
+        "label": "DeepSeek 鲸鱼娘：回滚了",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "064_blame.webp",
+        "label": "DeepSeek 鲸鱼娘：背锅",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "065_paddle.webp",
+        "label": "DeepSeek 鲸鱼娘：划水",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "066_coffee.webp",
+        "label": "DeepSeek 鲸鱼娘：咖啡续命",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "067_boss.webp",
+        "label": "DeepSeek 鲸鱼娘：老板英明",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "068_pay.webp",
+        "label": "DeepSeek 鲸鱼娘：打钱",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "069_free.webp",
+        "label": "DeepSeek 鲸鱼娘：白嫖",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "070_bug.webp",
+        "label": "DeepSeek 鲸鱼娘：改Bug",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "071_triple.webp",
+        "label": "DeepSeek 鲸鱼娘：一键三连",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "072_follow.webp",
+        "label": "DeepSeek 鲸鱼娘：关注了",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "073_liked-it.webp",
+        "label": "DeepSeek 鲸鱼娘：点了",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "074_share.webp",
+        "label": "DeepSeek 鲸鱼娘：转发",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "075_fav.webp",
+        "label": "DeepSeek 鲸鱼娘：收藏",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "076_watching.webp",
+        "label": "DeepSeek 鲸鱼娘：在看",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "077_coin.webp",
+        "label": "DeepSeek 鲸鱼娘：投币",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "078_ship-it.webp",
+        "label": "DeepSeek 鲸鱼娘：磕到了",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "079_locked.webp",
+        "label": "DeepSeek 鲸鱼娘：锁死",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "080_be.webp",
+        "label": "DeepSeek 鲸鱼娘：BE了",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "081_he.webp",
+        "label": "DeepSeek 鲸鱼娘：HE万岁",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "082_sweet.webp",
+        "label": "DeepSeek 鲸鱼娘：好甜",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "083_yingying.webp",
+        "label": "DeepSeek 鲸鱼娘：嘤嘤嘤",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "084_what.webp",
+        "label": "DeepSeek 鲸鱼娘：哈？",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "085_master.webp",
+        "label": "DeepSeek 鲸鱼娘：好的主人",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "086_dress.webp",
+        "label": "DeepSeek 鲸鱼娘：女仆装",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "087_sandwich.webp",
+        "label": "DeepSeek 鲸鱼娘：干饭人",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "088_float.webp",
+        "label": "DeepSeek 鲸鱼娘：浮起来了",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "089_offwork.webp",
+        "label": "DeepSeek 鲸鱼娘：下班！",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "090_weekend.webp",
+        "label": "DeepSeek 鲸鱼娘：周末快乐",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "091_whale-fall.webp",
+        "label": "DeepSeek 鲸鱼娘：鲸落",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "092_shore.webp",
+        "label": "DeepSeek 鲸鱼娘：上岸",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "093_dive-go.webp",
+        "label": "DeepSeek 鲸鱼娘：下海",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "094_go-go.webp",
+        "label": "DeepSeek 鲸鱼娘：冲鸭",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "095_wuhu.webp",
+        "label": "DeepSeek 鲸鱼娘：芜湖起飞",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "096_peace.webp",
+        "label": "DeepSeek 鲸鱼娘：比个耶",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "097_upup.webp",
+        "label": "DeepSeek 鲸鱼娘：举高高",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "098_spin.webp",
+        "label": "DeepSeek 鲸鱼娘：转圈圈",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "099_ok-fine.webp",
+        "label": "DeepSeek 鲸鱼娘：随便吧",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "100_hello.webp",
+        "label": "DeepSeek 鲸鱼娘：来啦",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "101_rice.webp",
+        "label": "DeepSeek 鲸鱼娘：我去吃饭，测完告诉我就行",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "102_token.webp",
+        "label": "DeepSeek 鲸鱼娘：Token吃光啦",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "103_cheap.webp",
+        "label": "DeepSeek 鲸鱼娘：真当我是便宜货啊",
+        "series": "大肥鱼"
+      },
+      {
+        "file": "104_deepsleep.webp",
+        "label": "DeepSeek 鲸鱼娘：深度求索？深度睡眠！",
+        "series": "大肥鱼"
+      }
+    ]
+  },
+  {
     "id": "bilibili",
     "label": "哔哩哔哩",
     "items": [

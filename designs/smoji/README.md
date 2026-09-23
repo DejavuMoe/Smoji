@@ -14,7 +14,8 @@
   `smoji-prototype-v1:*` 并适配静态预览路径。图库使用 CDN 原图，不含 CI 生成的
   缩略图索引；需要联网。`source-fingerprint-v1.json` 固定源码和清单输入。
 - Linux 构建命令：`linux-task.ps1 -Mode build -Project 'D:/Forgejo/Smoji' -Command 'node designs/smoji/build-v1.mjs'`。
-  无需运行生产清单生成器；新增素材的目录名和编号文件名尚未接入其命名规则。
+  此命令用于审批时冻结的源码输入；实施后的工作区应直接预览已保存的 v1，
+  不覆盖已批准产物。生产清单由 `pnpm generate:packs` 维护。
 - 验证命令：`linux-task.ps1 -Mode build -Project 'D:/Forgejo/Smoji' -Command 'node designs/smoji/verify-v0.mjs v1'`。
   已比对线上全部清单条目，检查 104 个新 CDN 地址的 WebP 响应，并完成
   1440 / 834 / 390 / 320 px 的加载、键盘、详情回焦、JSON 下载、自选分组、
@@ -28,6 +29,27 @@
 
 生成后仅将 v1 目录、`source-fingerprint-v1.json` 和 `evidence/v1/` 从查询到的
 WSL 镜像复制回 Windows 对应设计目录，不回写其他目录。
+
+## 生产实施验证
+
+审批提交：`c659196`。生产清单与 v1 的全部条目、描述、顺序和 CDN URL 完全一致。
+编号 WebP 已接入清单生成、开发服务和缩略图生成；既有稳定文件名仍受支持。
+ImageMagick 的动画帧 `-clone` 操作已补齐括号，保持最清晰帧的选择逻辑。
+
+- Linux `pnpm check`：136 项测试、类型检查、构建和体积检查通过。
+- `scripts/verify-site-output.mjs`：构建产物检查通过。
+- Chromium 的 pack/export/responsive/keyboard E2E：39 通过，1 个触屏专用用例跳过。
+- `node designs/smoji/verify-v0.mjs production`：四种视口、真实 CDN、导出、键盘、
+  回焦、分组与错误恢复通过。截图、43 份 DOM / 可访问性采集与验证结果位于
+  `evidence/production/`；内容审查 1,102 条，零警告。
+- `cdn-catalog-check.json`：5,934 个 CDN 地址均返回非空图片。
+  `cdn-integrity.json`：新增 104 张的 CDN 响应与本地素材逐字节、SHA-256 一致。
+- 独立临时目录无本地素材时，104 张动态 WebP 全部从 CDN 下载并生成缩略图。
+- Windows 本地 `packs` 已移入回收站；删除后重新生成的全部清单元数据逐字节不变。
+  无 `packs` 的 Linux 镜像也再次通过构建和产物检查。
+
+验证不代表部署：未 push，未修改在线站点。当前浏览器结果基于 CDN 原图，
+不宣称真实手机、Safari、系统剪贴板、拖拽或所有既有表情缩略图已完整验证。
 
 ## 历史版本 v0
 

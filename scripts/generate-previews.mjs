@@ -18,7 +18,7 @@ let cursor = 0
 let assetBaseUrl
 
 async function preview(path, asset) {
-  if (!/^[a-z-]+\/[a-z]{12}\.(png|gif|webp)$/.test(path) || !/^[a-f0-9]{64}$/.test(asset.sha256)) {
+  if (!/^[a-z-]+\/(?:[a-z]{12}\.(?:png|gif|webp)|[0-9]{3}_[a-z]+(?:-[a-z]+)*\.webp)$/.test(path) || !/^[a-f0-9]{64}$/.test(asset.sha256)) {
     throw new Error(`Invalid asset metadata: ${path}`)
   }
   if (asset.preview === false) return
@@ -61,7 +61,7 @@ async function preview(path, asset) {
     if (animated) {
       const { stdout } = await run('magick', [input, '-coalesce', '-thumbnail', '160x160>', ...contrast])
       const scores = stdout.trim().split('\n').map(Number)
-      frames = [input, '-coalesce', '-clone', String(scores.indexOf(Math.max(...scores))), '-delete', '0--2']
+      frames = [input, '-coalesce', '(', '-clone', String(scores.indexOf(Math.max(...scores))), ')', '-delete', '0--2']
     }
     await run('magick', [...frames, ...render, temp])
     await rename(temp, output)

@@ -20,7 +20,7 @@ it('keeps the scanned catalog, integrity metadata and live aliases aligned with 
   const actualPaths = diskPaths.filter((path) => !path.startsWith('_') && /\.(png|gif|webp)$/.test(path))
   expect(actualPaths.every((path) => path in assets)).toBe(true)
   for (const [path, info] of Object.entries(assets)) {
-    expect(path).toMatch(/^[a-z-]+\/[a-z]{12}\.(png|gif|webp)$/)
+    expect(path).toMatch(/^[a-z-]+\/(?:[a-z]{12}\.(?:png|gif|webp)|[0-9]{3}_[a-z]+(?:-[a-z]+)*\.webp)$/)
     if (!actualPaths.includes(path)) continue
     const bytes = await readFile(`packs/${path}`)
     expect(bytes.length).toBe(info.bytes)

@@ -49,7 +49,7 @@ for (const directory of directories.sort((a, b) => a.name.localeCompare(b.name))
     const path = `${id}/${entry.name}`
     if (!entry.isFile()) throw new Error(`Expected a flat image directory: ${path}`)
     if (entry.name === 'picforge-manifest.json') continue
-    if (!/^[a-z]{12}\.(png|gif|webp)$/.test(entry.name)) throw new Error(`Invalid stable asset name: ${path}`)
+    if (!/^(?:[a-z]{12}\.(?:png|gif|webp)|[0-9]{3}_[a-z]+(?:-[a-z]+)*\.webp)$/.test(entry.name)) throw new Error(`Invalid stable asset name: ${path}`)
     const itemId = basename(entry.name, extname(entry.name))
     if (ids.has(itemId)) throw new Error(`Multiple formats for the same stable ID: ${path}`)
     ids.add(itemId)
@@ -89,8 +89,9 @@ for (const [from, target] of [
   const to = currentPath(target)
   if (to && !Object.hasOwn(assets, from)) aliases[from] = to
 }
-// Bilibili is the workbench entry pack; keep the remaining catalog in stable ID order.
-packs.sort((a, b) => Number(b.id === 'bilibili') - Number(a.id === 'bilibili') || a.id.localeCompare(b.id))
+// Keep the approved entry pack first, then the previous entry pack, then stable ID order.
+packs.sort((a, b) => Number(b.id === 'deepseek-wale-girl') - Number(a.id === 'deepseek-wale-girl') ||
+  Number(b.id === 'bilibili') - Number(a.id === 'bilibili') || a.id.localeCompare(b.id))
 const manifest = { version: 1, packs: packs.map((pack) => ({
   id: pack.id, label: pack.label,
   items: pack.items.map((item) => ({ id: basename(item.file, extname(item.file)), label: item.label, src: `./${pack.id}/${item.file}` })),

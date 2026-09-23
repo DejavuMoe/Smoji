@@ -3,8 +3,11 @@ import catalog from '../../../data/packs.json'
 import manifest from '../../../data/smoji.json'
 
 it('keeps official panel data intact and every pack series contiguous after generation', () => {
-  expect(catalog[0]!.id).toBe('bilibili')
-  expect(manifest.packs[0]!.id).toBe('bilibili')
+  expect(catalog[0]!.id).toBe('deepseek-wale-girl')
+  expect(manifest.packs[0]!.id).toBe('deepseek-wale-girl')
+  expect(catalog[1]!.id).toBe('bilibili')
+  expect(catalog[0]!.label).toBe('大肥鱼')
+  expect(catalog[0]!.items).toHaveLength(104)
   expect(catalog.some((p) => ['wechat-classic', 'wechat-current', 'kabu'].includes(p.id))).toBe(false)
   const wechat = catalog.find((p) => p.id === 'wechat')!
   expect(wechat.items).toHaveLength(108)

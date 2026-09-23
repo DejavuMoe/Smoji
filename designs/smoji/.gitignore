@@ -21,3 +21,11 @@ evidence/v1/*.png
 !evidence/v1/inspector-390.png
 !evidence/v1/export-1440.png
 !evidence/v1/dark-390.png
+
+evidence/production/*.json
+!evidence/production/verification.json
+evidence/production/*.png
+!evidence/production/ready-1440.png
+!evidence/production/ready-390.png
+!evidence/production/inspector-390.png
+evidence/production/*.a11y.txt

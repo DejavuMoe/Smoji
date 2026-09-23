@@ -37,7 +37,7 @@ export default defineConfig({
               return
             }
             const target = (publishedAliases as Record<string, string>)[path] ?? path
-            if (!/^[a-z-]+\/[a-z0-9]+\.(png|gif|webp)$/.test(target)) return next()
+            if (!/^[a-z-]+\/(?:[a-z0-9]+\.(?:png|gif|webp)|[0-9]{3}_[a-z]+(?:-[a-z]+)*\.webp)$/.test(target)) return next()
             try {
               await access(resolve(workspace, 'packs', target))
               req.url = `/@fs/${resolve(workspace, 'packs', target)}`

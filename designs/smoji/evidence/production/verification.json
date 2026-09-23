@@ -1,0 +1,81 @@
+{
+  "browser": "153.0.8010.12",
+  "checks": [
+    {
+      "width": 1440,
+      "errors": [],
+      "externalRequestCount": 104,
+      "externalOrigin": "https://s3-cdn.zsh.moe",
+      "failed": [],
+      "downloadItems": 104,
+      "isolatedBrowserContext": true
+    },
+    {
+      "width": 390,
+      "errors": [],
+      "externalRequestCount": 72,
+      "externalOrigin": "https://s3-cdn.zsh.moe",
+      "failed": [],
+      "downloadItems": 104,
+      "isolatedBrowserContext": true
+    },
+    {
+      "width": 320,
+      "errors": [],
+      "externalRequestCount": 72,
+      "externalOrigin": "https://s3-cdn.zsh.moe",
+      "failed": [],
+      "downloadItems": 104,
+      "isolatedBrowserContext": true
+    },
+    {
+      "width": 834,
+      "errors": [],
+      "externalRequestCount": 72,
+      "externalOrigin": "https://s3-cdn.zsh.moe",
+      "failed": [],
+      "downloadItems": 104,
+      "isolatedBrowserContext": true
+    }
+  ],
+  "catalog": {
+    "packs": 36,
+    "items": 5934,
+    "preservedProductionPacks": 35,
+    "preservedProductionItems": 5830,
+    "liveManifest": "https://smoji.zsh.moe/smoji.json",
+    "liveCatalogEqual": true,
+    "newWebpHeadChecks": 104
+  },
+  "exceptionStates": [
+    "loading",
+    "catalog-error",
+    "retry-success",
+    "storage-error"
+  ],
+  "limitations": [
+    "Chromium emulation only; not real Safari/device or full accessibility certification",
+    "CDN originals; CI thumbnails not included; historical migration not separately tested",
+    "Clipboard actual OS write and drag/drop not separately verified in this run"
+  ],
+  "contentAudit": {
+    "classifiedStrings": 1102,
+    "warnings": 0,
+    "inventory": "content-inventory.json.gz"
+  },
+  "newPackPreviewGeneration": {
+    "source": "CDN",
+    "localPacksPresent": false,
+    "indexed": 104,
+    "generated": 104,
+    "animated": 104
+  },
+  "postCleanup": {
+    "canonicalPacksPresent": false,
+    "mirrorPacksPresent": false,
+    "disposition": "Windows Recycle Bin",
+    "metadataRegeneration": "byte-identical",
+    "linuxBuild": "passed",
+    "siteOutputVerification": "passed"
+  }
+}

@@ -8,8 +8,10 @@ import { chromium } from '@playwright/test'
 const project = import.meta.dirname
 const root = resolve(project, '../..')
 const version = process.argv[2] ?? 'v0'
-assert(['v0', 'v1'].includes(version))
-const fullCatalog = version === 'v1'
+assert(['v0', 'v1', 'production'].includes(version))
+const productionBuild = version === 'production'
+const fullCatalog = version !== 'v0'
+const serveRoot = productionBuild ? resolve(root, 'apps/workbench/dist') : project
 const firstPackCount = fullCatalog ? 104 : 144
 const evidence = resolve(project, 'evidence/' + version)
 await mkdir(evidence, { recursive: true })
@@ -17,8 +19,8 @@ const collector = await readFile(resolve(root, '.agents/skills/prototype-first-u
 const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.gif': 'image/gif', '.webp': 'image/webp', '.woff2': 'font/woff2', '.woff': 'font/woff' }
 const server = createServer(async (req, res) => {
   const pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname)
-  const file = resolve(project, '.' + (pathname.endsWith('/') ? pathname + 'index.html' : pathname))
-  if (!file.startsWith(project + '/')) { res.writeHead(403); res.end(); return }
+  const file = resolve(serveRoot, '.' + (pathname.endsWith('/') ? pathname + 'index.html' : pathname))
+  if (!file.startsWith(serveRoot + '/')) { res.writeHead(403); res.end(); return }
   try { res.setHeader('Content-Type', mime[extname(file)] ?? 'text/plain'); res.end(await readFile(file)) }
   catch { res.writeHead(404); res.end() }
 })
@@ -28,9 +30,10 @@ if (fullCatalog) {
   const normalize = packs => packs.map(pack => ({ ...pack, items: pack.items.map(item => ({
     ...item, src: new URL(item.src, 'https://s3-cdn.zsh.moe/smoji/').href,
   })) }))
-  assert.deepEqual(catalog.packs.slice(1), normalize(production.packs))
+  assert.deepEqual(production.packs[0].id === catalog.packs[0].id ? catalog.packs : catalog.packs.slice(1), normalize(production.packs))
+  if (productionBuild) assert.deepEqual(JSON.parse(await readFile(resolve(serveRoot, 'smoji.json'), 'utf8')), catalog)
   const live = await fetch('https://smoji.zsh.moe/smoji.json').then(r => { assert(r.ok); return r.json() })
-  assert.deepEqual(catalog.packs.slice(1), normalize(live.packs))
+  assert.deepEqual(live.packs[0].id === catalog.packs[0].id ? catalog.packs : catalog.packs.slice(1), normalize(live.packs))
   assert.equal(catalog.packs[0].label, '大肥鱼')
   assert.equal(catalog.packs.length, 36)
   assert.equal(catalog.packs.flatMap(p => p.items).length, 5934)
@@ -47,7 +50,7 @@ if (fullCatalog) {
   console.log('Full catalog matches production; 104 new CDN URLs return WebP successfully')
 }
 await new Promise(r => server.listen(0, '127.0.0.1', r))
-const url = `http://127.0.0.1:${server.address().port}/${version}/`
+const url = `http://127.0.0.1:${server.address().port}/${productionBuild ? '' : version + '/'}`
 const browser = await chromium.launch()
 const checks = []
 async function capture(page, name) {
@@ -67,7 +70,7 @@ try {
     page.on('pageerror', error => errors.push(error.message))
     page.on('requestfailed', req => failed.push(req.url()))
     page.on('request', req => { if (new URL(req.url()).origin !== new URL(url).origin) external.push(req.url()) })
-    await page.addInitScript(() => { localStorage.setItem('smoji-workbench:custom-packs', 'production-sentinel'); localStorage.setItem('smoji-theme', 'dark') })
+    if (!productionBuild) await page.addInitScript(() => { localStorage.setItem('smoji-workbench:custom-packs', 'production-sentinel'); localStorage.setItem('smoji-theme', 'dark') })
     await page.goto(url)
     await page.locator('.card__open').first().waitFor()
     if (fullCatalog) assert.equal(await page.locator('.gallery__header h2').innerText(), '大肥鱼')
@@ -134,10 +137,12 @@ try {
     await page.emulateMedia({ colorScheme: 'dark' })
     await page.waitForFunction(() => document.documentElement.getAttribute('data-theme') === 'dark')
     await capture(page, `dark-${width}`)
-    assert.equal(await page.evaluate(() => localStorage.getItem('smoji-workbench:custom-packs')), 'production-sentinel')
-    assert.equal(await page.evaluate(() => localStorage.getItem('smoji-theme')), 'dark')
+    if (!productionBuild) {
+      assert.equal(await page.evaluate(() => localStorage.getItem('smoji-workbench:custom-packs')), 'production-sentinel')
+      assert.equal(await page.evaluate(() => localStorage.getItem('smoji-theme')), 'dark')
+    }
     assert.deepEqual(errors, []); assert(external.every(url => fullCatalog && new URL(url).origin === 'https://s3-cdn.zsh.moe')); assert.deepEqual(failed, [])
-    checks.push({ width, errors, externalRequestCount: external.length, externalOrigin: fullCatalog ? 'https://s3-cdn.zsh.moe' : null, failed, downloadItems: firstPackCount, productionStorageUntouched: true })
+    checks.push({ width, errors, externalRequestCount: external.length, externalOrigin: fullCatalog ? 'https://s3-cdn.zsh.moe' : null, failed, downloadItems: firstPackCount, ...(productionBuild ? { isolatedBrowserContext: true } : { productionStorageUntouched: true }) })
     await context.close()
     console.log(`Verified ${width}px: load, keyboard, inspector, export, groups, undo/redo, cancellation, help, theme`)
   }
@@ -155,7 +160,7 @@ try {
   await page.unroute('**/smoji.json')
   await page.getByRole('button', { name: '重试加载' }).click()
   await page.locator('.card__open').first().waitFor()
-  await page.addInitScript(() => { const original = Storage.prototype.setItem; Storage.prototype.setItem = function(key, value) { if (key.startsWith('smoji-prototype-')) throw new DOMException('QuotaExceededError', 'QuotaExceededError'); original.call(this, key, value) } })
+  await page.addInitScript(prefix => { const original = Storage.prototype.setItem; Storage.prototype.setItem = function(key, value) { if (key.startsWith(prefix)) throw new DOMException('QuotaExceededError', 'QuotaExceededError'); original.call(this, key, value) } }, productionBuild ? 'smoji-workbench:' : 'smoji-prototype-')
   await page.reload()
   await page.getByRole('alert').filter({ hasText: '浏览器存储' }).waitFor()
   await capture(page, 'storage-error')
