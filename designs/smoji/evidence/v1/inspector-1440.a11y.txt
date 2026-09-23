@@ -1,0 +1,22 @@
+- dialog "DeepSeek 鲸鱼娘：好害羞":
+  - heading "DeepSeek 鲸鱼娘：好害羞" [level=2]
+  - text: 大肥鱼 · WEBP
+  - button "关闭详情"
+  - button "上一个表情"
+  - img "DeepSeek 鲸鱼娘：好害羞"
+  - button "下一个表情"
+  - tablist:
+    - tab "Markdown" [selected]
+    - tab "URL"
+    - tab "Hugo"
+    - tab "HTML"
+    - tab "BBCode"
+  - tabpanel:
+    - textbox "Markdown 复制内容": "![smoji:DeepSeek 鲸鱼娘：好害羞](https://s3-cdn.zsh.moe/smoji/deepseek-wale-girl/003_shy.webp)"
+    - button "复制"
+  - radiogroup "预览背景":
+    - radio "透明" [checked]
+    - radio "浅底"
+    - radio "深底"
+  - button "选择「大肥鱼」整包导出"
+  - paragraph: 空格执行当前选择操作 · ←/→ 翻图 · 1–5 选格式 · Esc 关闭

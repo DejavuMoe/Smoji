@@ -1,4 +1,35 @@
-# Smoji v0
+# Smoji 原型
+
+## 当前版本 v1
+
+入口：[v1/index.html](v1/index.html)，预览：<http://localhost:4311/smoji/v1/>。
+在仓库根目录运行 `python -m http.server 4311 --bind 127.0.0.1 --directory designs`。
+
+- 「大肥鱼」置于首位，104 张动态 WebP；完整中文描述来自用户指定的
+  [上游中文清单](https://github.com/DejavuMoe/deepseek_wale_girl/blob/master/README.zh-CN.md)，
+  保存在 `deepseek-wale-girl.json`，文件名逐一匹配本地素材。
+- 保留线上全部 35 组、5,830 张表情及顺序，总计 **36 组、5,934 张**。
+  `v1/smoji.json` 使用生产 CDN 绝对地址；浏览、复制和导出均指向这些地址。
+- `build-v1.mjs` 直接复用当前生产 React 界面，保留样式与交互；仅隔离存储前缀
+  `smoji-prototype-v1:*` 并适配静态预览路径。图库使用 CDN 原图，不含 CI 生成的
+  缩略图索引；需要联网。`source-fingerprint-v1.json` 固定源码和清单输入。
+- Linux 构建命令：`linux-task.ps1 -Mode build -Project 'D:/Forgejo/Smoji' -Command 'node designs/smoji/build-v1.mjs'`。
+  无需运行生产清单生成器；新增素材的目录名和编号文件名尚未接入其命名规则。
+- 验证命令：`linux-task.ps1 -Mode build -Project 'D:/Forgejo/Smoji' -Command 'node designs/smoji/verify-v0.mjs v1'`。
+  已比对线上全部清单条目，检查 104 个新 CDN 地址的 WebP 响应，并完成
+  1440 / 834 / 390 / 320 px 的加载、键盘、详情回焦、JSON 下载、自选分组、
+  撤销重做、取消删除、帮助、主题和错误恢复检查。正常流程无失败请求或页面异常。
+- `evidence/v1/` 保留截图、可访问性树、验证结果及 43 份压缩 DOM 采集；
+  `content-inventory-v1.json` 的 1,102 条文本已分类并通过审查。
+  Windows 内置浏览器预览无控制台警告或错误。真实手机、Safari、屏幕阅读器、
+  系统剪贴板写入和拖拽未单独验证。
+- 状态为 `needs-review`；生产代码、生产清单和线上发布均未变更。
+  审核本版后再单独实施命名规则兼容、清单生成与首位排序。
+
+生成后仅将 v1 目录、`source-fingerprint-v1.json` 和 `evidence/v1/` 从查询到的
+WSL 镜像复制回 Windows 对应设计目录，不回写其他目录。
+
+## 历史版本 v0
 
 当前界面的可交互基线，入口 `v0/index.html`。沿用现有布局、字体、主题、密度、
 卡片显隐、图片动画及 React 交互。没有采纳消融实验的改版建议。

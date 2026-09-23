@@ -1,0 +1,387 @@
+- link "跳到表情图库":
+  - /url: "#grid"
+- banner:
+  - link "Smoji 首页":
+    - /url: ./
+    - text: Smoji 表情工作台
+  - button "撤销" [disabled]
+  - button "重做" [disabled]
+  - button "数据预览"
+  - button "帮助"
+  - button "当前：跟随系统 (点击切换到浅色)"
+- complementary "侧边栏工作区":
+  - radiogroup "工作模式":
+    - radio "按分类导出"
+    - radio "自选分组" [checked]
+  - group:
+    - text: 新建分组 分组名称
+    - textbox "分组名称":
+      - /placeholder: 分组名称，如：常用
+    - button "添加"
+    - text: 分组 ID（可选）
+    - textbox "分组 ID（可选）":
+      - /placeholder: 分组 ID（可选，默认按名称生成）
+  - textbox "分组配置备注":
+    - /placeholder: 分组配置备注 (可选)
+  - button "导入分组"
+  - button "清空全部" [disabled]
+  - button "备份分组" [disabled]
+  - list "自选分组列表": 尚未创建分组，点击上方新建
+  - text: 表情分类
+  - button "大肥鱼 104"
+  - button "哔哩哔哩 284"
+  - button "嗷大喵小表情 40"
+  - button "哔哩哔哩 · 小电视 50"
+  - button "酷安 151"
+  - button "呆猫八条 81"
+  - button "钉钉 168"
+  - button "抖音 · 经典 128"
+  - button "抖音 · 新版 214"
+  - button "抖音 · 限时 220"
+  - button "EveOneCat · 动图 195"
+  - button "EveOneCat · 静态 50"
+  - button "Heo 149"
+  - button "IT之家 150"
+  - button "美叽和大鼠 84"
+  - button "抹茶旦旦 96"
+  - button "洋葱头-小 190"
+  - button "洋葱头-动态 78"
+  - button "洋葱头-静态 120"
+  - button "坡坡popo 351"
+  - button "QQ · 动态 275"
+  - button "QQ · 静态 269"
+  - button "水豚噜噜 72"
+  - button "百度贴吧 127"
+  - button "汪蛋 219"
+  - button "微信 108"
+  - button "微博 144"
+  - button "闲鱼 119"
+  - button "小红书 166"
+  - button "小黄鸡 482"
+  - button "卡皮巴拉小黄豚 90"
+  - button "小哭猫的心情日记 241"
+  - button "小熊虫 116"
+  - button "长草颜团子 256"
+  - button "一二和布布 120"
+  - button "月薪喵 227"
+- main:
+  - heading "大肥鱼" [level=2]
+  - text: 自选分组未激活
+  - radiogroup "图库范围":
+    - radio "当前分类" [checked]
+    - radio "已入组 (0)"
+  - button "本分类全部加入"
+  - button "切换显示密度，当前为紧凑": 紧凑
+  - group "表情图库":
+    - button "DeepSeek 鲸鱼娘：嘿嘿，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：嘿嘿": +
+    - img "DeepSeek 鲸鱼娘：嘿嘿"
+    - button "DeepSeek 鲸鱼娘：笑死，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：笑死": +
+    - img "DeepSeek 鲸鱼娘：笑死"
+    - button "DeepSeek 鲸鱼娘：好害羞，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：好害羞": +
+    - img "DeepSeek 鲸鱼娘：好害羞"
+    - button "DeepSeek 鲸鱼娘：呜呜，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：呜呜": +
+    - img "DeepSeek 鲸鱼娘：呜呜"
+    - button "DeepSeek 鲸鱼娘：大哭，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：大哭": +
+    - img "DeepSeek 鲸鱼娘：大哭"
+    - button "DeepSeek 鲸鱼娘：生气了，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：生气了": +
+    - img "DeepSeek 鲸鱼娘：生气了"
+    - button "DeepSeek 鲸鱼娘：超气的，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：超气的": +
+    - img "DeepSeek 鲸鱼娘：超气的"
+    - button "DeepSeek 鲸鱼娘：无语，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：无语": +
+    - img "DeepSeek 鲸鱼娘：无语"
+    - button "DeepSeek 鲸鱼娘：啊？，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：啊？": +
+    - img "DeepSeek 鲸鱼娘：啊？"
+    - button "DeepSeek 鲸鱼娘：害怕，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：害怕": +
+    - img "DeepSeek 鲸鱼娘：害怕"
+    - button "DeepSeek 鲸鱼娘：困困，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：困困": +
+    - img "DeepSeek 鲸鱼娘：困困"
+    - button "DeepSeek 鲸鱼娘：得意，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：得意": +
+    - img "DeepSeek 鲸鱼娘：得意"
+    - button "DeepSeek 鲸鱼娘：求求啦，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：求求啦": +
+    - img "DeepSeek 鲸鱼娘：求求啦"
+    - button "DeepSeek 鲸鱼娘：比心，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：比心": +
+    - img "DeepSeek 鲸鱼娘：比心"
+    - button "DeepSeek 鲸鱼娘：点赞，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：点赞": +
+    - img "DeepSeek 鲸鱼娘：点赞"
+    - button "DeepSeek 鲸鱼娘：不可以，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：不可以": +
+    - img "DeepSeek 鲸鱼娘：不可以"
+    - button "DeepSeek 鲸鱼娘：好哒，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：好哒": +
+    - img "DeepSeek 鲸鱼娘：好哒"
+    - button "DeepSeek 鲸鱼娘：拜拜，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：拜拜": +
+    - img "DeepSeek 鲸鱼娘：拜拜"
+    - button "DeepSeek 鲸鱼娘：跪了，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：跪了": +
+    - img "DeepSeek 鲸鱼娘：跪了"
+    - button "DeepSeek 鲸鱼娘：抱抱，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：抱抱": +
+    - img "DeepSeek 鲸鱼娘：抱抱"
+    - button "DeepSeek 鲸鱼娘：飞吻，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：飞吻": +
+    - img "DeepSeek 鲸鱼娘：飞吻"
+    - button "DeepSeek 鲸鱼娘：干饭，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：干饭": +
+    - img "DeepSeek 鲸鱼娘：干饭"
+    - button "DeepSeek 鲸鱼娘：奶茶续命，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：奶茶续命": +
+    - img "DeepSeek 鲸鱼娘：奶茶续命"
+    - button "DeepSeek 鲸鱼娘：加油！，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：加油！": +
+    - img "DeepSeek 鲸鱼娘：加油！"
+    - button "DeepSeek 鲸鱼娘：谢谢，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：谢谢": +
+    - img "DeepSeek 鲸鱼娘：谢谢"
+    - button "DeepSeek 鲸鱼娘：对不起，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：对不起": +
+    - img "DeepSeek 鲸鱼娘：对不起"
+    - button "DeepSeek 鲸鱼娘：晚安，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：晚安": +
+    - img "DeepSeek 鲸鱼娘：晚安"
+    - button "DeepSeek 鲸鱼娘：早安，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：早安": +
+    - img "DeepSeek 鲸鱼娘：早安"
+    - button "DeepSeek 鲸鱼娘：加班中，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：加班中": +
+    - img "DeepSeek 鲸鱼娘：加班中"
+    - button "DeepSeek 鲸鱼娘：摸鱼，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：摸鱼": +
+    - img "DeepSeek 鲸鱼娘：摸鱼"
+    - button "DeepSeek 鲸鱼娘：寄了，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：寄了": +
+    - img "DeepSeek 鲸鱼娘：寄了"
+    - button "DeepSeek 鲸鱼娘：摆烂，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：摆烂": +
+    - img "DeepSeek 鲸鱼娘：摆烂"
+    - button "DeepSeek 鲸鱼娘：卷到了，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：卷到了": +
+    - img "DeepSeek 鲸鱼娘：卷到了"
+    - button "DeepSeek 鲸鱼娘：躺平，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：躺平": +
+    - img "DeepSeek 鲸鱼娘：躺平"
+    - button "DeepSeek 鲸鱼娘：真香，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：真香": +
+    - img "DeepSeek 鲸鱼娘：真香"
+    - button "DeepSeek 鲸鱼娘：泪目，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：泪目": +
+    - img "DeepSeek 鲸鱼娘：泪目"
+    - button "DeepSeek 鲸鱼娘：破防了，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：破防了": +
+    - img "DeepSeek 鲸鱼娘：破防了"
+    - button "DeepSeek 鲸鱼娘：好耶！，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：好耶！": +
+    - img "DeepSeek 鲸鱼娘：好耶！"
+    - button "DeepSeek 鲸鱼娘：啊对对对，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：啊对对对": +
+    - img "DeepSeek 鲸鱼娘：啊对对对"
+    - button "DeepSeek 鲸鱼娘：尊嘟假嘟，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：尊嘟假嘟": +
+    - img "DeepSeek 鲸鱼娘：尊嘟假嘟"
+    - button "DeepSeek 鲸鱼娘：泰裤辣，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：泰裤辣": +
+    - img "DeepSeek 鲸鱼娘：泰裤辣"
+    - button "DeepSeek 鲸鱼娘：栓Q，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：栓Q": +
+    - img "DeepSeek 鲸鱼娘：栓Q"
+    - button "DeepSeek 鲸鱼娘：YYDS，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：YYDS": +
+    - img "DeepSeek 鲸鱼娘：YYDS"
+    - button "DeepSeek 鲸鱼娘：绝绝子，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：绝绝子": +
+    - img "DeepSeek 鲸鱼娘：绝绝子"
+    - button "DeepSeek 鲸鱼娘：芭比Q了，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：芭比Q了": +
+    - img "DeepSeek 鲸鱼娘：芭比Q了"
+    - button "DeepSeek 鲸鱼娘：我裂开，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：我裂开": +
+    - img "DeepSeek 鲸鱼娘：我裂开"
+    - button "DeepSeek 鲸鱼娘：遥遥领先，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：遥遥领先": +
+    - img "DeepSeek 鲸鱼娘：遥遥领先"
+    - button "DeepSeek 鲸鱼娘：CPU烧了，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：CPU烧了": +
+    - img "DeepSeek 鲸鱼娘：CPU烧了"
+    - button "DeepSeek 鲸鱼娘：一本正经胡说，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：一本正经胡说": +
+    - img "DeepSeek 鲸鱼娘：一本正经胡说"
+    - button "DeepSeek 鲸鱼娘：上下文爆了，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：上下文爆了": +
+    - img "DeepSeek 鲸鱼娘：上下文爆了"
+    - button "DeepSeek 鲸鱼娘：Token不够，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：Token不够": +
+    - img "DeepSeek 鲸鱼娘：Token不够"
+    - button "DeepSeek 鲸鱼娘：排队中，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：排队中": +
+    - img "DeepSeek 鲸鱼娘：排队中"
+    - button "DeepSeek 鲸鱼娘：思考中，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：思考中": +
+    - img "DeepSeek 鲸鱼娘：思考中"
+    - button "DeepSeek 鲸鱼娘：深度求索，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：深度求索": +
+    - img "DeepSeek 鲸鱼娘：深度求索"
+    - button "DeepSeek 鲸鱼娘：喷水啦，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：喷水啦": +
+    - img "DeepSeek 鲸鱼娘：喷水啦"
+    - button "DeepSeek 鲸鱼娘：被捞了，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：被捞了": +
+    - img "DeepSeek 鲸鱼娘：被捞了"
+    - button "DeepSeek 鲸鱼娘：潜水，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：潜水": +
+    - img "DeepSeek 鲸鱼娘：潜水"
+    - button "DeepSeek 鲸鱼娘：吃鱼，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：吃鱼": +
+    - img "DeepSeek 鲸鱼娘：吃鱼"
+    - button "DeepSeek 鲸鱼娘：摇尾巴，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：摇尾巴": +
+    - img "DeepSeek 鲸鱼娘：摇尾巴"
+    - button "DeepSeek 鲸鱼娘：海底摸鱼，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：海底摸鱼": +
+    - img "DeepSeek 鲸鱼娘：海底摸鱼"
+    - button "DeepSeek 鲸鱼娘：需求又改，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：需求又改": +
+    - img "DeepSeek 鲸鱼娘：需求又改"
+    - button "DeepSeek 鲸鱼娘：上线啦，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：上线啦": +
+    - img "DeepSeek 鲸鱼娘：上线啦"
+    - button "DeepSeek 鲸鱼娘：回滚了，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：回滚了": +
+    - img "DeepSeek 鲸鱼娘：回滚了"
+    - button "DeepSeek 鲸鱼娘：背锅，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：背锅": +
+    - img "DeepSeek 鲸鱼娘：背锅"
+    - button "DeepSeek 鲸鱼娘：划水，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：划水": +
+    - img "DeepSeek 鲸鱼娘：划水"
+    - button "DeepSeek 鲸鱼娘：咖啡续命，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：咖啡续命": +
+    - img "DeepSeek 鲸鱼娘：咖啡续命"
+    - button "DeepSeek 鲸鱼娘：老板英明，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：老板英明": +
+    - img "DeepSeek 鲸鱼娘：老板英明"
+    - button "DeepSeek 鲸鱼娘：打钱，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：打钱": +
+    - img "DeepSeek 鲸鱼娘：打钱"
+    - button "DeepSeek 鲸鱼娘：白嫖，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：白嫖": +
+    - img "DeepSeek 鲸鱼娘：白嫖"
+    - button "DeepSeek 鲸鱼娘：改Bug，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：改Bug": +
+    - img "DeepSeek 鲸鱼娘：改Bug"
+    - button "DeepSeek 鲸鱼娘：一键三连，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：一键三连": +
+    - img "DeepSeek 鲸鱼娘：一键三连"
+    - button "DeepSeek 鲸鱼娘：关注了，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：关注了": +
+    - img "DeepSeek 鲸鱼娘：关注了"
+    - button "DeepSeek 鲸鱼娘：点了，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：点了": +
+    - img "DeepSeek 鲸鱼娘：点了"
+    - button "DeepSeek 鲸鱼娘：转发，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：转发": +
+    - img "DeepSeek 鲸鱼娘：转发"
+    - button "DeepSeek 鲸鱼娘：收藏，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：收藏": +
+    - img "DeepSeek 鲸鱼娘：收藏"
+    - button "DeepSeek 鲸鱼娘：在看，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：在看": +
+    - img "DeepSeek 鲸鱼娘：在看"
+    - button "DeepSeek 鲸鱼娘：投币，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：投币": +
+    - img "DeepSeek 鲸鱼娘：投币"
+    - button "DeepSeek 鲸鱼娘：磕到了，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：磕到了": +
+    - img "DeepSeek 鲸鱼娘：磕到了"
+    - button "DeepSeek 鲸鱼娘：锁死，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：锁死": +
+    - img "DeepSeek 鲸鱼娘：锁死"
+    - button "DeepSeek 鲸鱼娘：BE了，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：BE了": +
+    - img "DeepSeek 鲸鱼娘：BE了"
+    - button "DeepSeek 鲸鱼娘：HE万岁，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：HE万岁": +
+    - img "DeepSeek 鲸鱼娘：HE万岁"
+    - button "DeepSeek 鲸鱼娘：好甜，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：好甜": +
+    - img "DeepSeek 鲸鱼娘：好甜"
+    - button "DeepSeek 鲸鱼娘：嘤嘤嘤，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：嘤嘤嘤": +
+    - img "DeepSeek 鲸鱼娘：嘤嘤嘤"
+    - button "DeepSeek 鲸鱼娘：哈？，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：哈？": +
+    - img "DeepSeek 鲸鱼娘：哈？"
+    - button "DeepSeek 鲸鱼娘：好的主人，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：好的主人": +
+    - img "DeepSeek 鲸鱼娘：好的主人"
+    - button "DeepSeek 鲸鱼娘：女仆装，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：女仆装": +
+    - img "DeepSeek 鲸鱼娘：女仆装"
+    - button "DeepSeek 鲸鱼娘：干饭人，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：干饭人": +
+    - img "DeepSeek 鲸鱼娘：干饭人"
+    - button "DeepSeek 鲸鱼娘：浮起来了，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：浮起来了": +
+    - img "DeepSeek 鲸鱼娘：浮起来了"
+    - button "DeepSeek 鲸鱼娘：下班！，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：下班！": +
+    - img "DeepSeek 鲸鱼娘：下班！"
+    - button "DeepSeek 鲸鱼娘：周末快乐，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：周末快乐": +
+    - img "DeepSeek 鲸鱼娘：周末快乐"
+    - button "DeepSeek 鲸鱼娘：鲸落，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：鲸落": +
+    - img "DeepSeek 鲸鱼娘：鲸落"
+    - button "DeepSeek 鲸鱼娘：上岸，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：上岸": +
+    - img "DeepSeek 鲸鱼娘：上岸"
+    - button "DeepSeek 鲸鱼娘：下海，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：下海": +
+    - img "DeepSeek 鲸鱼娘：下海"
+    - button "DeepSeek 鲸鱼娘：冲鸭，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：冲鸭": +
+    - img "DeepSeek 鲸鱼娘：冲鸭"
+    - button "DeepSeek 鲸鱼娘：芜湖起飞，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：芜湖起飞": +
+    - img "DeepSeek 鲸鱼娘：芜湖起飞"
+    - button "DeepSeek 鲸鱼娘：比个耶，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：比个耶": +
+    - img "DeepSeek 鲸鱼娘：比个耶"
+    - button "DeepSeek 鲸鱼娘：举高高，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：举高高": +
+    - img "DeepSeek 鲸鱼娘：举高高"
+    - button "DeepSeek 鲸鱼娘：转圈圈，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：转圈圈": +
+    - img "DeepSeek 鲸鱼娘：转圈圈"
+    - button "DeepSeek 鲸鱼娘：随便吧，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：随便吧": +
+    - img "DeepSeek 鲸鱼娘：随便吧"
+    - button "DeepSeek 鲸鱼娘：来啦，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：来啦": +
+    - img "DeepSeek 鲸鱼娘：来啦"
+    - button "DeepSeek 鲸鱼娘：我去吃饭，测完告诉我就行，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：我去吃饭，测完告诉我就行": +
+    - img "DeepSeek 鲸鱼娘：我去吃饭，测完告诉我就行"
+    - button "DeepSeek 鲸鱼娘：Token吃光啦，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：Token吃光啦": +
+    - img "DeepSeek 鲸鱼娘：Token吃光啦"
+    - button "DeepSeek 鲸鱼娘：真当我是便宜货啊，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：真当我是便宜货啊": +
+    - img "DeepSeek 鲸鱼娘：真当我是便宜货啊"
+    - button "DeepSeek 鲸鱼娘：深度求索？深度睡眠！，打开预览并复制"
+    - button "加入 DeepSeek 鲸鱼娘：深度求索？深度睡眠！": +
+    - img "DeepSeek 鲸鱼娘：深度求索？深度睡眠！"

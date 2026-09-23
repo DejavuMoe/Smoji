@@ -1,0 +1,234 @@
+- link "跳到表情图库":
+  - /url: "#grid"
+- banner:
+  - link "Smoji 首页":
+    - /url: ./
+    - text: Smoji
+  - button "打开侧边栏菜单": 分类
+  - button "数据预览"
+  - button "帮助"
+  - button "当前：跟随系统 (点击切换到浅色)"
+- main:
+  - heading "大肥鱼" [level=2]
+  - text: 104 张
+  - button "选择本分类导出"
+  - button "排除本分类全部"
+  - button "切换显示密度，当前为紧凑": 紧凑
+  - group "表情图库":
+    - button "DeepSeek 鲸鱼娘：嘿嘿，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：嘿嘿": ✕
+    - img "DeepSeek 鲸鱼娘：嘿嘿"
+    - button "DeepSeek 鲸鱼娘：笑死，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：笑死": ✕
+    - img "DeepSeek 鲸鱼娘：笑死"
+    - button "DeepSeek 鲸鱼娘：好害羞，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：好害羞": ✕
+    - img "DeepSeek 鲸鱼娘：好害羞"
+    - button "DeepSeek 鲸鱼娘：呜呜，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：呜呜": ✕
+    - img "DeepSeek 鲸鱼娘：呜呜"
+    - button "DeepSeek 鲸鱼娘：大哭，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：大哭": ✕
+    - img "DeepSeek 鲸鱼娘：大哭"
+    - button "DeepSeek 鲸鱼娘：生气了，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：生气了": ✕
+    - img "DeepSeek 鲸鱼娘：生气了"
+    - button "DeepSeek 鲸鱼娘：超气的，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：超气的": ✕
+    - img "DeepSeek 鲸鱼娘：超气的"
+    - button "DeepSeek 鲸鱼娘：无语，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：无语": ✕
+    - img "DeepSeek 鲸鱼娘：无语"
+    - button "DeepSeek 鲸鱼娘：啊？，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：啊？": ✕
+    - img "DeepSeek 鲸鱼娘：啊？"
+    - button "DeepSeek 鲸鱼娘：害怕，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：害怕": ✕
+    - img "DeepSeek 鲸鱼娘：害怕"
+    - button "DeepSeek 鲸鱼娘：困困，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：困困": ✕
+    - img "DeepSeek 鲸鱼娘：困困"
+    - button "DeepSeek 鲸鱼娘：得意，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：得意": ✕
+    - img "DeepSeek 鲸鱼娘：得意"
+    - button "DeepSeek 鲸鱼娘：求求啦，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：求求啦": ✕
+    - img "DeepSeek 鲸鱼娘：求求啦"
+    - button "DeepSeek 鲸鱼娘：比心，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：比心": ✕
+    - img "DeepSeek 鲸鱼娘：比心"
+    - button "DeepSeek 鲸鱼娘：点赞，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：点赞": ✕
+    - img "DeepSeek 鲸鱼娘：点赞"
+    - button "DeepSeek 鲸鱼娘：不可以，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：不可以": ✕
+    - img "DeepSeek 鲸鱼娘：不可以"
+    - button "DeepSeek 鲸鱼娘：好哒，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：好哒": ✕
+    - img "DeepSeek 鲸鱼娘：好哒"
+    - button "DeepSeek 鲸鱼娘：拜拜，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：拜拜": ✕
+    - img "DeepSeek 鲸鱼娘：拜拜"
+    - button "DeepSeek 鲸鱼娘：跪了，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：跪了": ✕
+    - img "DeepSeek 鲸鱼娘：跪了"
+    - button "DeepSeek 鲸鱼娘：抱抱，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：抱抱": ✕
+    - img "DeepSeek 鲸鱼娘：抱抱"
+    - button "DeepSeek 鲸鱼娘：飞吻，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：飞吻": ✕
+    - img "DeepSeek 鲸鱼娘：飞吻"
+    - button "DeepSeek 鲸鱼娘：干饭，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：干饭": ✕
+    - img "DeepSeek 鲸鱼娘：干饭"
+    - button "DeepSeek 鲸鱼娘：奶茶续命，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：奶茶续命": ✕
+    - img "DeepSeek 鲸鱼娘：奶茶续命"
+    - button "DeepSeek 鲸鱼娘：加油！，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：加油！": ✕
+    - img "DeepSeek 鲸鱼娘：加油！"
+    - button "DeepSeek 鲸鱼娘：谢谢，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：谢谢": ✕
+    - img "DeepSeek 鲸鱼娘：谢谢"
+    - button "DeepSeek 鲸鱼娘：对不起，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：对不起": ✕
+    - img "DeepSeek 鲸鱼娘：对不起"
+    - button "DeepSeek 鲸鱼娘：晚安，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：晚安": ✕
+    - img "DeepSeek 鲸鱼娘：晚安"
+    - button "DeepSeek 鲸鱼娘：早安，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：早安": ✕
+    - img "DeepSeek 鲸鱼娘：早安"
+    - button "DeepSeek 鲸鱼娘：加班中，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：加班中": ✕
+    - img "DeepSeek 鲸鱼娘：加班中"
+    - button "DeepSeek 鲸鱼娘：摸鱼，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：摸鱼": ✕
+    - img "DeepSeek 鲸鱼娘：摸鱼"
+    - button "DeepSeek 鲸鱼娘：寄了，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：寄了": ✕
+    - img "DeepSeek 鲸鱼娘：寄了"
+    - button "DeepSeek 鲸鱼娘：摆烂，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：摆烂": ✕
+    - img "DeepSeek 鲸鱼娘：摆烂"
+    - button "DeepSeek 鲸鱼娘：卷到了，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：卷到了": ✕
+    - img "DeepSeek 鲸鱼娘：卷到了"
+    - button "DeepSeek 鲸鱼娘：躺平，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：躺平": ✕
+    - img "DeepSeek 鲸鱼娘：躺平"
+    - button "DeepSeek 鲸鱼娘：真香，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：真香": ✕
+    - img "DeepSeek 鲸鱼娘：真香"
+    - button "DeepSeek 鲸鱼娘：泪目，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：泪目": ✕
+    - img "DeepSeek 鲸鱼娘：泪目"
+    - button "DeepSeek 鲸鱼娘：破防了，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：破防了": ✕
+    - img "DeepSeek 鲸鱼娘：破防了"
+    - button "DeepSeek 鲸鱼娘：好耶！，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：好耶！": ✕
+    - img "DeepSeek 鲸鱼娘：好耶！"
+    - button "DeepSeek 鲸鱼娘：啊对对对，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：啊对对对": ✕
+    - img "DeepSeek 鲸鱼娘：啊对对对"
+    - button "DeepSeek 鲸鱼娘：尊嘟假嘟，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：尊嘟假嘟": ✕
+    - img "DeepSeek 鲸鱼娘：尊嘟假嘟"
+    - button "DeepSeek 鲸鱼娘：泰裤辣，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：泰裤辣": ✕
+    - img "DeepSeek 鲸鱼娘：泰裤辣"
+    - button "DeepSeek 鲸鱼娘：栓Q，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：栓Q": ✕
+    - img "DeepSeek 鲸鱼娘：栓Q"
+    - button "DeepSeek 鲸鱼娘：YYDS，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：YYDS": ✕
+    - img "DeepSeek 鲸鱼娘：YYDS"
+    - button "DeepSeek 鲸鱼娘：绝绝子，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：绝绝子": ✕
+    - img "DeepSeek 鲸鱼娘：绝绝子"
+    - button "DeepSeek 鲸鱼娘：芭比Q了，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：芭比Q了": ✕
+    - img "DeepSeek 鲸鱼娘：芭比Q了"
+    - button "DeepSeek 鲸鱼娘：我裂开，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：我裂开": ✕
+    - img "DeepSeek 鲸鱼娘：我裂开"
+    - button "DeepSeek 鲸鱼娘：遥遥领先，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：遥遥领先": ✕
+    - img "DeepSeek 鲸鱼娘：遥遥领先"
+    - button "DeepSeek 鲸鱼娘：CPU烧了，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：CPU烧了": ✕
+    - img "DeepSeek 鲸鱼娘：CPU烧了"
+    - button "DeepSeek 鲸鱼娘：一本正经胡说，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：一本正经胡说": ✕
+    - img "DeepSeek 鲸鱼娘：一本正经胡说"
+    - button "DeepSeek 鲸鱼娘：上下文爆了，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：上下文爆了": ✕
+    - img "DeepSeek 鲸鱼娘：上下文爆了"
+    - button "DeepSeek 鲸鱼娘：Token不够，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：Token不够": ✕
+    - img "DeepSeek 鲸鱼娘：Token不够"
+    - button "DeepSeek 鲸鱼娘：排队中，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：排队中": ✕
+    - img "DeepSeek 鲸鱼娘：排队中"
+    - button "DeepSeek 鲸鱼娘：思考中，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：思考中": ✕
+    - img "DeepSeek 鲸鱼娘：思考中"
+    - button "DeepSeek 鲸鱼娘：深度求索，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：深度求索": ✕
+    - img "DeepSeek 鲸鱼娘：深度求索"
+    - button "DeepSeek 鲸鱼娘：喷水啦，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：喷水啦": ✕
+    - img "DeepSeek 鲸鱼娘：喷水啦"
+    - button "DeepSeek 鲸鱼娘：被捞了，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：被捞了": ✕
+    - img "DeepSeek 鲸鱼娘：被捞了"
+    - button "DeepSeek 鲸鱼娘：潜水，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：潜水": ✕
+    - img "DeepSeek 鲸鱼娘：潜水"
+    - button "DeepSeek 鲸鱼娘：吃鱼，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：吃鱼": ✕
+    - img "DeepSeek 鲸鱼娘：吃鱼"
+    - button "DeepSeek 鲸鱼娘：摇尾巴，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：摇尾巴": ✕
+    - img "DeepSeek 鲸鱼娘：摇尾巴"
+    - button "DeepSeek 鲸鱼娘：海底摸鱼，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：海底摸鱼": ✕
+    - img "DeepSeek 鲸鱼娘：海底摸鱼"
+    - button "DeepSeek 鲸鱼娘：需求又改，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：需求又改": ✕
+    - img "DeepSeek 鲸鱼娘：需求又改"
+    - button "DeepSeek 鲸鱼娘：上线啦，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：上线啦": ✕
+    - img "DeepSeek 鲸鱼娘：上线啦"
+    - button "DeepSeek 鲸鱼娘：回滚了，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：回滚了": ✕
+    - img "DeepSeek 鲸鱼娘：回滚了"
+    - button "DeepSeek 鲸鱼娘：背锅，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：背锅": ✕
+    - img "DeepSeek 鲸鱼娘：背锅"
+    - button "DeepSeek 鲸鱼娘：划水，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：划水": ✕
+    - img "DeepSeek 鲸鱼娘：划水"
+    - button "DeepSeek 鲸鱼娘：咖啡续命，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：咖啡续命": ✕
+    - img "DeepSeek 鲸鱼娘：咖啡续命"
+    - button "DeepSeek 鲸鱼娘：老板英明，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：老板英明": ✕
+    - img "DeepSeek 鲸鱼娘：老板英明"
+    - button "DeepSeek 鲸鱼娘：打钱，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：打钱": ✕
+    - img "DeepSeek 鲸鱼娘：打钱"
+    - button "DeepSeek 鲸鱼娘：白嫖，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：白嫖": ✕
+    - img "DeepSeek 鲸鱼娘：白嫖"
+    - button "DeepSeek 鲸鱼娘：改Bug，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：改Bug": ✕
+    - img "DeepSeek 鲸鱼娘：改Bug"
+    - button "DeepSeek 鲸鱼娘：一键三连，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：一键三连": ✕
+    - img "DeepSeek 鲸鱼娘：一键三连"
+    - button "DeepSeek 鲸鱼娘：关注了，打开预览并复制"
+    - button "排除 DeepSeek 鲸鱼娘：关注了": ✕
+    - img "DeepSeek 鲸鱼娘：关注了"
+  - button "加载更多 (32 张剩余)"

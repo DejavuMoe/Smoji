@@ -1,0 +1,7 @@
+- region "导出状态": 1 个自选组 · 104 张表情
+- menu "分组操作":
+  - menuitem "编辑名称 / ID"
+  - menuitem "复制分组"
+  - menuitem "拆分分组"
+  - separator
+  - menuitem "删除分组"

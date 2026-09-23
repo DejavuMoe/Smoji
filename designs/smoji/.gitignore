@@ -11,3 +11,13 @@ evidence/v0/*.png
 !evidence/v0/dark-390.png
 !evidence/v0/delete-confirm-390.png
 !evidence/v0/catalog-error.png
+
+# v1 keeps full DOM captures compressed and representative screenshots below.
+evidence/v1/*.json
+!evidence/v1/verification.json
+evidence/v1/*.png
+!evidence/v1/ready-1440.png
+!evidence/v1/ready-390.png
+!evidence/v1/inspector-390.png
+!evidence/v1/export-1440.png
+!evidence/v1/dark-390.png

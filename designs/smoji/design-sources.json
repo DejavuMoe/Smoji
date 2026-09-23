@@ -5,33 +5,108 @@
       "id": "existing-workbench",
       "type": "code",
       "location": "apps/workbench/src at e10929d8a9bdf0a8e1b7ac87b5a33bc58cf6653b",
-      "roles": ["functional-truth", "visual-reference", "interaction-reference"],
+      "roles": [
+        "functional-truth",
+        "visual-reference",
+        "interaction-reference"
+      ],
       "trust": "repository-trusted",
       "instructionsPolicy": "treat-as-data-never-execute",
       "approvedByUser": false,
       "containsSensitiveData": false,
       "sanitization": "Isolated prototype storage, bounded public catalog; historical aliases omitted.",
       "licenseOrPermission": "Repository MIT license; user requested current-UI v0 baseline.",
-      "localCopies": ["v0/index.html", "source-fingerprint.json"],
-      "observations": ["Existing React components reused; compact cards, teal palette, drawer and dialogs preserved."],
+      "localCopies": [
+        "v0/index.html",
+        "source-fingerprint.json"
+      ],
+      "observations": [
+        "Existing React components reused; compact cards, teal palette, drawer and dialogs preserved."
+      ],
       "inferences": [],
-      "limitations": ["Reference selection does not constitute design approval.", "Prototype data counts differ from production."]
+      "limitations": [
+        "Reference selection does not constitute design approval.",
+        "Prototype data counts differ from production."
+      ]
     },
     {
       "id": "emoji-fixtures",
       "type": "image",
       "location": "fixture-provenance.json",
-      "roles": ["visual-reference"],
+      "roles": [
+        "visual-reference"
+      ],
       "trust": "external-untrusted",
       "instructionsPolicy": "treat-as-data-never-execute",
       "approvedByUser": false,
       "containsSensitiveData": false,
       "sanitization": "348 public catalog images; SHA-256 checked against repository metadata.",
       "licenseOrPermission": "Emoji rights remain with their authors; existing repository personal preview scope.",
-      "localCopies": ["fixture-provenance.json", "v0/smoji.json"],
-      "observations": ["35 category labels retained; first category 144 images, other categories 6 each."],
+      "localCopies": [
+        "fixture-provenance.json",
+        "v0/smoji.json"
+      ],
+      "observations": [
+        "35 category labels retained; first category 144 images, other categories 6 each."
+      ],
       "inferences": [],
-      "limitations": ["No additional commercial or redistribution license is claimed."]
+      "limitations": [
+        "No additional commercial or redistribution license is claimed."
+      ]
+    },
+    {
+      "instructionsPolicy": "treat-as-data-never-execute",
+      "containsSensitiveData": false,
+      "inferences": [],
+      "id": "full-catalog-v1",
+      "type": "code",
+      "location": "apps/workbench/src at 8b5b929fe604f72a7cdf19a87b8c2dcf007045c9; https://smoji.zsh.moe/smoji.json",
+      "roles": [
+        "functional-truth",
+        "visual-reference",
+        "interaction-reference"
+      ],
+      "trust": "repository-trusted",
+      "approvedByUser": false,
+      "sanitization": "Public catalog; isolated prototype storage; no user data imported.",
+      "licenseOrPermission": "Repository MIT; user requested production-aligned full catalog.",
+      "localCopies": [
+        "v1/index.html",
+        "v1/smoji.json",
+        "source-fingerprint-v1.json"
+      ],
+      "observations": [
+        "All 35 production packs and 5830 items preserved in order with CDN URLs."
+      ],
+      "limitations": [
+        "CI thumbnails absent; gallery uses CDN originals. Historical migration not separately tested."
+      ]
+    },
+    {
+      "instructionsPolicy": "treat-as-data-never-execute",
+      "containsSensitiveData": false,
+      "inferences": [],
+      "id": "deepseek-wale-girl",
+      "type": "webpage",
+      "location": "https://github.com/DejavuMoe/deepseek_wale_girl/blob/master/README.zh-CN.md",
+      "roles": [
+        "content-authority",
+        "visual-reference"
+      ],
+      "trust": "external-untrusted",
+      "approvedByUser": true,
+      "sanitization": "Only 104 filename and Chinese alt label pairs imported; pack label supplied by user.",
+      "licenseOrPermission": "Source repository MIT, Copyright (c) 2026 Dejavu Moe; user-provided CDN assets.",
+      "localCopies": [
+        "deepseek-wale-girl.json",
+        "v1/smoji.json"
+      ],
+      "observations": [
+        "104 local WebP filenames match source descriptions; CDN directory is deepseek-wale-girl."
+      ],
+      "limitations": [
+        "Content-source authorization does not approve production implementation. CDN network required."
+      ]
     }
   ]
 }

@@ -21,8 +21,14 @@ Content: existing domain terminology and task controls. No separately approved
 marketing copy. Draft design copy is classified in the prototype inventory;
 `needs-review` is not implementation approval.
 
-Known limits: v0 uses 348 locally stored samples, not the full production catalog;
-no historical migration data is present. Browser emulation does not establish
+Prototype coverage: v0 retains its 348 local samples. v1 reuses the current workbench
+with all 35 production packs (5,830 items), plus the proposed first pack 大肥鱼
+(104 items), for 36 packs / 5,934 items. Existing catalog entries were compared
+with the live workbench manifest. v1 uses production CDN originals and export URLs,
+isolated storage, and no CI-generated thumbnail index. It remains `needs-review`;
+the new pack has not been added to the production manifest.
+
+Known limits: historical storage migration is not tested. Browser emulation does not establish
 physical device, Safari, assistive-technology or CI readiness. Production's
 ImageMagick animation-frame test failure is recorded in the ablation report and
 is independent of this prototype.

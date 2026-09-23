@@ -1,4 +1,4 @@
-// Browser plugin not available in this session; use the repository's Playwright.
+// Reproduce prototype checks with Linux Chromium; defaults to the frozen v0 baseline.
 import assert from 'node:assert/strict'
 import { createServer } from 'node:http'
 import { readFile, mkdir, writeFile } from 'node:fs/promises'
@@ -7,7 +7,11 @@ import { chromium } from '@playwright/test'
 
 const project = import.meta.dirname
 const root = resolve(project, '../..')
-const evidence = resolve(project, 'evidence/v0')
+const version = process.argv[2] ?? 'v0'
+assert(['v0', 'v1'].includes(version))
+const fullCatalog = version === 'v1'
+const firstPackCount = fullCatalog ? 104 : 144
+const evidence = resolve(project, 'evidence/' + version)
 await mkdir(evidence, { recursive: true })
 const collector = await readFile(resolve(root, '.agents/skills/prototype-first-ui/scripts/collect_dom_content.js'), 'utf8')
 const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.gif': 'image/gif', '.webp': 'image/webp', '.woff2': 'font/woff2', '.woff': 'font/woff' }
@@ -18,8 +22,32 @@ const server = createServer(async (req, res) => {
   try { res.setHeader('Content-Type', mime[extname(file)] ?? 'text/plain'); res.end(await readFile(file)) }
   catch { res.writeHead(404); res.end() }
 })
+if (fullCatalog) {
+  const catalog = JSON.parse(await readFile(resolve(project, 'v1/smoji.json'), 'utf8'))
+  const production = JSON.parse(await readFile(resolve(root, 'data/smoji.json'), 'utf8'))
+  const normalize = packs => packs.map(pack => ({ ...pack, items: pack.items.map(item => ({
+    ...item, src: new URL(item.src, 'https://s3-cdn.zsh.moe/smoji/').href,
+  })) }))
+  assert.deepEqual(catalog.packs.slice(1), normalize(production.packs))
+  const live = await fetch('https://smoji.zsh.moe/smoji.json').then(r => { assert(r.ok); return r.json() })
+  assert.deepEqual(catalog.packs.slice(1), normalize(live.packs))
+  assert.equal(catalog.packs[0].label, '大肥鱼')
+  assert.equal(catalog.packs.length, 36)
+  assert.equal(catalog.packs.flatMap(p => p.items).length, 5934)
+  let cursor = 0
+  await Promise.all(Array.from({ length: 6 }, async () => {
+    while (cursor < 104) {
+      const item = catalog.packs[0].items[cursor++]
+      const response = await fetch(item.src, { method: 'HEAD', signal: AbortSignal.timeout(30000) })
+      assert(response.ok, item.src)
+      assert.match(response.headers.get('content-type'), /image\/webp/)
+      assert(Number(response.headers.get('content-length')) > 0)
+    }
+  }))
+  console.log('Full catalog matches production; 104 new CDN URLs return WebP successfully')
+}
 await new Promise(r => server.listen(0, '127.0.0.1', r))
-const url = `http://127.0.0.1:${server.address().port}/v0/`
+const url = `http://127.0.0.1:${server.address().port}/${version}/`
 const browser = await chromium.launch()
 const checks = []
 async function capture(page, name) {
@@ -42,6 +70,7 @@ try {
     await page.addInitScript(() => { localStorage.setItem('smoji-workbench:custom-packs', 'production-sentinel'); localStorage.setItem('smoji-theme', 'dark') })
     await page.goto(url)
     await page.locator('.card__open').first().waitFor()
+    if (fullCatalog) assert.equal(await page.locator('.gallery__header h2').innerText(), '大肥鱼')
     await page.evaluate(() => document.fonts.ready)
     await page.waitForFunction(() => [...document.querySelectorAll('#grid img')].every(img => img.complete && img.naturalWidth > 0))
     await page.waitForTimeout(400)
@@ -65,8 +94,8 @@ try {
     await page.locator('#selection-dock-export').click()
     const download = await downloadPromise
     const body = JSON.parse(await readFile(await download.path(), 'utf8'))
-    assert.equal(body.packs[0].items.length, 144)
-    assert(!JSON.stringify(body).includes('s3-cdn.zsh.moe'), 'Prototype exports must retain local fixture URLs')
+    assert.equal(body.packs[0].items.length, firstPackCount)
+    assert.equal(JSON.stringify(body).includes('s3-cdn.zsh.moe'), fullCatalog, 'Export asset origin')
     await page.locator('#selection-dock-preview').click()
     await page.getByRole('dialog').waitFor()
     await capture(page, `export-${width}`)
@@ -79,11 +108,11 @@ try {
     await page.locator('#btn-create-custom-pack').click()
     if (width < 901) await page.locator('#mobile-sidebar').waitFor({ state: 'hidden' })
     await page.locator('#btn-batch-pack-action').click()
-    assert.match(await page.locator('#gallery-export-count').innerText(), /144/)
+    assert.match(await page.locator('#gallery-export-count').innerText(), new RegExp(String(firstPackCount)))
     await page.keyboard.press('Control+z')
     assert.match(await page.locator('#gallery-export-count').innerText(), /0 张/)
     await page.keyboard.press('Control+Shift+z')
-    assert.match(await page.locator('#gallery-export-count').innerText(), /144/)
+    assert.match(await page.locator('#gallery-export-count').innerText(), new RegExp(String(firstPackCount)))
     await capture(page, `custom-selected-${width}`)
     if (width < 901) await page.locator('#menu-toggle').click()
     await page.locator('.custom-pack-item .group-tools button[aria-haspopup="menu"]').first().click()
@@ -107,8 +136,8 @@ try {
     await capture(page, `dark-${width}`)
     assert.equal(await page.evaluate(() => localStorage.getItem('smoji-workbench:custom-packs')), 'production-sentinel')
     assert.equal(await page.evaluate(() => localStorage.getItem('smoji-theme')), 'dark')
-    assert.deepEqual(errors, []); assert.deepEqual(external, []); assert.deepEqual(failed, [])
-    checks.push({ width, errors, external, failed, downloadItems: 144, productionStorageUntouched: true })
+    assert.deepEqual(errors, []); assert(external.every(url => fullCatalog && new URL(url).origin === 'https://s3-cdn.zsh.moe')); assert.deepEqual(failed, [])
+    checks.push({ width, errors, externalRequestCount: external.length, externalOrigin: fullCatalog ? 'https://s3-cdn.zsh.moe' : null, failed, downloadItems: firstPackCount, productionStorageUntouched: true })
     await context.close()
     console.log(`Verified ${width}px: load, keyboard, inspector, export, groups, undo/redo, cancellation, help, theme`)
   }
@@ -126,10 +155,10 @@ try {
   await page.unroute('**/smoji.json')
   await page.getByRole('button', { name: '重试加载' }).click()
   await page.locator('.card__open').first().waitFor()
-  await page.addInitScript(() => { const original = Storage.prototype.setItem; Storage.prototype.setItem = function(key, value) { if (key.startsWith('smoji-prototype-v0:')) throw new DOMException('QuotaExceededError', 'QuotaExceededError'); original.call(this, key, value) } })
+  await page.addInitScript(() => { const original = Storage.prototype.setItem; Storage.prototype.setItem = function(key, value) { if (key.startsWith('smoji-prototype-')) throw new DOMException('QuotaExceededError', 'QuotaExceededError'); original.call(this, key, value) } })
   await page.reload()
   await page.getByRole('alert').filter({ hasText: '浏览器存储' }).waitFor()
   await capture(page, 'storage-error')
   await context.close()
-  await writeFile(resolve(evidence, 'verification.json'), JSON.stringify({ browser: browser.version(), checks, exceptionStates: ['loading', 'catalog-error', 'retry-success', 'storage-error'], limitations: ['Chromium emulation only; not real Safari/device or full accessibility certification', 'Historical migration intentionally absent; fixture export URLs are local', 'Clipboard actual OS write and drag/drop not separately verified in this run'] }, null, 2))
+  await writeFile(resolve(evidence, 'verification.json'), JSON.stringify({ browser: browser.version(), checks, ...(fullCatalog ? { catalog: { packs: 36, items: 5934, preservedProductionPacks: 35, preservedProductionItems: 5830, liveManifest: 'https://smoji.zsh.moe/smoji.json', liveCatalogEqual: true, newWebpHeadChecks: 104 } } : {}), exceptionStates: ['loading', 'catalog-error', 'retry-success', 'storage-error'], limitations: ['Chromium emulation only; not real Safari/device or full accessibility certification', fullCatalog ? 'CDN originals; CI thumbnails not included; historical migration not separately tested' : 'Historical migration intentionally absent; fixture export URLs are local', 'Clipboard actual OS write and drag/drop not separately verified in this run'] }, null, 2))
 } finally { await browser.close(); await new Promise(r => server.close(r)) }

@@ -1,0 +1,3 @@
+- heading "无法加载表情清单" [level=2]
+- paragraph: manifest-request-failed
+- button "重试加载"
