@@ -28,6 +28,11 @@ with the live workbench manifest. v1 uses production CDN originals and export UR
 isolated storage, and no CI-generated thumbnail index. The production manifest now
 matches v1 exactly after resolving CDN URLs; no deployment is implied.
 
+v2 (`approved`) redesigns only the presentation layer over the same reducer, persistence and
+export modules and the same 36 packs / CDN URLs. It adds hover copy, all-format copy rows in the
+inspector, a single-tab-stop pack list and still-frame grids (animation on hover/focus and in the
+inspector); these become production capabilities once implemented.
+
 Known limits: historical storage migration is not tested. Browser emulation does not establish
 physical device, Safari, assistive-technology or CI readiness. The previously recorded
 ImageMagick frame-cloning failure was fixed while enabling numbered WebP assets;

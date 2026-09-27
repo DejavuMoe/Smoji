@@ -24,10 +24,20 @@
             "width": 1440,
             "height": 900
           }
+        },
+        {
+          "path": "v2/index.html",
+          "createdAt": "2026-09-27T02:48:56.437Z",
+          "status": "approved",
+          "subtitle": "v2 · 纸墨与荧光笔：全量重设计（静帧图库）",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
         }
       ]
     }
   },
   "createdAt": "2026-09-22T15:20:53.502Z",
-  "updatedAt": "2026-09-23T11:08:49.320Z"
+  "updatedAt": "2026-09-27T03:48:15.454Z"
 }

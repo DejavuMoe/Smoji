@@ -7,7 +7,7 @@
   },
   "content": {
     "defaultProfile": "operational-strict",
-    "inventory": "content-inventory-v1.json",
+    "inventory": "content-inventory-v2.json",
     "approvedCopySources": []
   },
   "designSources": "design-sources.json",
@@ -16,59 +16,77 @@
       "id": "workbench",
       "contentProfile": "operational-strict",
       "prototype": {
-        "entry": "v1/index.html",
-        "assetPath": "v1/index.html",
+        "entry": "v2/index.html",
+        "assetPath": "v2/index.html",
         "files": [
-          "v1/index.html",
-          "v1/smoji.json",
-          "build-v1.mjs",
-          "deepseek-wale-girl.json",
-          "source-fingerprint-v1.json"
+          "v2/index.html",
+          "v2/smoji.json",
+          "v2-src/index.html",
+          "v2-src/src/main.tsx",
+          "v2-src/src/app/App.tsx",
+          "v2-src/src/features/Gallery.tsx",
+          "v2-src/src/features/Kit.tsx",
+          "v2-src/src/features/Groups.tsx",
+          "v2-src/src/features/Inspector.tsx",
+          "v2-src/src/styles/tokens.css",
+          "build-v2.mjs",
+          "verify-v2.mjs",
+          "content-inventory-v2.json",
+          "v2-src/src/ui/Sticker.tsx",
+          "v2-src/src/lib/stills.ts"
         ],
         "states": [
           "packs-ready",
           "pack-selected",
+          "item-excluded",
           "custom-empty",
           "custom-selected",
+          "picked-view",
           "inspector",
           "export-preview",
+          "group-menu",
           "delete-confirm",
           "help",
-          "dark",
           "comfortable",
+          "dark",
+          "mobile-kit-sheet",
+          "mobile-pack-drawer",
           "loading",
           "catalog-error",
-          "storage-error"
+          "storage-error",
+          "still-grid",
+          "hover-playback",
+          "image-loading-blur"
         ],
         "stableIds": [
           "grid",
           "pack-nav",
           "custom-builder",
           "selection-dock",
-          "pop-close-btn",
-          "code-modal"
+          "mode-tabs",
+          "pop-group-btn",
+          "code-modal",
+          "guide-modal",
+          "kit-sheet"
         ]
       },
       "production": {
         "routeOrWindow": "/",
         "files": [
-          "apps/workbench/src/main.tsx",
           "apps/workbench/src/app/App.tsx",
           "apps/workbench/src/app/WorkbenchProvider.tsx",
-          "apps/workbench/src/domain/reducer.ts",
+          "apps/workbench/src/features",
           "apps/workbench/src/styles/globals.css",
-          "data/packs.json",
-          "data/smoji.json",
-          "data/assets.json",
-          "scripts/generate-packs.mjs",
-          "scripts/generate-previews.mjs",
-          "apps/workbench/vite.config.ts"
+          "apps/workbench/index.html",
+          "apps/workbench/public/favicon.svg"
         ],
         "interfaces": [
           "workbenchReducer",
+          "WorkbenchProvider",
           "loadSmojiManifest",
           "persistWorkbenchState",
           "generateFormattedExport",
+          "formatEmoji",
           "navigator.clipboard",
           "browser download"
         ],
@@ -77,14 +95,11 @@
           "e2e/workbench-custom-groups.spec.ts",
           "e2e/workbench-export.spec.ts",
           "e2e/responsive-viewports.spec.ts",
-          "packages/smoji/test/generator.test.ts",
-          "packages/smoji/test/catalog-quality.test.ts",
-          "packages/smoji/test/packs.test.ts",
-          "packages/smoji/test/previews.test.ts",
-          "designs/smoji/verify-v0.mjs production"
+          "e2e/inspector.spec.ts",
+          "designs/smoji/verify-v2.mjs"
         ]
       },
-      "status": "implemented"
+      "status": "approved"
     }
   ]
 }

@@ -1,0 +1,62 @@
+{
+  "browser": "153.0.8010.12",
+  "checks": [
+    {
+      "width": 1440,
+      "errors": [],
+      "failed": [],
+      "foreignRequests": 0,
+      "downloadItems": 103,
+      "stillsOnlyGrid": true,
+      "hoverPlaysOne": true,
+      "productionStorageUntouched": true
+    },
+    {
+      "width": 834,
+      "errors": [],
+      "failed": [],
+      "foreignRequests": 0,
+      "downloadItems": 104,
+      "stillsOnlyGrid": true,
+      "hoverPlaysOne": false,
+      "productionStorageUntouched": true
+    },
+    {
+      "width": 390,
+      "errors": [],
+      "failed": [],
+      "foreignRequests": 0,
+      "downloadItems": 104,
+      "stillsOnlyGrid": true,
+      "hoverPlaysOne": false,
+      "productionStorageUntouched": true
+    },
+    {
+      "width": 320,
+      "errors": [],
+      "failed": [],
+      "foreignRequests": 0,
+      "downloadItems": 104,
+      "stillsOnlyGrid": true,
+      "hoverPlaysOne": false,
+      "productionStorageUntouched": true
+    }
+  ],
+  "catalog": {
+    "packs": 36,
+    "items": 5934,
+    "matchesProductionManifest": true,
+    "imageOrigin": "https://s3-cdn.zsh.moe"
+  },
+  "exceptionStates": [
+    "loading",
+    "catalog-error",
+    "retry-success",
+    "storage-error"
+  ],
+  "limitations": [
+    "Chromium emulation only; not real Safari/device or assistive-technology certification",
+    "CI thumbnails not included; stills are frozen first frames of CDN originals (production uses CI previews)",
+    "OS clipboard write and drag/drop not verified in this run"
+  ]
+}

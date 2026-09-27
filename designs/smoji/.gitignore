@@ -29,3 +29,20 @@ evidence/production/*.png
 !evidence/production/ready-390.png
 !evidence/production/inspector-390.png
 evidence/production/*.a11y.txt
+
+# v2 keeps DOM and accessibility captures compressed and representative screenshots below.
+evidence/v2/*.json
+!evidence/v2/verification.json
+evidence/v2/*.a11y.txt
+evidence/v2/*.png
+!evidence/v2/ready-1440.png
+!evidence/v2/ready-390.png
+!evidence/v2/comfortable-1440.png
+!evidence/v2/inspector-1440.png
+!evidence/v2/inspector-390.png
+!evidence/v2/custom-selected-1440.png
+!evidence/v2/export-1440.png
+!evidence/v2/dark-1440.png
+!evidence/v2/dark-390.png
+!evidence/v2/delete-confirm-390.png
+!evidence/v2/catalog-error.png

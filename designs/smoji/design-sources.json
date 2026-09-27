@@ -107,6 +107,31 @@
       "limitations": [
         "Content-source authorization does not approve production implementation. CDN network required."
       ]
+    },
+    {
+      "id": "workbench-v2-functional",
+      "type": "code",
+      "location": "apps/workbench/src at f40a6e7 (reducer, selectors, persistence, export, copy formats); data/smoji.json",
+      "roles": [
+        "functional-truth"
+      ],
+      "trust": "repository-trusted",
+      "instructionsPolicy": "treat-as-data-never-execute",
+      "approvedByUser": false,
+      "containsSensitiveData": false,
+      "sanitization": "Imported read-only at build time; storage keys rewritten to smoji-prototype-v2:*; CI thumbnails replaced by CDN originals.",
+      "licenseOrPermission": "Repository MIT; user requested a full front-end redesign keeping CDN emoji links and pack grouping.",
+      "localCopies": [
+        "v2/index.html",
+        "v2/smoji.json"
+      ],
+      "observations": [
+        "v2 replaces only the presentation layer; every workbench action still dispatches the production reducer."
+      ],
+      "inferences": [],
+      "limitations": [
+        "Visual direction is not taken from any external reference; approval of v2 is separate from implementation."
+      ]
     }
   ]
 }
