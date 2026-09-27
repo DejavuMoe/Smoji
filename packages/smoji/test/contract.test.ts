@@ -15,14 +15,17 @@ import {
   toExportItemSrc,
 } from '../../../apps/workbench/src/export'
 
+const workbenchSources = [
+  'apps/workbench/src/main.tsx',
+  ...['App', 'Boot', 'ErrorBoundary'].map((name) => `apps/workbench/src/app/${name}.tsx`),
+  ...['Chrome', 'PackList', 'Gallery', 'Kit', 'Groups', 'ExportBar', 'Inspector', 'Preview', 'Help', 'Toasts'].map((name) => `apps/workbench/src/features/${name}.tsx`),
+  ...['Sticker', 'primitives', 'overlays'].map((name) => `apps/workbench/src/ui/${name}.tsx`),
+  ...['tokens', 'base', 'layout', 'gallery', 'kit', 'overlays'].map((name) => `apps/workbench/src/styles/${name}.css`),
+]
+
 describe('demo and schema contracts', () => {
   it('demo sources do not reference catalog.json or pack.json', async () => {
-    const files = [
-      'apps/workbench/src/main.ts',
-      'apps/workbench/src/export.ts',
-      'apps/workbench/index.html',
-      'apps/workbench/src/site.css',
-    ]
+    const files = ['apps/workbench/src/export.ts', 'apps/workbench/index.html', ...workbenchSources]
     for (const file of files) {
       const text = await readFile(resolve(file), 'utf8')
       expect(text).not.toMatch(/catalog\.json|pack\.json/)
@@ -327,68 +330,28 @@ describe('demo and schema contracts', () => {
 
   it('desktop and narrow screen UI controls contract is maintained', async () => {
     const html = await readFile(resolve('apps/workbench/index.html'), 'utf8')
-    const css = await readFile(resolve('apps/workbench/src/site.css'), 'utf8')
-    const main = await readFile(resolve('apps/workbench/src/main.ts'), 'utf8')
+    const read = (ext: string) => Promise.all(workbenchSources.filter((file) => file.endsWith(ext)).map((file) => readFile(resolve(file), 'utf8')))
+    const ui = (await read('.tsx')).join('\n')
+    const css = (await read('.css')).join('\n')
 
-    expect(html).toContain('id="pack-nav"')
-    expect(html).toContain('id="tab-packs"')
-    expect(html).toContain('id="tab-custom"')
-    expect(html).toContain('id="custom-builder"')
-    expect(html).toContain('id="custom-pack-list"')
-    expect(html).toContain('id="gallery-export-count"')
-    expect(html).toContain('id="quick-export"')
-    expect(html).toContain('id="selection-dock-format"')
-    expect(html).toContain('id="selection-dock-export"')
-    expect(main).toContain('for (const fmt of toolbarExportFormats())')
-    expect(html).toContain('class="export-toolbar"')
-    expect(html).not.toContain('class="sidebar__github"')
-    expect(html).not.toContain('class="export-box"')
+    expect(html).toContain('<div id="root"></div>')
+    expect(html).toContain("localStorage.getItem('smoji-theme')")
+    for (const id of ['pack-nav', 'tab-packs', 'tab-custom', 'custom-builder', 'custom-pack-list', 'gallery-export-count',
+      'selection-dock', 'selection-dock-format', 'selection-dock-export', 'selection-dock-preview', 'gallery-view-picked',
+      'theme-toggle', 'code-modal', 'guide-modal', 'toast-container', 'btn-select-all-packs', 'btn-clear-packs',
+      'density-toggle', 'menu-toggle', 'mobile-sidebar', 'pop-group-btn', 'pop-close-btn', 'confirm-cancel']) {
+      expect(ui.includes(`id="${id}"`) || ui.includes(`id: '${id}'`), id).toBe(true)
+    }
+    // Pack rows keep checkbox and navigation as separate controls; search stays out of the workbench.
+    expect(ui).toContain('role="checkbox" className="pack-check"')
+    expect(ui).toContain('className="pack"')
+    expect(ui).not.toContain('type="search"')
 
-    expect(main).toContain('row.className = \'pack-row\'')
-    expect(main).toContain('checkbox.type = \'checkbox\'')
-    expect(main).toContain('checkbox.className = \'pack-check\'')
-    expect(main).toContain('selectLabel.append(checkbox)')
-    expect(main).toContain('row.append(selectLabel, button)')
-    expect(main).not.toMatch(/button\.append\([^)]*checkbox/)
-    expect(main).toContain('handleCustomItemClick')
-    expect(main).toContain('handlePackItemToggle')
-    expect(main).toContain('excludedItemSrcs')
-    expect(main).toContain('card__badge')
-    expect(main).toContain('card__check-hover')
-    expect(main).toContain('card__action-btn')
-    expect(main).toContain('popToggleGroupBtn')
-    expect(main).toContain('triggerExport')
-
-    expect(css).toContain('.pack-row')
-    expect(css).toContain('.pack-check')
-    expect(css).toContain('.mode-tabs')
-    expect(css).toContain('.card__badge')
-    expect(css).toContain('.card.is-excluded')
-    expect(css).toContain('.card__action-btn')
-    expect(css).toContain('.gallery__header')
-    expect(css).toContain('.export-toolbar')
-    expect(css).toContain('.pop__group-btn')
-    expect(css).toContain('@media (max-width: 900px)')
-
-    // Enhanced UI/UX feature contracts
-    expect(html).not.toContain('type="search"')
-    expect(html).toContain('id="gallery-view-picked"')
-    expect(html).not.toContain('id="pop-media-toggle"')
-    expect(html).toContain('id="theme-toggle"')
-    expect(html).toContain('id="code-modal"')
-    expect(html).toContain('id="guide-modal"')
-    expect(html).toContain('id="toast-container"')
-    expect(html).toContain('id="btn-select-all-packs"')
-    expect(html).toContain('id="density-toggle"')
-
-    expect(main).toContain('applyTheme')
-    expect(main).toContain('showToast')
-    expect(main).toContain('updateCodePreview')
-    expect(main).toContain('navigatePop')
-
-    expect(css).toContain('--bg')
-    expect(css).toContain('--surface')
-    expect(css).toContain('.toast-container')
-    expect(css).toContain('.code-modal')
+    expect(css).toContain('@media (max-width: 899px)')
+    expect(css).toContain('@media (prefers-reduced-motion: reduce)')
+    expect(css).toContain('@media (forced-colors: active)')
+    expect(css).toContain('[data-theme="dark"]')
+    for (const token of ['--paper', '--sheet', '--ink', '--mark']) expect(css).toContain(token)
+    expect(css).toContain('content-visibility: auto')
   })
 })

@@ -1,71 +1,83 @@
 import { test, expect } from '@playwright/test'
+import { boot, closeSheets, createGroup, makeItems, mockCatalog, reload, setMode, tileAction, tiles } from './support'
 
-test.describe('Emoji Detail Inspector E2E', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/')
-    await expect(page.locator('.card').first()).toBeVisible()
-  })
+const packs = [{ id: 'insp', label: '详情分类', items: makeItems('insp', 6, '详情') }]
 
-  test('opens inspector, cycles formats 1-5, toggles backgrounds, navigates prev/next', async ({ page }) => {
-    const firstCard = page.locator('.card').first()
-    await firstCard.click()
+test.beforeEach(async ({ page }) => {
+  await mockCatalog(page, packs)
+  await boot(page)
+})
 
-    // Dialog opens
-    const dialog = page.locator('[data-slot="dialog-content"]')
-    await expect(dialog).toBeVisible()
+test('shows every copy format, switches backgrounds and pages with the side buttons', async ({ page }) => {
+  await tiles(page).first().click()
+  const dialog = page.locator('.insp')
+  await expect(dialog).toBeVisible()
+  await expect(dialog.locator('.insp__sticker')).toHaveAttribute('data-image-status', 'ready')
+  const codes = await dialog.locator('.copy__code').allTextContents()
+  expect(codes).toHaveLength(5)
+  expect(codes[0]).toMatch(/^!\[smoji:详情 0\]\(https:\/\/.+\)$/)
+  expect(codes[1]).toMatch(/^https:\/\//)
+  expect(codes[2]).toMatch(/\{\{<\s*inTextImg/)
+  expect(codes[3]).toMatch(/^<img /)
+  expect(codes[4]).toMatch(/^\[img\]/)
+  await expect(dialog.locator('.insp__index')).toHaveText('1/6')
 
-    const copyInput = page.locator('#copy-active-input')
-    await expect(copyInput).toBeVisible()
+  for (const [name, bg] of [['浅底', 'light'], ['深底', 'dark'], ['透明', 'transparent']] as const) {
+    await dialog.getByRole('radio', { name }).click()
+    await expect(dialog.locator('[data-preview-stage]')).toHaveAttribute('data-bg', bg)
+  }
+  await page.locator('#pop-next-btn').click()
+  await expect(page.locator('.insp__title')).toHaveText('详情 1')
+  await page.locator('#pop-prev-btn').click()
+  await page.locator('#pop-prev-btn').click()
+  // Paging wraps around the current list.
+  await expect(page.locator('.insp__title')).toHaveText('详情 5')
+  await page.getByRole('button', { name: '关闭详情' }).click()
+  await expect(dialog).toHaveCount(0)
+})
 
-    // 1. Check default format (Markdown)
-    const mdValue = await copyInput.inputValue()
-    expect(mdValue).toMatch(/^!\[.*\]\(.*\)$/)
+test('copying confirms success, and a missing clipboard falls back to a selected field', async ({ page, context, browserName }) => {
+  if (browserName === 'chromium') await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+  await tiles(page).first().click()
+  await page.getByRole('button', { name: '复制 URL' }).click()
+  await expect(page.locator('.copy__row[data-copied]')).toContainText('已复制')
+  await page.keyboard.press('Escape')
 
-    // 2. Press '2' -> URL format
-    await page.keyboard.press('2')
-    const urlValue = await copyInput.inputValue()
-    expect(urlValue).toMatch(/^https?:\/\//)
+  await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', { configurable: true, value: undefined }))
+  await tiles(page).first().click()
+  await page.getByRole('button', { name: '复制 Hugo' }).click()
+  const input = page.locator('#copy-active-input')
+  await expect(input).toBeFocused()
+  expect(await input.evaluate((e: HTMLInputElement) => e.value.length > 0 && e.selectionStart === 0 && e.selectionEnd === e.value.length)).toBe(true)
+  await expect(page.locator('#copy-feedback')).toContainText('手动复制')
+  expect(await page.locator('.insp').evaluate(e => e.scrollWidth <= e.clientWidth)).toBe(true)
+})
 
-    // 3. Press '3' -> Hugo format
-    await page.keyboard.press('3')
-    const hugoValue = await copyInput.inputValue()
-    expect(hugoValue).toMatch(/\{\{<\s*(?:smoji|inTextImg)/)
+test('removing the inspected item from the picked view moves to a neighbour', async ({ page }) => {
+  await setMode(page, 'custom')
+  await createGroup(page, '翻页')
+  await closeSheets(page)
+  await tileAction(page, 0)
+  await tileAction(page, 1)
+  await page.locator('#gallery-view-picked').getByRole('radio', { name: '已入组 (2)' }).click()
+  await tiles(page).first().click()
+  const title = page.locator('.insp__title')
+  await expect(title).toHaveText('详情 0')
+  await page.locator('#pop-group-btn').click()
+  await expect(title).toHaveText('详情 1')
+  await expect(page.locator('.insp__index')).toHaveText('1/1')
+})
 
-    // 4. Press '4' -> HTML format
-    await page.keyboard.press('4')
-    const htmlValue = await copyInput.inputValue()
-    expect(htmlValue).toMatch(/^<img /)
-
-    // 5. Press '5' -> BBCode format
-    await page.keyboard.press('5')
-    const bbValue = await copyInput.inputValue()
-    expect(bbValue).toMatch(/^\[img\]/)
-
-    // 6. Test background toggles: 浅底, 深底, 透明
-    const bgLight = page.getByRole('radio', { name: '浅底' })
-    await bgLight.click()
-    const bgDark = page.getByRole('radio', { name: '深底' })
-    await bgDark.click()
-    const bgTrans = page.getByRole('radio', { name: '透明' })
-    await bgTrans.click()
-
-    // 7. Test prev / next keyboard navigation
-    await page.locator('#pop-close-btn').focus()
-    const initialTitle = await page.locator('[data-slot="dialog-title"]').textContent()
-    await page.keyboard.press('ArrowRight')
-    await expect(page.locator('[data-slot="dialog-title"]')).not.toHaveText(initialTitle ?? '')
-
-    await page.keyboard.press('ArrowLeft')
-    const prevTitle = await page.locator('[data-slot="dialog-title"]').textContent()
-    expect(prevTitle).toBe(initialTitle)
-
-    // 8. Test copy button
-    const copyBtn = page.locator('#btn-copy-active')
-    await copyBtn.click()
-    await expect(page.locator('#copy-feedback')).toBeVisible()
-
-    // 9. Close dialog via Esc
-    await page.keyboard.press('Escape')
-    await expect(dialog).not.toBeVisible()
-  })
+test('a failed original is reported distinctly and can be retried', async ({ page }) => {
+  let fail = true
+  await page.route('**/insp/3.png', route => fail ? route.abort() : route.fallback())
+  // A fresh document: the grid must not have cached the original before it starts failing.
+  await reload(page)
+  await tiles(page).nth(3).click()
+  const sticker = page.locator('.insp__sticker')
+  await expect(sticker).toHaveAttribute('data-image-status', 'error')
+  await expect(sticker).toContainText('加载失败')
+  fail = false
+  await page.getByRole('button', { name: '重试加载 详情 3' }).click()
+  await expect(sticker).toHaveAttribute('data-image-status', 'ready')
 })

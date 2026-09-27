@@ -1,51 +1,53 @@
 {
+  "target": "apps/workbench/dist",
   "browser": "153.0.8010.12",
   "checks": [
     {
       "width": 1440,
       "errors": [],
-      "externalRequestCount": 104,
-      "externalOrigin": "https://s3-cdn.zsh.moe",
       "failed": [],
-      "downloadItems": 104,
-      "isolatedBrowserContext": true
-    },
-    {
-      "width": 390,
-      "errors": [],
-      "externalRequestCount": 72,
-      "externalOrigin": "https://s3-cdn.zsh.moe",
-      "failed": [],
-      "downloadItems": 104,
-      "isolatedBrowserContext": true
-    },
-    {
-      "width": 320,
-      "errors": [],
-      "externalRequestCount": 72,
-      "externalOrigin": "https://s3-cdn.zsh.moe",
-      "failed": [],
-      "downloadItems": 104,
-      "isolatedBrowserContext": true
+      "foreignRequests": 0,
+      "downloadItems": 103,
+      "stillsOnlyGrid": true,
+      "hoverPlaysOne": true,
+      "productionStorageUntouched": false
     },
     {
       "width": 834,
       "errors": [],
-      "externalRequestCount": 72,
-      "externalOrigin": "https://s3-cdn.zsh.moe",
       "failed": [],
+      "foreignRequests": 0,
       "downloadItems": 104,
-      "isolatedBrowserContext": true
+      "stillsOnlyGrid": true,
+      "hoverPlaysOne": false,
+      "productionStorageUntouched": false
+    },
+    {
+      "width": 390,
+      "errors": [],
+      "failed": [],
+      "foreignRequests": 0,
+      "downloadItems": 104,
+      "stillsOnlyGrid": true,
+      "hoverPlaysOne": false,
+      "productionStorageUntouched": false
+    },
+    {
+      "width": 320,
+      "errors": [],
+      "failed": [],
+      "foreignRequests": 0,
+      "downloadItems": 104,
+      "stillsOnlyGrid": true,
+      "hoverPlaysOne": false,
+      "productionStorageUntouched": false
     }
   ],
   "catalog": {
     "packs": 36,
     "items": 5934,
-    "preservedProductionPacks": 35,
-    "preservedProductionItems": 5830,
-    "liveManifest": "https://smoji.zsh.moe/smoji.json",
-    "liveCatalogEqual": true,
-    "newWebpHeadChecks": 104
+    "matchesProductionManifest": true,
+    "imageOrigin": "https://s3-cdn.zsh.moe"
   },
   "exceptionStates": [
     "loading",
@@ -54,28 +56,8 @@
     "storage-error"
   ],
   "limitations": [
-    "Chromium emulation only; not real Safari/device or full accessibility certification",
-    "CDN originals; CI thumbnails not included; historical migration not separately tested",
-    "Clipboard actual OS write and drag/drop not separately verified in this run"
-  ],
-  "contentAudit": {
-    "classifiedStrings": 1102,
-    "warnings": 0,
-    "inventory": "content-inventory.json.gz"
-  },
-  "newPackPreviewGeneration": {
-    "source": "CDN",
-    "localPacksPresent": false,
-    "indexed": 104,
-    "generated": 104,
-    "animated": 104
-  },
-  "postCleanup": {
-    "canonicalPacksPresent": false,
-    "mirrorPacksPresent": false,
-    "disposition": "Windows Recycle Bin",
-    "metadataRegeneration": "byte-identical",
-    "linuxBuild": "passed",
-    "siteOutputVerification": "passed"
-  }
+    "Chromium emulation only; not real Safari/device or assistive-technology certification",
+    "CI thumbnails not included; stills are frozen first frames of CDN originals (production uses CI previews)",
+    "OS clipboard write and drag/drop not verified in this run"
+  ]
 }

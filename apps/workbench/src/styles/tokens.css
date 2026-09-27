@@ -1,0 +1,119 @@
+/*
+ * Paper, ink and one highlighter. The white sheet in the middle is where stickers are laid out;
+ * everything around it stays warm and quiet so the emoji carry the colour.
+ */
+:root {
+  --font-ui: "IBM Plex Sans", "PingFang SC", "HarmonyOS Sans SC", "MiSans", "Noto Sans SC", "Source Han Sans SC",
+    "Microsoft YaHei UI", "Microsoft YaHei", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, "PingFang SC", "Microsoft YaHei", monospace;
+
+  --paper: oklch(0.958 0.009 84);
+  --paper-hover: oklch(0.935 0.011 84);
+  --sheet: oklch(0.995 0.003 84);
+  --well: oklch(0.962 0.006 84);
+  --well-2: oklch(0.93 0.009 84);
+  --rule: oklch(0.895 0.009 84);
+  --rule-2: oklch(0.82 0.011 84);
+  --ink: oklch(0.225 0.012 70);
+  --ink-2: oklch(0.44 0.012 70);
+  --ink-3: oklch(0.595 0.011 75);
+  --on-ink: oklch(0.985 0.004 84);
+  --ink-hover: oklch(0.33 0.013 70);
+
+  --mark: oklch(0.915 0.168 108);
+  --mark-hover: oklch(0.88 0.178 106);
+  --mark-soft: oklch(0.962 0.075 108);
+  --mark-line: oklch(0.8 0.15 106);
+  --on-mark: oklch(0.26 0.035 100);
+
+  --danger: oklch(0.54 0.19 28);
+  --danger-soft: oklch(0.955 0.03 28);
+  --danger-line: oklch(0.86 0.07 28);
+  --warn-ink: oklch(0.47 0.1 70);
+  --warn-soft: oklch(0.955 0.05 88);
+  --warn-line: oklch(0.86 0.1 85);
+
+  --code-bg: oklch(0.215 0.012 70);
+  --code-ink: oklch(0.9 0.012 84);
+  --code-dim: oklch(0.62 0.012 80);
+  --code-key: oklch(0.9 0.14 108);
+  --code-str: oklch(0.83 0.055 60);
+  --code-lit: oklch(0.8 0.09 200);
+
+  --checker-a: oklch(1 0 0);
+  --checker-b: oklch(0.952 0.004 84);
+  --stage-light: oklch(1 0 0);
+  --stage-dark: oklch(0.2 0.006 70);
+
+  --shadow-sheet: 0 0 0 1px var(--rule), 0 1px 2px oklch(0.3 0.03 60 / 0.05), 0 12px 32px -18px oklch(0.3 0.03 60 / 0.25);
+  --shadow-float: 0 0 0 1px oklch(0.3 0.02 60 / 0.07), 0 4px 10px -2px oklch(0.3 0.02 60 / 0.1), 0 18px 40px -12px oklch(0.3 0.02 60 / 0.22);
+  --shadow-pop: 0 0 0 1px oklch(0.3 0.02 60 / 0.08), 0 30px 80px -20px oklch(0.2 0.02 60 / 0.45), 0 8px 20px -8px oklch(0.2 0.02 60 / 0.18);
+  --sticker-lift: drop-shadow(0 1px 0.5px oklch(0.25 0.02 60 / 0.22)) drop-shadow(0 10px 12px oklch(0.25 0.02 60 / 0.16));
+  --overlay: oklch(0.2 0.012 70 / 0.42);
+
+  --r-xs: 6px;
+  --r-s: 9px;
+  --r-m: 12px;
+  --r-l: 16px;
+  --r-xl: 22px;
+
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.5, 0.64, 1);
+  --t-fast: 120ms;
+  --t-med: 200ms;
+  --t-slow: 320ms;
+
+  --rail-w: 264px;
+  --kit-w: 340px;
+  --gap: 8px;
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --paper: oklch(0.165 0.006 70);
+  --paper-hover: oklch(0.205 0.007 70);
+  --sheet: oklch(0.205 0.007 70);
+  --well: oklch(0.235 0.008 70);
+  --well-2: oklch(0.275 0.009 70);
+  --rule: oklch(0.285 0.009 70);
+  --rule-2: oklch(0.37 0.01 70);
+  --ink: oklch(0.945 0.008 84);
+  --ink-2: oklch(0.77 0.01 80);
+  --ink-3: oklch(0.6 0.011 78);
+  --on-ink: oklch(0.19 0.008 70);
+  --ink-hover: oklch(0.86 0.01 84);
+
+  --mark: oklch(0.885 0.165 108);
+  --mark-hover: oklch(0.93 0.16 108);
+  --mark-soft: oklch(0.31 0.055 108);
+  --mark-line: oklch(0.6 0.12 106);
+  --on-mark: oklch(0.22 0.035 100);
+
+  --danger: oklch(0.72 0.16 28);
+  --danger-soft: oklch(0.29 0.06 28);
+  --danger-line: oklch(0.45 0.1 28);
+  --warn-ink: oklch(0.85 0.11 85);
+  --warn-soft: oklch(0.28 0.045 85);
+  --warn-line: oklch(0.45 0.08 85);
+
+  --code-bg: oklch(0.135 0.006 70);
+
+  --checker-a: oklch(0.27 0.006 70);
+  --checker-b: oklch(0.22 0.006 70);
+  --stage-light: oklch(0.97 0.004 84);
+  --stage-dark: oklch(0.13 0.005 70);
+
+  --shadow-sheet: 0 0 0 1px var(--rule), 0 12px 32px -18px oklch(0 0 0 / 0.6);
+  --shadow-float: 0 0 0 1px oklch(1 0 0 / 0.07), 0 18px 40px -12px oklch(0 0 0 / 0.6);
+  --shadow-pop: 0 0 0 1px oklch(1 0 0 / 0.08), 0 30px 80px -20px oklch(0 0 0 / 0.75);
+  --sticker-lift: drop-shadow(0 1px 0.5px oklch(0 0 0 / 0.4)) drop-shadow(0 10px 12px oklch(0 0 0 / 0.35));
+  --overlay: oklch(0.08 0.005 70 / 0.62);
+  color-scheme: dark;
+}
+
+@media (max-width: 1279px) {
+  :root { --rail-w: 232px; --kit-w: 308px; }
+}
+@media (max-width: 1099px) {
+  :root { --rail-w: 204px; --kit-w: 300px; }
+}

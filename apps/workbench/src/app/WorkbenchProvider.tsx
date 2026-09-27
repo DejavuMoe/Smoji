@@ -1,4 +1,4 @@
-import { TooltipProvider } from '../components/ui/tooltip'
+import { Tooltip } from 'radix-ui'
 import { isEditing, hasOpenOverlay } from '../keyboard'
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react'
 import type { SmojiPack } from '../../../../packages/smoji/src/types'
@@ -199,5 +199,5 @@ export function WorkbenchProvider({
     canRedo: state.history.redoStack.length > 0,
   }
 
-  return <WorkbenchContext.Provider value={contextValue}><TooltipProvider delayDuration={400}>{children}</TooltipProvider></WorkbenchContext.Provider>
+  return <WorkbenchContext.Provider value={contextValue}><Tooltip.Provider delayDuration={400}>{children}</Tooltip.Provider></WorkbenchContext.Provider>
 }

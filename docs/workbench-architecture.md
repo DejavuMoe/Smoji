@@ -8,8 +8,9 @@ The application has been engineered with a clean, decoupled architecture:
 1. **Core Zero-Dependency Isolation**: `packages/smoji` remains pure TypeScript without external dependencies, maintaining strict size budgets (< 3KB picker core, < 2KB CSS).
 2. **Pure Domain State & Logic**: Isolated in `apps/workbench/src/domain/`, free from React or DOM side effects, fully covered by unit tests.
 3. **Robust Local Persistence**: Legacy URL/category migration, validation, and synchronous saving on persisted-state changes to `smoji-workbench:*` and `smoji-theme` localStorage keys.
-4. **Accessible Component System**: Built on Tailwind CSS v4 and Radix UI primitives (`dialog`, `sheet`, `alert-dialog`, `dropdown-menu`, `tabs`, `progress`).
-5. **Progressive Rendering & Responsive UX**: Progressive rendering (72 items per increment; existing DOM is retained, not virtualized), CSS container/media queries across 4 viewport tiers, visual viewport and virtual keyboard offset tracking.
+4. **Accessible Component System**: Unstyled Radix UI primitives (`Dialog`, `AlertDialog`, `DropdownMenu`, `Tooltip`) plus small local primitives (segmented radio groups, icon buttons, sheets) styled by plain CSS with OKLCH design tokens. No utility-CSS framework or component registry.
+5. **Progressive Rendering & Responsive UX**: Progressive rendering (72 items per increment; existing DOM is retained, not virtualized) with `content-visibility: auto` tiles; a three-column desktop layout (packs · gallery · export) that becomes a pack strip, drawer and bottom export sheet below 900 px.
+6. **Animation-Safe Image Pipeline**: Grids and lists never mount animated originals. `lib/stills.ts` serves CI previews when available, otherwise decodes each original once into a 192 px first-frame bitmap (6 concurrent decodes, 360-entry LRU), and starts work only near the viewport through one shared `IntersectionObserver`. Originals play only on hover/keyboard focus and in the inspector. Every image reveals from a blurred placeholder through the same `unblur` animation (fade only under reduced motion).
 
 ---
 
@@ -17,45 +18,42 @@ The application has been engineered with a clean, decoupled architecture:
 
 ```
 apps/workbench/
-├── index.html                  # Shell HTML with theme bootstrap and noscript fallback
+├── index.html                  # Minimal shell with the pre-mount theme bootstrap
 ├── package.json                # @smoji/workbench private workspace package
-├── vite.config.ts              # Vite 7 + Tailwind 4 + React configuration
-├── components.json             # Shadcn Radix-Nova component registry configuration
+├── vite.config.ts              # Vite 7 + React configuration
 └── src/
+    ├── main.tsx                # Catalog loading (same origin, then published copy), boot states, styles
     ├── app/
-    │   ├── App.tsx             # Main layout shell (Header, Sidebar, MobileNav, Gallery, ExportDock)
+    │   ├── App.tsx             # Layout shell: rail, gallery, export column / mobile bar and sheets, dialogs
+    │   ├── Boot.tsx            # Loading and catalog failure screens
     │   ├── ErrorBoundary.tsx   # React error boundary with graceful fallback
     │   ├── WorkbenchContext.tsx# Context interface and hook
-    │   ├── WorkbenchProvider.tsx # Provider with state, persistence, shortcuts, memoized selectors
-    │   └── workbench.test.tsx  # Full integrated React workflow test
-    ├── components/ui/          # Radix primitive components styled with Tailwind 4
-    ├── domain/
-    │   ├── actions.ts          # Discriminated union of domain actions
-    │   ├── copy-format.ts      # Markdown, URL, Hugo, HTML, BBCode generators with quote escaping
-    │   ├── limits.ts           # System invariants (64 packs, 600 items/pack, 6000 items, 50 history)
-    │   ├── reducer.ts          # Pure reducer with 50-step undo/redo transaction stack
-    │   ├── reducer.test.ts     # Domain reducer unit tests (dynamic invert, undo/redo, boundaries)
-    │   ├── selectors.ts        # Memoized pure selectors
-    │   └── state.ts            # Immutable state types and initial state
+    │   ├── WorkbenchProvider.tsx # State, persistence, global shortcuts, memoized selectors, tooltip provider
+    │   └── workbench.test.tsx  # Integrated React workflow tests
+    ├── domain/                 # Pure actions, reducer (50-step history), selectors, limits, copy formats
     ├── features/
-    │   ├── custom-groups/      # Custom packs, reordering, deletion, tray, item drag-drop
-    │   ├── export/             # Bottom floating status dock, code modal preview, format export
-    │   ├── feedback/           # Accessible Sonner toast notifications
-    │   ├── gallery/            # Emoji grid, memoized card, comfortable/compact density, empty states
-    │   ├── help/               # Syntax guide and format documentation dialog
-    │   ├── inspector/          # Detail dialog, background preview toggle, 1-5 shortcuts, clipboard fallback
-    │   ├── packs/              # Pack list, pack row, dynamic selection, item exclusions
-    │   └── shell/              # Sticky header, brand, theme toggle, desktop sidebar, mobile nav sheet
-    ├── hooks/
-    │   ├── use-dock-offset.ts     # Dynamic dock height measurement via ResizeObserver
-    │   ├── use-media-query.ts     # Window matchMedia hook
-    │   ├── use-reduced-motion.ts  # Prefers-reduced-motion detection
-    │   ├── use-roving-grid.ts     # 2D arrow roving navigation for emoji cards
-    │   └── use-visual-viewport.ts # Tracks visual viewport height, top offset, keyboard inset
-    ├── persistence/
-    │   └── storage.ts          # Storage loading, migration, synchronous persistence
-    └── styles/
-        └── globals.css         # Tailwind v4 theme, Smoji neutral + teal design tokens
+    │   ├── Chrome.tsx          # Brand, desktop rail, mobile header with pack strip, theme and help buttons
+    │   ├── PackList.tsx        # Single-tab-stop pack list with separate selection checkboxes
+    │   ├── Gallery.tsx         # Header actions, still-frame tiles, hover copy/action tools, roving focus
+    │   ├── Kit.tsx             # Export column: mode switch, selected packs or custom groups, export bar
+    │   ├── Groups.tsx          # Custom groups, create form, tray, menus, import/backup, confirmations
+    │   ├── ExportBar.tsx       # Counts, size meter, format choice, preview and download
+    │   ├── Inspector.tsx       # Detail dialog: live original, backgrounds, five copy rows, action, paging
+    │   ├── Preview.tsx         # Export preview with format/scope, copy fallback and download
+    │   ├── Help.tsx            # Modes, shortcuts, formats and limits
+    │   ├── Toasts.tsx          # Notification region
+    │   └── feedback/toast.ts   # Toast store
+    ├── ui/
+    │   ├── Sticker.tsx         # Blur placeholder, still/live image states, error and retry
+    │   ├── primitives.tsx      # Logo, Tip, IconButton, Segmented, Kbd
+    │   └── overlays.tsx        # Confirm (focuses 取消) and Sheet
+    ├── lib/
+    │   ├── actions.ts          # Copy formats, clipboard, downloads, byte formatting
+    │   ├── fly.ts              # Web Animations fly-to feedback when adding to an export
+    │   └── stills.ts           # Still-frame cache, decode queue and viewport gating
+    ├── hooks/                  # Media query, reduced motion, roving grid, visual viewport
+    ├── persistence/storage.ts  # Storage loading, migration, synchronous persistence
+    └── styles/                 # tokens, base, layout, gallery, kit, overlays, fonts (plain CSS)
 ```
 
 ---
@@ -87,9 +85,9 @@ All modifications to custom groups (creation, rename, deletion, reordering, addi
 - Global keyboard listener excludes text inputs and editable fields to preserve native editing.
 
 ### 5. Smoji Visual Tokens & Palette
-- Light Theme Primary: Smoji Teal (`#0f766e`, OKLCH `oklch(0.48 0.11 185)`)
-- Dark Theme Primary: Smoji Mint/Teal (`#68d8bf`, OKLCH `oklch(0.79 0.12 185)`)
-- Calm neutral backgrounds, no floating glowing gradients, no unnecessary card clutter.
+- Warm paper surfaces (`--paper`, `--sheet`), near-black ink (`--ink`) for primary actions, and a single highlighter yellow (`--mark`) for selection and inclusion states; all tokens are OKLCH in `styles/tokens.css` with a matching `[data-theme="dark"]` set.
+- IBM Plex Sans for interface text and IBM Plex Mono for counts, IDs and code.
+- Reduced-motion and forced-colors rules keep focus rings and state visible without animation.
 
 ---
 

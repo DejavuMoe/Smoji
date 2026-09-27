@@ -1,4 +1,5 @@
 // v2 prototype checks with Linux Chromium: layout at four widths, core flows, exception states, DOM capture.
+// `--production` runs the same checks against the built workbench (apps/workbench/dist) after implementation.
 import assert from 'node:assert/strict'
 import { createServer } from 'node:http'
 import { readFile, mkdir, writeFile } from 'node:fs/promises'
@@ -7,8 +8,10 @@ import { chromium } from '@playwright/test'
 
 const project = import.meta.dirname
 const root = resolve(project, '../..')
-const serveRoot = resolve(project, 'v2')
-const evidence = resolve(project, 'evidence/v2')
+const productionMode = process.argv.includes('--production')
+const serveRoot = productionMode ? resolve(root, 'apps/workbench/dist') : resolve(project, 'v2')
+const evidence = resolve(project, productionMode ? 'evidence/production' : 'evidence/v2')
+const storagePrefix = productionMode ? 'smoji-workbench:' : 'smoji-prototype-v2:'
 await mkdir(evidence, { recursive: true })
 const collector = await readFile(resolve(root, '.agents/skills/prototype-first-ui/scripts/collect_dom_content.js'), 'utf8')
 const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.woff': 'font/woff' }
@@ -57,18 +60,19 @@ try {
       const requestOrigin = new URL(request.url()).origin
       if (requestOrigin !== origin && requestOrigin !== 'https://s3-cdn.zsh.moe') foreign.push(request.url())
     })
-    await page.addInitScript(() => { localStorage.setItem('smoji-workbench:custom-packs', 'production-sentinel'); localStorage.setItem('smoji-theme', 'dark') })
+    // The prototype must leave production storage alone; production itself starts from a clean profile.
+    if (!productionMode) await page.addInitScript(() => { localStorage.setItem('smoji-workbench:custom-packs', 'production-sentinel'); localStorage.setItem('smoji-theme', 'dark') })
     await page.goto(url)
     await page.locator('#grid .tile__open').first().waitFor()
     assert.equal(await page.locator('.ghead__title').innerText(), firstPack.label)
     await page.evaluate(() => document.fonts.ready)
     await page.waitForFunction(() => document.querySelectorAll('#grid .sticker[data-image-status="ready"]').length >= 12, null, { timeout: 30000 })
     // The grid paints stills only: no animated original is decoded until a tile is hovered or focused.
-    assert.equal(await page.locator('#grid img').count(), 0, 'grid holds no animated originals')
+    assert.equal(await page.locator('#grid img[src^="https://s3-cdn.zsh.moe/"]').count(), 0, 'grid holds no animated originals')
     const rendered = await page.locator('#grid .tile').count()
     const ready = await page.locator('#grid .sticker[data-image-status="ready"]').count()
     assert(ready < rendered || rendered <= 24, 'stills load near the viewport only')
-    assert.equal(await page.locator('html').getAttribute('data-theme'), 'light', 'prototype theme is isolated from production storage')
+    assert.equal(await page.locator('html').getAttribute('data-theme'), 'light', productionMode ? 'system light theme' : 'prototype theme is isolated from production storage')
     assert(await noOverflow(page), `no horizontal overflow at ${width}`)
     await capture(page, `ready-${width}`)
 
@@ -166,12 +170,14 @@ try {
     assert(await noOverflow(page))
     await capture(page, `dark-${width}`)
 
-    assert.equal(await page.evaluate(() => localStorage.getItem('smoji-workbench:custom-packs')), 'production-sentinel')
-    assert.equal(await page.evaluate(() => localStorage.getItem('smoji-theme')), 'dark')
+    if (!productionMode) {
+      assert.equal(await page.evaluate(() => localStorage.getItem('smoji-workbench:custom-packs')), 'production-sentinel')
+      assert.equal(await page.evaluate(() => localStorage.getItem('smoji-theme')), 'dark')
+    }
     assert.deepEqual(errors, [])
     assert.deepEqual(failed, [])
     assert.deepEqual(foreign, [])
-    checks.push({ width, errors, failed, foreignRequests: foreign.length, downloadItems: expected, stillsOnlyGrid: true, hoverPlaysOne: !mobile, productionStorageUntouched: true })
+    checks.push({ width, errors, failed, foreignRequests: foreign.length, downloadItems: expected, stillsOnlyGrid: true, hoverPlaysOne: !mobile, productionStorageUntouched: !productionMode })
     await context.close()
     console.log(`Verified ${width}px: load, stills, hover playback, keyboard, inspector, export, groups, undo/redo, cancellation, help, density, theme`)
   }
@@ -190,13 +196,13 @@ try {
   await page.unroute('**/smoji.json')
   await page.getByRole('button', { name: '重试加载' }).click()
   await page.locator('#grid .tile__open').first().waitFor()
-  await page.addInitScript(() => {
+  await page.addInitScript((prefix) => {
     const original = Storage.prototype.setItem
     Storage.prototype.setItem = function (key, value) {
-      if (key.startsWith('smoji-prototype-v2:')) throw new DOMException('QuotaExceededError', 'QuotaExceededError')
+      if (key.startsWith(prefix)) throw new DOMException('QuotaExceededError', 'QuotaExceededError')
       original.call(this, key, value)
     }
-  })
+  }, storagePrefix)
   await page.reload()
   await page.locator('#grid .tile__open').first().waitFor()
   await page.getByRole('button', { name: '选择本分类导出', exact: true }).click()
@@ -205,7 +211,7 @@ try {
   await context.close()
 
   await writeFile(resolve(evidence, 'verification.json'), JSON.stringify({
-    browser: browser.version(), checks,
+    target: productionMode ? 'apps/workbench/dist' : 'designs/smoji/v2', browser: browser.version(), checks,
     catalog: { packs: catalog.packs.length, items: catalog.packs.reduce((n, p) => n + p.items.length, 0), matchesProductionManifest: true, imageOrigin: 'https://s3-cdn.zsh.moe' },
     exceptionStates: ['loading', 'catalog-error', 'retry-success', 'storage-error'],
     limitations: [

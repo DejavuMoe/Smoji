@@ -73,12 +73,17 @@
       "production": {
         "routeOrWindow": "/",
         "files": [
+          "apps/workbench/index.html",
+          "apps/workbench/public/favicon.svg",
+          "apps/workbench/src/main.tsx",
           "apps/workbench/src/app/App.tsx",
+          "apps/workbench/src/app/Boot.tsx",
+          "apps/workbench/src/app/ErrorBoundary.tsx",
           "apps/workbench/src/app/WorkbenchProvider.tsx",
           "apps/workbench/src/features",
-          "apps/workbench/src/styles/globals.css",
-          "apps/workbench/index.html",
-          "apps/workbench/public/favicon.svg"
+          "apps/workbench/src/ui",
+          "apps/workbench/src/lib",
+          "apps/workbench/src/styles"
         ],
         "interfaces": [
           "workbenchReducer",
@@ -91,15 +96,24 @@
           "browser download"
         ],
         "tests": [
+          "apps/workbench/src/app/workbench.test.tsx",
+          "apps/workbench/src/features/groups.test.tsx",
+          "apps/workbench/src/ui/sticker.test.tsx",
+          "apps/workbench/src/boot-failure.test.tsx",
+          "packages/smoji/test/contract.test.ts",
+          "e2e/audit-regressions.spec.ts",
+          "e2e/confirm-dialog.spec.ts",
+          "e2e/inspector.spec.ts",
           "e2e/keyboard-workflow.spec.ts",
+          "e2e/responsive-viewports.spec.ts",
+          "e2e/theme-and-a11y.spec.ts",
           "e2e/workbench-custom-groups.spec.ts",
           "e2e/workbench-export.spec.ts",
-          "e2e/responsive-viewports.spec.ts",
-          "e2e/inspector.spec.ts",
+          "e2e/workbench-packs.spec.ts",
           "designs/smoji/verify-v2.mjs"
         ]
       },
-      "status": "approved"
+      "status": "implemented"
     }
   ]
 }

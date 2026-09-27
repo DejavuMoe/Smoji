@@ -1,123 +1,89 @@
-import catalog from '../data/smoji.json' with { type: 'json' }
 import { test, expect } from '@playwright/test'
+import { boot, closeSheets, makeItems, mockCatalog, openKit, openPackList, tileAction, tiles } from './support'
 
-test.describe('Workbench Packs Mode E2E', () => {
-  test.beforeEach(async ({ page }) => {
-    // Current local catalog; UI contracts must not depend on the CDN's version or latency.
-    await page.route('**/smoji.json', route => route.fulfill({ json: catalog }))
-    await page.route(/\.(png|gif|webp)$/, route => route.fulfill({ contentType: 'image/svg+xml', body: '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><circle cx="16" cy="16" r="14" fill="teal"/></svg>' }))
-    await page.goto('/')
-    // Wait for the app to mount and cards to load
-    await expect(page.locator('.card').first()).toBeVisible()
-  })
+const packs = [
+  { id: 'a', label: '分类 A', items: makeItems('a', 150, 'A') },
+  { id: 'b', label: '分类 B', items: makeItems('b', 3, 'B') },
+  { id: 'c', label: '分类 C', items: makeItems('c', 3, 'C') },
+  { id: 'd', label: '分类 D', items: makeItems('d', 3, 'D') },
+]
 
-  test('preserves dynamic 全选 → 反选 and partial invert [A, C] -> [B, D] contract', async ({ page, isMobile }) => {
-    // If mobile/tablet, open drawer
-    const menuToggle = page.locator('#menu-toggle')
-    if (await menuToggle.isVisible()) {
-      await menuToggle.click()
-    }
+test.beforeEach(async ({ page }) => {
+  await mockCatalog(page, packs)
+  await boot(page)
+})
 
-    const selectAllBtn = page.locator('#btn-select-all-packs')
-    await expect(selectAllBtn).toBeVisible()
-    await expect(selectAllBtn).toHaveText('全选')
+test('全选 → 反选 and partial invert [A, C] → [B, D], then 清空', async ({ page }) => {
+  await openPackList(page)
+  const selectAll = page.locator('#btn-select-all-packs')
+  const checks = page.locator('#pack-nav .pack-check')
+  const states = () => checks.evaluateAll(nodes => nodes.map(node => node.getAttribute('aria-checked')))
+  await expect(checks).toHaveCount(4)
+  await expect(selectAll).toHaveText('全选')
 
-    // Initial state: 0 packs selected
-    const packChecks = page.locator('.pack-check')
-    const totalPacks = await packChecks.count()
-    expect(totalPacks).toBeGreaterThanOrEqual(4)
+  await selectAll.click()
+  expect(await states()).toEqual(['true', 'true', 'true', 'true'])
+  await expect(selectAll).toHaveText('反选')
+  await selectAll.click()
+  expect(await states()).toEqual(['false', 'false', 'false', 'false'])
+  await expect(selectAll).toHaveText('全选')
 
-    // 1. Click 全选 -> All selected -> Button becomes 反选
-    await selectAllBtn.click()
-    for (let i = 0; i < totalPacks; i++) {
-      await expect(packChecks.nth(i)).toBeChecked()
-    }
-    await expect(selectAllBtn).toHaveText('反选')
+  await checks.nth(0).click()
+  await checks.nth(2).click()
+  await expect(selectAll).toHaveText('反选')
+  await selectAll.click()
+  expect(await states()).toEqual(['false', 'true', 'false', 'true'])
 
-    // 2. Click 反选 when all selected -> All deselected -> Button becomes 全选
-    await selectAllBtn.click()
-    for (let i = 0; i < totalPacks; i++) {
-      await expect(packChecks.nth(i)).not.toBeChecked()
-    }
-    await expect(selectAllBtn).toHaveText('全选')
+  await page.locator('#btn-clear-packs').click()
+  expect(await states()).toEqual(['false', 'false', 'false', 'false'])
+  await expect(page.locator('#btn-clear-packs')).toBeDisabled()
+})
 
-    // 3. Select subset [0, 2] (corresponds to [A, C])
-    await packChecks.nth(0).click()
-    await packChecks.nth(2).click()
-    await expect(packChecks.nth(0)).toBeChecked()
-    await expect(packChecks.nth(1)).not.toBeChecked()
-    await expect(packChecks.nth(2)).toBeChecked()
-    await expect(packChecks.nth(3)).not.toBeChecked()
-    await expect(selectAllBtn).toHaveText('反选')
+test('excludes and restores items only inside a selected pack', async ({ page }) => {
+  // Unselected packs offer no exclusion tool: there is nothing to exclude from yet.
+  await expect(page.locator('#grid .tile').first().locator('.tile__tool--act')).toHaveCount(0)
+  await page.getByRole('button', { name: '选择本分类导出' }).click()
+  await expect(page.getByRole('button', { name: '已选择本分类导出' })).toHaveAttribute('aria-pressed', 'true')
 
-    // 4. Click 反选 -> Set complement -> [1, 3] selected ([B, D]), [0, 2] unselected
-    await selectAllBtn.click()
-    await expect(packChecks.nth(0)).not.toBeChecked()
-    await expect(packChecks.nth(1)).toBeChecked()
-    await expect(packChecks.nth(2)).not.toBeChecked()
-    await expect(packChecks.nth(3)).toBeChecked()
-    await expect(selectAllBtn).toHaveText('反选')
+  await tileAction(page, 0)
+  await expect(page.locator('#grid .tile').first()).toHaveAttribute('data-excluded')
+  await expect(page.locator('#gallery-export-count')).toContainText('已排除 1 张')
+  await openKit(page)
+  await expect(page.locator('#selection-dock-count')).toHaveText('1 个分类 · 149 张表情')
+  await expect(page.locator('.sel__n')).toContainText('149/150')
+  await closeSheets(page)
 
-    // 5. Test "清空" button -> All deselected, button returns to "全选"
-    const clearBtn = page.locator('#btn-clear-packs')
-    await clearBtn.click()
-    for (let i = 0; i < totalPacks; i++) {
-      await expect(packChecks.nth(i)).not.toBeChecked()
-    }
-    await expect(selectAllBtn).toHaveText('全选')
-  })
+  await tileAction(page, 0)
+  await expect(page.locator('#grid .tile').first()).not.toHaveAttribute('data-excluded')
+  await page.locator('#btn-batch-pack-action').click()
+  await expect(page.locator('#btn-batch-pack-action')).toHaveText('恢复本分类全部')
+  await expect(page.locator('#grid .tile[data-excluded]')).toHaveCount(await page.locator('#grid .tile').count())
+  await page.locator('#btn-batch-pack-action').click()
+  await expect(page.locator('#grid .tile[data-excluded]')).toHaveCount(0)
+})
 
-  test('handles item exclusion and restoration in current pack', async ({ page }) => {
-    const firstCard = page.locator('.card').first()
-    await expect(firstCard).toBeVisible()
-    await expect(firstCard).not.toHaveClass(/is-excluded/)
+test('switches packs and renders large packs progressively', async ({ page }) => {
+  await expect(page.locator('.ghead__title')).toHaveText('分类 A')
+  const initial = await page.locator('#grid .tile').count()
+  expect(initial).toBeLessThan(150)
+  await expect(async () => {
+    await page.locator('.stage__scroll').evaluate(scroller => { scroller.scrollTop = scroller.scrollHeight })
+    await expect(page.locator('#grid .tile')).toHaveCount(150, { timeout: 500 })
+  }).toPass()
+  await expect(page.locator('.gallery__more')).toHaveCount(0)
 
-    // Exclude item via action button
-    const actionBtn = firstCard.locator('.card__action-btn')
-    await actionBtn.focus()
-    await page.keyboard.press('Enter')
-    await expect(firstCard).toHaveClass(/is-excluded/)
+  await openPackList(page)
+  await page.locator('#pack-nav .pack').nth(1).click()
+  await expect(page.locator('#mobile-sidebar')).toHaveCount(0)
+  await expect(page.locator('.ghead__title')).toHaveText('分类 B')
+  await expect(tiles(page)).toHaveCount(3)
+  expect(await page.locator('.stage__scroll').evaluate(scroller => scroller.scrollTop)).toBe(0)
+})
 
-    // Restore item
-    await actionBtn.focus()
-    await page.keyboard.press('Enter')
-    await expect(firstCard).not.toHaveClass(/is-excluded/)
-
-    // Exclude whole pack
-    const batchBtn = page.locator('#btn-batch-pack-action')
-    await expect(batchBtn).toHaveText('排除本分类全部')
-    await batchBtn.click()
-    await expect(firstCard).toHaveClass(/is-excluded/)
-    await expect(batchBtn).toHaveText('恢复本分类全部')
-
-    // Restore whole pack
-    await batchBtn.click()
-    await expect(firstCard).not.toHaveClass(/is-excluded/)
-    await expect(batchBtn).toHaveText('排除本分类全部')
-  })
-
-  test('switches active pack and renders cards progressively', async ({ page, isMobile }) => {
-    const menuToggle = page.locator('#menu-toggle')
-    if (await menuToggle.isVisible()) {
-      await menuToggle.click()
-    }
-
-    const packRows = page.locator('.pack-row')
-    await expect(packRows.first()).toBeVisible()
-
-    // Click second pack
-    const secondPackRow = packRows.nth(1)
-    const secondLabel = await secondPackRow.locator('.truncate').textContent()
-    await secondPackRow.locator('button.pack').click()
-
-    // Close drawer if on mobile
-    const drawerClose = page.locator('#sidebar-close')
-    if (await drawerClose.isVisible()) {
-      await drawerClose.click()
-    }
-
-    // Gallery header should update
-    const headerTitle = page.locator('.gallery__header h2')
-    await expect(headerTitle).toHaveText(secondLabel?.trim() || '')
-  })
+test('the narrow pack strip switches packs without opening the drawer', async ({ page }) => {
+  test.skip((page.viewportSize()?.width ?? 1440) >= 900, 'narrow layout only')
+  const chip = page.locator('.strip__chip').nth(2)
+  await chip.click()
+  await expect(chip).toHaveAttribute('aria-current', 'true')
+  await expect(page.locator('.ghead__title')).toHaveText('分类 C')
 })

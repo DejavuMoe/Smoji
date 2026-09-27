@@ -1,74 +1,137 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
+import { boot, closeSheets, makeItems, mockCatalog, openKit, reload, tileAction } from './support'
 
-test.describe('Export Workflow and Code Preview E2E', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/')
-    await expect(page.locator('.card').first()).toBeVisible()
+const packs = [
+  { id: 'first', label: '第一分类', items: makeItems('first', 240, '表情') },
+  { id: 'second', label: '第二分类', items: makeItems('second', 2, '第二') },
+]
+
+test.beforeEach(async ({ page }) => {
+  await mockCatalog(page, packs)
+  await boot(page)
+})
+
+const codeJson = (page: Page) => page.evaluate(() => JSON.parse(document.querySelector('#code-preview-content')!.textContent!))
+
+async function selectCurrentPack(page: Page) {
+  await closeSheets(page)
+  await page.getByRole('button', { name: '选择本分类导出' }).click()
+}
+
+test('dock format, preview tabs and ⌘/Ctrl+Shift+P share one format and scope', async ({ page }) => {
+  await selectCurrentPack(page)
+  await openKit(page)
+  await page.locator('#selection-dock-format').getByRole('radio', { name: 'Waline', exact: true }).click()
+  await page.locator('#selection-dock-preview').click()
+  await expect(page.locator('#code-modal')).toBeVisible()
+  await expect(page.locator('#code-tab-waline')).toHaveAttribute('aria-checked', 'true')
+  await expect(page.locator('#code-modal-meta')).toContainText(/waline-\d{8}\.json/)
+
+  await page.locator('#code-scope-all').click()
+  await page.locator('#code-tab-twikoo').click()
+  await page.locator('#code-modal-close').click()
+  await expect(page.locator('#code-modal')).toHaveCount(0)
+  await expect(page.locator('#selection-dock-format').getByRole('radio', { name: 'Twikoo', exact: true })).toHaveAttribute('aria-checked', 'true')
+
+  await closeSheets(page)
+  await page.keyboard.press('ControlOrMeta+Shift+P')
+  await expect(page.locator('#code-tab-twikoo')).toHaveAttribute('aria-checked', 'true')
+  await expect(page.locator('#code-scope-all')).toHaveAttribute('aria-checked', 'true')
+  // The same shortcut closes the preview it opened.
+  await page.keyboard.press('ControlOrMeta+Shift+P')
+  await expect(page.locator('#code-modal')).toHaveCount(0)
+})
+
+test('downloads use stamped filenames from the dock, the preview and ⌘/Ctrl+E', async ({ page }) => {
+  const names: string[] = []
+  page.on('download', download => names.push(download.suggestedFilename()))
+  await selectCurrentPack(page)
+  await openKit(page)
+  let download = page.waitForEvent('download')
+  await page.locator('#selection-dock-export').click()
+  expect((await download).suggestedFilename()).toMatch(/^smoji-\d{8}\.json$/)
+
+  await page.locator('#selection-dock-preview').click()
+  await page.locator('#code-tab-artalk').click()
+  download = page.waitForEvent('download')
+  await page.locator('#btn-download-current-code').click()
+  expect((await download).suggestedFilename()).toMatch(/^artalk-\d{8}\.json$/)
+  await page.keyboard.press('Escape')
+  await expect(page.locator('#code-modal')).toHaveCount(0)
+
+  await closeSheets(page)
+  download = page.waitForEvent('download')
+  await page.keyboard.press('ControlOrMeta+e')
+  expect((await download).suggestedFilename()).toMatch(/^artalk-\d{8}\.json$/)
+  expect(names).toHaveLength(3)
+})
+
+test('⌘/Ctrl+E and ⌘/Ctrl+Shift+P stay out of editable fields', async ({ page }) => {
+  let downloads = 0
+  page.on('download', () => downloads++)
+  await page.evaluate(() => {
+    localStorage.setItem('smoji-workbench:mode', 'custom')
+    localStorage.setItem('smoji-workbench:custom-packs', JSON.stringify([{ id: 'a', label: '分组 A', itemSrcs: ['https://s3-cdn.zsh.moe/smoji/first/0.png'] }]))
   })
+  await reload(page)
+  await openKit(page)
+  const notes = page.getByRole('textbox', { name: '分组配置备注' })
+  await notes.fill('正在编辑')
+  await page.keyboard.press('ControlOrMeta+Shift+P')
+  await page.keyboard.press('ControlOrMeta+e')
+  await expect(notes).toBeFocused()
+  await expect(page.locator('#code-modal')).toHaveCount(0)
+  await page.waitForTimeout(300)
+  expect(downloads).toBe(0)
+})
 
-  test('syncs dock format with preview dialog, opens on ⌘/Ctrl+Shift+P', async ({ page }) => {
-    // Dock should be hidden initially when 0 packs are selected
-    const dock = page.locator('#selection-dock')
-    await expect(dock).not.toBeVisible()
+test('an empty scope is an error state with copy and download disabled', async ({ page }) => {
+  await page.keyboard.press('ControlOrMeta+Shift+P')
+  await expect(page.locator('#code-modal')).toBeVisible()
+  await expect(page.locator('#code-preview-error')).toBeVisible()
+  await expect(page.locator('#btn-download-current-code')).toBeDisabled()
+  await expect(page.locator('#code-preview-copy')).toBeDisabled()
+  await expect(page.locator('#code-preview-content')).toHaveCount(0)
+  await page.keyboard.press('Escape')
+  await openKit(page)
+  await expect(page.locator('#selection-dock-export')).toBeDisabled()
+})
 
-    // Open menu if mobile
-    const menuToggle = page.locator('#menu-toggle')
-    if (await menuToggle.isVisible()) {
-      await menuToggle.click()
-    }
+test('preview scopes honour exclusions and changing scope resets the code scroll', async ({ page }) => {
+  await selectCurrentPack(page)
+  await tileAction(page, 0)
+  await openKit(page)
+  await page.locator('#selection-dock-preview').click()
+  await expect(page.locator('#code-preview-content')).toBeVisible()
+  expect((await codeJson(page)).packs[0].items).toHaveLength(239)
+  await page.locator('#code-scope-current').click()
+  expect((await codeJson(page)).packs[0].items).toHaveLength(239)
 
-    // Select first pack
-    await page.locator('.pack-check').first().click()
+  await page.locator('#code-scope-all').click()
+  expect((await codeJson(page)).packs.map((pack: { items: unknown[] }) => pack.items.length)).toEqual([240, 2])
+  const scroller = page.locator('.pv__code')
+  await scroller.evaluate(e => { e.scrollTop = e.scrollHeight })
+  expect(await scroller.evaluate(e => e.scrollTop)).toBeGreaterThan(0)
+  await page.locator('#code-scope-current').click()
+  expect(await page.locator('.pv__code').evaluate(e => e.scrollTop)).toBe(0)
+})
 
-    // Close menu if mobile
-    const drawerClose = page.locator('#sidebar-close')
-    if (await drawerClose.isVisible()) {
-      await drawerClose.click()
-    }
+test('a stored Markdown export format falls back to Smoji', async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem('smoji-workbench:export-format', 'markdown'))
+  await reload(page)
+  await page.keyboard.press('ControlOrMeta+Shift+P')
+  await expect(page.locator('#code-tab-smoji')).toHaveAttribute('aria-checked', 'true')
+  await expect(page.locator('#code-tab-markdown')).toHaveCount(0)
+  await expect(page.locator('#code-modal').getByRole('radiogroup', { name: '导出格式' }).getByRole('radio')).toHaveCount(5)
+})
 
-    // Dock is now visible
-    await expect(dock).toBeVisible()
-    await expect(page.locator('#selection-dock-count')).toContainText('1 个分类')
-
-    // Change format to twikoo in dock
-    const dockFormatSelect = page.locator('#selection-dock-format')
-    await dockFormatSelect.click()
-    await page.getByRole('option', { name: 'Twikoo', exact: true }).click()
-
-    // Click preview button on dock
-    await page.locator('#selection-dock-preview').click()
-
-    // Code modal opens
-    const codeModal = page.locator('#code-modal')
-    await expect(codeModal).toBeVisible()
-
-    // Active tab in code modal should be Twikoo
-    const twikooTab = page.locator('#code-tab-twikoo')
-    await expect(twikooTab).toHaveAttribute('aria-selected', 'true')
-
-    // Check code content
-    const code = page.locator('#code-preview-content')
-    await expect(code).toBeVisible()
-    const content = await code.textContent()
-    expect(content).toContain('"type": "image"')
-
-    // Close code modal
-    await page.locator('#code-modal-close').click()
-    await expect(codeModal).not.toBeVisible()
-
-    // Test shortcut: ⌘/Ctrl+Shift+P
-    await page.keyboard.press('ControlOrMeta+Shift+P')
-    await expect(codeModal).toBeVisible()
-
-    // Only supported configuration formats remain in the exporter.
-    await expect(page.locator('#code-tab-markdown')).toHaveCount(0)
-    await page.locator('#code-tab-artalk').click()
-    await expect(page.locator('#code-tab-artalk')).toHaveAttribute('aria-selected', 'true')
-    const artalk = JSON.parse(await code.innerText())
-    expect(artalk[0]).toMatchObject({ type: 'image', items: expect.any(Array) })
-    expect(artalk[0].items.length).toBeGreaterThan(0)
-
-    await page.keyboard.press('Escape')
-    await expect(codeModal).not.toBeVisible()
-  })
+test('copy failures select the code for manual copying without widening the dialog', async ({ page }) => {
+  await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', { configurable: true, value: undefined }))
+  await selectCurrentPack(page)
+  await page.keyboard.press('ControlOrMeta+Shift+P')
+  await page.locator('#code-preview-copy').click()
+  await expect(page.locator('#code-preview-copy')).toHaveText('手动复制')
+  await expect(page.locator('#code-modal').getByRole('status')).toContainText('已选中内容')
+  expect(await page.evaluate(() => getSelection()?.toString().length ?? 0)).toBeGreaterThan(100)
+  expect(await page.locator('#code-modal').evaluate(e => e.scrollWidth <= e.clientWidth)).toBe(true)
 })

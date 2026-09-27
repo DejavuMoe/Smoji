@@ -5,7 +5,6 @@ import hosting from '../../data/hosting.json'
 import publishedAliases from '../../data/published-aliases.json'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
 
 const workspace = resolve(import.meta.dirname, '../..')
 const smojiSrc = resolve(workspace, 'packages/smoji/src')
@@ -24,7 +23,6 @@ export default defineConfig({
   },
   plugins: [
     react(),
-    tailwindcss(),
     {
       name: 'published-asset-aliases',
       configureServer(server) {
