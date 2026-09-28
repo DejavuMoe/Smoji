@@ -101,13 +101,14 @@ export function saveExcludedSrcs(srcs: ReadonlySet<string>): boolean {
   return writeJson(STORAGE_KEYS.excludedSrcs, [...srcs])
 }
 
-export function loadCopyFormat(): 'md' | 'url' | 'hugo' | 'html' | 'bbcode' {
+/** A removed format (e.g. the former Hugo shortcode) falls back to Markdown. */
+export function loadCopyFormat(): 'md' | 'url' | 'html' | 'bbcode' {
   const v = safeStorage.getItem(STORAGE_KEYS.copyFormat)
-  if (v === 'hugo' || v === 'url' || v === 'html' || v === 'bbcode' || v === 'md') return v
+  if (v === 'url' || v === 'html' || v === 'bbcode' || v === 'md') return v
   return 'md'
 }
 
-export function saveCopyFormat(format: 'md' | 'url' | 'hugo' | 'html' | 'bbcode'): boolean {
+export function saveCopyFormat(format: 'md' | 'url' | 'html' | 'bbcode'): boolean {
   return safeStorage.setItem(STORAGE_KEYS.copyFormat, format)
 }
 

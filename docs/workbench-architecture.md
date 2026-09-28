@@ -38,7 +38,7 @@ apps/workbench/
     │   ├── Kit.tsx             # Export column: mode switch, selected packs or custom groups, export bar
     │   ├── Groups.tsx          # Custom groups, create form, tray, menus, import/backup, confirmations
     │   ├── ExportBar.tsx       # Counts, size meter, format choice, preview and download
-    │   ├── Inspector.tsx       # Detail dialog: live original, backgrounds, five copy rows, action, paging
+    │   ├── Inspector.tsx       # Detail dialog: live original, backgrounds, four copy rows, action, paging
     │   ├── Preview.tsx         # Export preview with format/scope, copy fallback and download
     │   ├── Help.tsx            # Modes, shortcuts, formats and limits
     │   ├── Toasts.tsx          # Notification region

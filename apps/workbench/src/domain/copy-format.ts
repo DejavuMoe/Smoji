@@ -14,8 +14,6 @@ export function formatEmoji(
   switch (format) {
     case 'url':
       return exportedSrc
-    case 'hugo':
-      return `{{< inTextImg url=${JSON.stringify(exportedSrc)} alt=${JSON.stringify(label)} >}}`
     case 'html':
       return `<img src="${exportedSrc}" alt="${label.replace(/"/g, '&quot;')}">`
     case 'md':

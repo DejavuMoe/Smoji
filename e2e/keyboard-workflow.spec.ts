@@ -114,12 +114,14 @@ test('inspector: number keys pick formats, modifiers are ignored, arrows page an
   // The preview shortcut cannot stack a second dialog on the inspector.
   await page.keyboard.press('ControlOrMeta+Shift+P')
   await expect(page.locator('#code-modal')).toHaveCount(0)
-  for (const [key, format] of [['1', 'md'], ['2', 'url'], ['3', 'hugo'], ['4', 'html'], ['5', 'bbcode']] as const) {
+  for (const [key, format] of [['1', 'md'], ['2', 'url'], ['3', 'html'], ['4', 'bbcode']] as const) {
     await page.keyboard.press(key)
     await expect(page.locator('.copy__row[data-active] [data-copy-format]')).toHaveAttribute('data-copy-format', format)
   }
+  // Modifiers and the former fifth key change nothing.
   await page.keyboard.press('Control+2')
   await page.keyboard.press('Alt+2')
+  await page.keyboard.press('5')
   await expect(page.locator('.copy__row[data-active] [data-copy-format]')).toHaveAttribute('data-copy-format', 'bbcode')
 
   const title = page.locator('.insp__title')

@@ -225,19 +225,21 @@ describe('workbench integration', () => {
     fireEvent.click(card)
     await waitFor(() => expect(document.activeElement).toBe(el('#pop-group-btn')))
     const codes = [...document.querySelectorAll('.copy__code')].map((node) => node.textContent)
-    expect(codes[2]).toBe('{{< inTextImg url="https://cdn.example/hello.png" alt="说\\"你好\\"\\\\再见" >}}')
-    expect(codes).toHaveLength(5)
+    expect(codes[2]).toBe('<img src="https://cdn.example/hello.png" alt="说&quot;你好&quot;\\再见">')
+    expect(codes).toHaveLength(4)
+    expect(codes.join('\n')).not.toContain('inTextImg')
 
     const dialog = screen.getByRole('dialog')
-    for (const [index, format] of ['md', 'url', 'hugo', 'html', 'bbcode'].entries()) {
+    for (const [index, format] of ['md', 'url', 'html', 'bbcode'].entries()) {
       fireEvent.keyDown(dialog, { key: String(index + 1) })
       expect(el('.copy__row[data-active] [data-copy-format]').dataset.copyFormat).toBe(format)
     }
     fireEvent.keyDown(dialog, { key: '2', ctrlKey: true })
+    fireEvent.keyDown(dialog, { key: '5' })
     expect(el('.copy__row[data-active] [data-copy-format]').dataset.copyFormat).toBe('bbcode')
     expect(localStorage.getItem(STORAGE_KEYS.copyFormat)).toBe('bbcode')
 
-    fireEvent.click(screen.getByRole('button', { name: '复制 Hugo' }))
+    fireEvent.click(screen.getByRole('button', { name: '复制 HTML' }))
     await waitFor(() => expect(document.activeElement).toBe(el('#copy-active-input')))
     const input = el<HTMLInputElement>('#copy-active-input')
     expect(input.selectionStart).toBe(0)

@@ -14,12 +14,12 @@ test('shows every copy format, switches backgrounds and pages with the side butt
   await expect(dialog).toBeVisible()
   await expect(dialog.locator('.insp__sticker')).toHaveAttribute('data-image-status', 'ready')
   const codes = await dialog.locator('.copy__code').allTextContents()
-  expect(codes).toHaveLength(5)
+  expect(codes).toHaveLength(4)
   expect(codes[0]).toMatch(/^!\[smoji:详情 0\]\(https:\/\/.+\)$/)
   expect(codes[1]).toMatch(/^https:\/\//)
-  expect(codes[2]).toMatch(/\{\{<\s*inTextImg/)
-  expect(codes[3]).toMatch(/^<img /)
-  expect(codes[4]).toMatch(/^\[img\]/)
+  expect(codes[2]).toMatch(/^<img /)
+  expect(codes[3]).toMatch(/^\[img\]/)
+  await expect(dialog.getByRole('button', { name: /Hugo/ })).toHaveCount(0)
   await expect(dialog.locator('.insp__index')).toHaveText('1/6')
 
   for (const [name, bg] of [['浅底', 'light'], ['深底', 'dark'], ['透明', 'transparent']] as const) {
@@ -45,7 +45,7 @@ test('copying confirms success, and a missing clipboard falls back to a selected
 
   await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', { configurable: true, value: undefined }))
   await tiles(page).first().click()
-  await page.getByRole('button', { name: '复制 Hugo' }).click()
+  await page.getByRole('button', { name: '复制 HTML' }).click()
   const input = page.locator('#copy-active-input')
   await expect(input).toBeFocused()
   expect(await input.evaluate((e: HTMLInputElement) => e.value.length > 0 && e.selectionStart === 0 && e.selectionEnd === e.value.length)).toBe(true)

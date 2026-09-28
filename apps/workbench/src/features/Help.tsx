@@ -11,7 +11,7 @@ const SHORTCUTS: [string[][], string][] = [
   [[['↑', '↓', '←', '→'], ['Home', 'End']], '在图库中移动；分类列表用上下键浏览，左右键切换到勾选框'],
   [[['Enter']], '打开表情详情'],
   [[['←', '→']], '详情中翻到上一个 / 下一个'],
-  [[['1'], ['5']], '详情中依次切换 Markdown、URL、Hugo、HTML、BBCode'],
+  [[['1'], ['4']], '详情中依次切换 Markdown、URL、HTML、BBCode'],
   [[['空格']], '详情中执行当前选择操作：选择 / 排除，或加入 / 移出'],
   [[['Alt', '←'], ['Alt', '→']], '分组托盘内左右排序'],
   [[['Delete']], '把托盘中的表情移出分组'],
@@ -55,7 +55,7 @@ export function Help() {
                     <dt>
                       {combos.map((combo, comboIndex) => (
                         <Fragment key={comboIndex}>
-                          {comboIndex > 0 && <span className="keys__or">{combos.length === 2 && combo[0] === '5' ? '–' : '/'}</span>}
+                          {comboIndex > 0 && <span className="keys__or">{combos.length === 2 && /^\d$/.test(combo[0] ?? '') ? '–' : '/'}</span>}
                           <span className="keys__combo">{combo.map((key) => <Kbd key={key}>{key}</Kbd>)}</span>
                         </Fragment>
                       ))}

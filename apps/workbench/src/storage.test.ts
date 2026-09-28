@@ -6,6 +6,7 @@ import {
   resolvePersistedItems,
   serializeCustomPacks,
   loadCustomPacks,
+  loadCopyFormat,
   type PersistedCustomPack,
   STORAGE_KEYS,
   type EditableCustomPack,
@@ -95,5 +96,15 @@ describe('import normalization and size budget', () => {
     const bundle: PersistedCustomPack[] = [{ id: 'Team_A.v1', label: '团队', itemSrcs: [] }]
     expect(parseCustomGroupBundle(bundle)[0]!.id).toBe('Team_A.v1')
     expect(() => parseCustomGroupBundle([bundle[0]!, bundle[0]!])).toThrow()
+  })
+})
+
+describe('copy format preference', () => {
+  it('falls back to Markdown for the removed Hugo format', () => {
+    localStorage.setItem(STORAGE_KEYS.copyFormat, 'hugo')
+    expect(loadCopyFormat()).toBe('md')
+    localStorage.setItem(STORAGE_KEYS.copyFormat, 'bbcode')
+    expect(loadCopyFormat()).toBe('bbcode')
+    localStorage.removeItem(STORAGE_KEYS.copyFormat)
   })
 })

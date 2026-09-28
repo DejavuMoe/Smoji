@@ -68,12 +68,11 @@
 点击图库或托盘中的表情打开详情窗口：
 - **原图与动图**：展示原图，动态 WebP / GIF 循环播放；加载失败时显示「加载失败」并可重试。
 - **预览背景**：透明（棋盘格）、浅底、深底，便于检查透明边缘和深浅主题下的效果。
-- **五种格式同时列出**，每行都有「复制」按钮；按 <kbd>1</kbd> ~ <kbd>5</kbd> 选择格式：
+- **四种格式同时列出**，每行都有「复制」按钮；按 <kbd>1</kbd> ~ <kbd>4</kbd> 选择格式：
   1. **Markdown**：`![smoji:表情名](图片绝对URL)`
   2. **URL**：图片绝对 HTTP(S) 地址
-  3. **Hugo**：`{{< inTextImg url="..." alt="..." >}}`
-  4. **HTML**：`<img src="..." alt="...">`
-  5. **BBCode**：`[img]图片绝对URL[/img]`
+  3. **HTML**：`<img src="..." alt="...">`
+  4. **BBCode**：`[img]图片绝对URL[/img]`
 - 剪贴板不可用时，内容会放进已全选的输入框，按 <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>C</kbd> 手动复制。
 - **翻页**：点左右箭头、按 <kbd>←</kbd> / <kbd>→</kbd>，或在触屏上左右滑动。
 - **底部操作按钮**随模式变化：选择整个分类导出、从导出中排除 / 恢复到导出，或加入 / 移出当前分组。打开详情后焦点就在这个按钮上，按 <kbd>空格</kbd> 即可执行。
@@ -118,7 +117,7 @@
 | <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> / <kbd>Home</kbd> <kbd>End</kbd> | 图库 | 在表情之间移动焦点 |
 | <kbd>Enter</kbd> / <kbd>空格</kbd> | 图库 | 打开当前表情的详情 |
 | <kbd>←</kbd> / <kbd>→</kbd> | 详情窗口 | 上一个 / 下一个表情 |
-| <kbd>1</kbd> ~ <kbd>5</kbd> | 详情窗口 | 选择 Markdown、URL、Hugo、HTML、BBCode（带修饰键时不响应） |
+| <kbd>1</kbd> ~ <kbd>4</kbd> | 详情窗口 | 选择 Markdown、URL、HTML、BBCode（带修饰键时不响应） |
 | <kbd>空格</kbd> | 详情窗口 | 执行底部操作：选择 / 排除 / 恢复，或加入 / 移出 |
 | <kbd>Alt</kbd> + <kbd>←</kbd> / <kbd>→</kbd> | 分组托盘 | 在托盘内左右排序 |
 | <kbd>Delete</kbd> / <kbd>Backspace</kbd> | 分组托盘 | 将表情移出分组，焦点移到相邻缩略图 |

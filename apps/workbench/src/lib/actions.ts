@@ -6,9 +6,8 @@ import type { SmojiItem } from 'smoji'
 export const COPY_FORMATS: { id: CopyFormat; label: string; key: string }[] = [
   { id: 'md', label: 'Markdown', key: '1' },
   { id: 'url', label: 'URL', key: '2' },
-  { id: 'hugo', label: 'Hugo', key: '3' },
-  { id: 'html', label: 'HTML', key: '4' },
-  { id: 'bbcode', label: 'BBCode', key: '5' },
+  { id: 'html', label: 'HTML', key: '3' },
+  { id: 'bbcode', label: 'BBCode', key: '4' },
 ]
 
 export function copyValue(item: SmojiItem, format: CopyFormat, manifestUrl: string): string {

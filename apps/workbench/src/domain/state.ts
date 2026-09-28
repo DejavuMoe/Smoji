@@ -1,7 +1,7 @@
 import type { SmojiItem, SmojiPack } from '../../../../packages/smoji/src/types'
 
 export type WorkbenchMode = 'packs' | 'custom'
-export type CopyFormat = 'md' | 'url' | 'hugo' | 'html' | 'bbcode'
+export type CopyFormat = 'md' | 'url' | 'html' | 'bbcode'
 export type PreviewBackground = 'transparent' | 'light' | 'dark'
 export type PreviewScope = 'all' | 'selected' | 'current'
 export type Theme = 'system' | 'light' | 'dark'
