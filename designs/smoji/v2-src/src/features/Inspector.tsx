@@ -183,7 +183,7 @@ export function Inspector({ navRef }: { navRef: MutableRefObject<readonly SmojiI
                 {actionLabel}
               </button>
               <p id="pop-keyboard-hint" className="insp__hint">
-                <Kbd>空格</Kbd>执行当前选择操作<i>·</i><Kbd>←</Kbd><Kbd>→</Kbd>翻图<i>·</i><Kbd>1</Kbd>–<Kbd>5</Kbd>选格式<i>·</i><Kbd>Esc</Kbd>关闭
+                <Kbd>空格</Kbd>执行当前选择操作<i>·</i><Kbd>←</Kbd><Kbd>→</Kbd>翻图<i>·</i><Kbd>1</Kbd>–<Kbd>4</Kbd>选格式<i>·</i><Kbd>Esc</Kbd>关闭
               </p>
             </div>
           </div>
