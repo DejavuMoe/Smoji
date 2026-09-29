@@ -3,11 +3,15 @@ import catalog from '../../../data/packs.json'
 import manifest from '../../../data/smoji.json'
 
 it('keeps official panel data intact and every pack series contiguous after generation', () => {
-  expect(catalog[0]!.id).toBe('deepseek-wale-girl')
-  expect(manifest.packs[0]!.id).toBe('deepseek-wale-girl')
-  expect(catalog[1]!.id).toBe('bilibili')
-  expect(catalog[0]!.label).toBe('大肥鱼')
-  expect(catalog[0]!.items).toHaveLength(104)
+  expect(catalog.map((p) => p.label)).toEqual([
+    '嗷大喵小表情', '百度贴吧', '哔哩哔哩', '哔哩哔哩 · 小电视', '长草颜团子', '大肥鱼', '呆猫八条', '钉钉',
+    '抖音 · 经典', '抖音 · 限时', '抖音 · 新版', 'EveOneCat · 动图', 'EveOneCat · 静态', 'Heo', 'IT之家',
+    '卡皮巴拉小黄豚', '酷安', '美叽和大鼠', '抹茶旦旦', '坡坡popo', 'QQ · 动态', 'QQ · 静态', '水豚噜噜', '汪蛋',
+    '微博', '微信', '闲鱼', '小红书', '小黄鸡', '小哭猫的心情日记', '小熊虫', '洋葱头-动态', '洋葱头-静态',
+    '洋葱头-小', '一二和布布', '月薪喵',
+  ])
+  expect(manifest.packs.map((p) => p.id)).toEqual(catalog.map((p) => p.id))
+  expect(catalog.find((p) => p.id === 'deepseek-wale-girl')!.items).toHaveLength(104)
   expect(catalog.some((p) => ['wechat-classic', 'wechat-current', 'kabu'].includes(p.id))).toBe(false)
   const wechat = catalog.find((p) => p.id === 'wechat')!
   expect(wechat.items).toHaveLength(108)

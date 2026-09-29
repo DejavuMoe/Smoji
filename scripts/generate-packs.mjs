@@ -89,9 +89,19 @@ for (const [from, target] of [
   const to = currentPath(target)
   if (to && !Object.hasOwn(assets, from)) aliases[from] = to
 }
-// Keep the approved entry pack first, then the previous entry pack, then stable ID order.
-packs.sort((a, b) => Number(b.id === 'deepseek-wale-girl') - Number(a.id === 'deepseek-wale-girl') ||
-  Number(b.id === 'bilibili') - Number(a.id === 'bilibili') || a.id.localeCompare(b.id))
+// Packs follow the alphabetical order of their pinyin labels; Latin labels file under their own letter.
+const pinyin = new Intl.Collator('zh-Hans-CN-u-co-pinyin')
+// First character of each pinyin initial in the collation; I, U and V never start a syllable.
+const initials = [...'阿八嚓哒妸发旮哈讥咔垃痳拏噢妑七呥仨他穵夕丫帀'].map((boundary, index) => [boundary, 'abcdefghjklmnopqrstwxyz'[index]])
+// The collator reads polyphonic characters with their most common sound; sort these labels by a homophone.
+const readings = [['长草', '常草']]
+const sortLabel = (label) => readings.reduce((text, [from, to]) => text.replaceAll(from, to), label)
+const initial = (label) => /^[a-z]/i.test(label) ? label[0].toLowerCase()
+  : initials.findLast(([boundary]) => pinyin.compare(boundary, label[0]) <= 0)?.[1] ?? ''
+packs.sort((a, b) => {
+  const [left, right] = [sortLabel(a.label), sortLabel(b.label)]
+  return initial(left).localeCompare(initial(right)) || pinyin.compare(left, right) || a.id.localeCompare(b.id)
+})
 const manifest = { version: 1, packs: packs.map((pack) => ({
   id: pack.id, label: pack.label,
   items: pack.items.map((item) => ({ id: basename(item.file, extname(item.file)), label: item.label, src: `./${pack.id}/${item.file}` })),
