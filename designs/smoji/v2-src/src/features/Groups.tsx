@@ -186,7 +186,7 @@ function CreateForm() {
           aria-invalid={Boolean(error)} aria-describedby={error ? 'custom-create-error' : undefined}
           onChange={(event) => { setName(event.target.value); if (error) setError(null) }} />
         <button id="btn-create-custom-pack" type="submit" className="btn btn--ink" disabled={atCapacity}>
-          <Plus aria-hidden="true" strokeWidth={2.4} />添加
+          <Plus aria-hidden="true" />添加
         </button>
       </div>
       <button type="button" className="create__toggle" aria-expanded={showId} aria-controls="custom-id-row" onClick={() => setShowId((value) => !value)}>

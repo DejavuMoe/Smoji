@@ -28,7 +28,7 @@ const production = JSON.parse(await readFile(resolve(root, 'data/smoji.json'), '
 assert.deepEqual(catalog.packs.map((pack) => [pack.id, pack.label, pack.items.length]), production.packs.map((pack) => [pack.id, pack.label, pack.items.length]))
 assert(catalog.packs.every((pack) => pack.items.every((item) => item.src.startsWith('https://s3-cdn.zsh.moe/smoji/'))))
 const firstPack = catalog.packs[0]
-assert.equal(firstPack.label, '大肥鱼')
+assert(firstPack.items.length >= 3, 'first pack can be paged in the inspector')
 
 await new Promise((done) => server.listen(0, '127.0.0.1', done))
 const url = `http://127.0.0.1:${server.address().port}/`
@@ -74,7 +74,22 @@ try {
     assert(ready < rendered || rendered <= 24, 'stills load near the viewport only')
     assert.equal(await page.locator('html').getAttribute('data-theme'), 'light', productionMode ? 'system light theme' : 'prototype theme is isolated from production storage')
     assert(await noOverflow(page), `no horizontal overflow at ${width}`)
+    const repo = page.locator('#repo-link:visible')
+    assert.equal(await repo.count(), 1, 'one visible repository link')
+    assert.equal(await repo.getAttribute('href'), 'https://github.com/DejavuMoe/Smoji')
+    assert.equal(await repo.getAttribute('target'), '_blank')
+    // Every icon draws a screen-pixel line regardless of its rendered size.
+    assert(await page.evaluate(() => [...document.querySelectorAll('svg.lucide')].every((svg) =>
+      ['1.5px', '2px'].includes(getComputedStyle(svg).strokeWidth)
+      && [...svg.children].every((node) => getComputedStyle(node).vectorEffect === 'non-scaling-stroke'))), 'uniform icon stroke')
     await capture(page, `ready-${width}`)
+    if (!mobile) {
+      await repo.hover()
+      await page.locator('.tip').filter({ hasText: 'GitHub 源代码' }).waitFor()
+      const foot = await page.locator('.rail__foot').boundingBox()
+      await page.screenshot({ path: resolve(evidence, `repo-link-${width}.png`), clip: { x: foot.x - 8, y: foot.y - 48, width: foot.width + 16, height: foot.height + 56 } })
+      await page.mouse.move(0, 0)
+    }
 
     if (!mobile) {
       await page.locator('#grid .tile').nth(2).hover()

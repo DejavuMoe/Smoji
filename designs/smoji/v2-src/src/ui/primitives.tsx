@@ -1,4 +1,4 @@
-import { forwardRef, useRef, type ButtonHTMLAttributes, type KeyboardEvent, type ReactNode } from 'react'
+import { forwardRef, useRef, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type KeyboardEvent, type ReactNode } from 'react'
 import { Tooltip as TooltipPrimitive } from 'radix-ui'
 
 export function Logo({ size = 28 }: { size?: number }) {
@@ -38,6 +38,19 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(functio
   )
   return props.disabled ? button : <Tip label={tip ?? label} side={tipSide}>{button}</Tip>
 })
+
+type IconLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & { href: string; label: string; tip?: string; tipSide?: 'top' | 'bottom' | 'left' | 'right' }
+
+/** Icon-only outbound link; opens in a new tab and looks like an IconButton. */
+export function IconLink({ label, tip, tipSide, className = '', children, ...props }: IconLinkProps) {
+  return (
+    <Tip label={tip ?? label} side={tipSide}>
+      <a aria-label={label} className={`icon-btn ${className}`} target="_blank" rel="noopener noreferrer" {...props}>
+        {children}
+      </a>
+    </Tip>
+  )
+}
 
 export interface SegmentOption<T extends string> {
   value: T

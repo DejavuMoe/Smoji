@@ -18,6 +18,10 @@ h1, h2, h3, p, dl, dd, ul { margin: 0; padding: 0; }
 ul { list-style: none; }
 img { display: block; }
 svg { flex-shrink: 0; }
+/* Icons draw the same screen-pixel line at every size; checks and marks on stickers use the strong weight. */
+.lucide { stroke-width: var(--icon-stroke); }
+.lucide * { vector-effect: non-scaling-stroke; }
+.lucide-check, .tile__badge svg, .tile__tool svg, .tray__tool svg, .pack-check svg { stroke-width: var(--icon-stroke-strong); }
 code, kbd, .mono { font-family: var(--font-mono); }
 ::selection { background: var(--mark); color: var(--on-mark); }
 
@@ -74,7 +78,7 @@ code, kbd, .mono { font-family: var(--font-mono); }
   display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: var(--r-s);
   color: var(--ink-2); transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
 }
-.icon-btn svg { width: 18px; height: 18px; stroke-width: 1.8; }
+.icon-btn svg { width: 18px; height: 18px; }
 .icon-btn:hover:not(:disabled) { background: var(--well-2); color: var(--ink); }
 .icon-btn:disabled { opacity: 0.35; }
 .icon-btn--sm { width: 28px; height: 28px; border-radius: var(--r-xs); }

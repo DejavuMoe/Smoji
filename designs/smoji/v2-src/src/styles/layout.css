@@ -9,6 +9,7 @@
 .rail__top { display: grid; gap: 14px; padding: 0 2px 4px; }
 .rail__scroll { flex: 1; min-height: 0; overflow-y: auto; margin: 0 -8px; padding: 0 8px 12px; }
 .rail__foot { display: flex; gap: 2px; padding: 8px 0 2px; border-top: 1px solid var(--rule); }
+.rail__foot #repo-link { margin-left: auto; }
 
 .brand { display: inline-flex; align-items: center; gap: 10px; height: 40px; width: max-content; color: var(--ink); text-decoration: none; border-radius: var(--r-s); }
 .brand .logo { transition: transform var(--t-slow) var(--ease-spring); }
