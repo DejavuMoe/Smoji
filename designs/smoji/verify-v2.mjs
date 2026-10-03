@@ -82,6 +82,9 @@ try {
     assert(await page.evaluate(() => [...document.querySelectorAll('svg.lucide')].every((svg) =>
       ['1.5px', '2px'].includes(getComputedStyle(svg).strokeWidth)
       && [...svg.children].every((node) => getComputedStyle(node).vectorEffect === 'non-scaling-stroke'))), 'uniform icon stroke')
+    // Stills keep their natural size and only shrink to fit, like CI preview images.
+    assert(await page.evaluate(() => [...document.querySelectorAll('#grid .sticker__media')].every((media) =>
+      media.offsetWidth <= (media.naturalWidth ?? media.width))), 'grid stills are never upscaled')
     await capture(page, `ready-${width}`)
     if (!mobile) {
       await repo.hover()
