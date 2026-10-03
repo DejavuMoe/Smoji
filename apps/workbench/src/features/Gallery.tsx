@@ -153,7 +153,7 @@ const Tile = memo(function Tile({ item, index, custom, picked, excluded, actiona
         <Sticker src={item.src} alt={label} className="tile__sticker" play={playable && active && !excluded} />
         {comfortable && <span className="tile__label"><span className="tile__name">{label}</span></span>}
       </button>
-      {picked && <span className="tile__badge" aria-hidden="true"><Check strokeWidth={3} /></span>}
+      {picked && <span className="tile__badge" aria-hidden="true"><Check /></span>}
       <div className="tile__tools">
         <button type="button" className="tile__tool" tabIndex={-1} aria-label={`复制 ${label}`}
           onClick={(event) => { event.stopPropagation(); onCopy(item) }}>
@@ -162,7 +162,7 @@ const Tile = memo(function Tile({ item, index, custom, picked, excluded, actiona
         {actionable && (
           <button type="button" className="tile__tool tile__tool--act" tabIndex={-1} aria-label={actionLabel}
             onClick={(event) => { event.stopPropagation(); onAction(item, event.currentTarget.closest('.tile'), picked) }}>
-            <ActionIcon aria-hidden="true" strokeWidth={2.4} />
+            <ActionIcon aria-hidden="true" />
           </button>
         )}
       </div>
@@ -212,7 +212,7 @@ function GalleryHeader({ isPicked }: { isPicked: boolean }) {
               if (!selected) flyTo(document.querySelector('.grid .tile__sticker'), '[data-fly-target="packs"], [data-fly-target="bar"]')
               dispatch({ type: 'TOGGLE_PACK_SELECTION', payload: activePack.id })
             }}>
-            {selected ? <Check aria-hidden="true" strokeWidth={2.6} /> : <Plus aria-hidden="true" strokeWidth={2.4} />}
+            {selected ? <Check aria-hidden="true" /> : <Plus aria-hidden="true" />}
             {selected ? '已选择本分类导出' : '选择本分类导出'}
           </button>
         )}
@@ -225,7 +225,7 @@ function GalleryHeader({ isPicked }: { isPicked: boolean }) {
         {isCustom && !isPicked && (
           <button id="btn-batch-pack-action" type="button" className="btn btn--ghost"
             onClick={() => dispatch({ type: 'ADD_ALL_CURRENT_PACK_TO_CUSTOM' })}>
-            <Plus aria-hidden="true" strokeWidth={2.4} />本分类全部加入
+            <Plus aria-hidden="true" />本分类全部加入
           </button>
         )}
       </div>

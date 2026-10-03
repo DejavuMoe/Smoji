@@ -159,7 +159,7 @@ export function Inspector({ navRef }: { navRef: MutableRefObject<readonly SmojiI
                     )}
                     <button type="button" id={active ? 'btn-copy-active' : undefined} data-copy-format={format.id} className="copy__btn"
                       aria-label={`复制 ${format.label}`} onClick={() => copy(format.id)}>
-                      {copied === format.id ? <Check aria-hidden="true" strokeWidth={2.6} /> : <Copy aria-hidden="true" />}
+                      {copied === format.id ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
                       <span>{copied === format.id ? '已复制' : '复制'}</span>
                     </button>
                   </div>

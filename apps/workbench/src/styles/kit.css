@@ -78,7 +78,7 @@
   display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%;
   background: var(--sheet); color: var(--ink-2); box-shadow: 0 0 0 1px var(--rule-2), 0 2px 5px -2px oklch(0.3 0.02 60 / 0.3);
 }
-.tray__tool svg { width: 11px; height: 11px; stroke-width: 2.4; }
+.tray__tool svg { width: 11px; height: 11px; }
 .tray__tool:hover { color: var(--ink); }
 .tray__tool--x:hover { color: var(--danger); }
 .tray__tool[data-state="open"] { background: var(--ink); color: var(--on-ink); }

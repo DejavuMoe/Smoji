@@ -63,6 +63,9 @@
   --t-med: 200ms;
   --t-slow: 320ms;
 
+  --icon-stroke: 1.5px;
+  --icon-stroke-strong: 2px;
+
   --rail-w: 264px;
   --kit-w: 340px;
   --gap: 8px;

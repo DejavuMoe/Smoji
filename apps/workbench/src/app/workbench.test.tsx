@@ -260,4 +260,16 @@ describe('workbench integration', () => {
     expect(document.querySelectorAll('#grid img')).toHaveLength(0)
     expect(document.querySelectorAll('#grid [data-roving-item][tabindex="0"]')).toHaveLength(1)
   })
+
+  it('links the public repository in a new tab with Lucide-styled icons only', () => {
+    renderApp()
+    const links = screen.getAllByRole('link', { name: 'GitHub 源代码 (新标签页打开)' })
+    expect(links.length).toBeGreaterThan(0)
+    for (const link of links) {
+      expect(link.getAttribute('href')).toBe('https://github.com/DejavuMoe/Smoji')
+      expect(link.getAttribute('target')).toBe('_blank')
+      expect(link.getAttribute('rel')).toBe('noopener noreferrer')
+      expect(link.querySelector('svg.lucide.lucide-github')).not.toBeNull()
+    }
+  })
 })

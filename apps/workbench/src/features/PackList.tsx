@@ -110,7 +110,7 @@ const PackRow = memo(function PackRow({ pack, index, active, checked, selectable
             if (!checked) flyTo(event.currentTarget.closest('.pack-row')?.querySelector('.pack__cover'), '[data-fly-target="packs"]')
             dispatch({ type: 'TOGGLE_PACK_SELECTION', payload: pack.id })
           }}>
-          <Check aria-hidden="true" strokeWidth={3} />
+          <Check aria-hidden="true" />
         </button>
       )}
     </div>

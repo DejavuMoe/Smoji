@@ -2,7 +2,8 @@ import { useEffect, useRef } from 'react'
 import { ChevronDown, CircleHelp, Monitor, Moon, Sun } from 'lucide-react'
 import { useWorkbench } from '../app/WorkbenchContext'
 import type { Theme } from '../domain/state'
-import { IconButton, Logo } from '../ui/primitives'
+import { Github } from '../ui/icons'
+import { IconButton, IconLink, Logo } from '../ui/primitives'
 import { Sticker } from '../ui/Sticker'
 import { PackList } from './PackList'
 
@@ -33,6 +34,14 @@ export function HelpButton() {
   )
 }
 
+export function RepoLink() {
+  return (
+    <IconLink id="repo-link" href="https://github.com/DejavuMoe/Smoji" label="GitHub 源代码 (新标签页打开)" tip="GitHub 源代码">
+      <Github aria-hidden="true" />
+    </IconLink>
+  )
+}
+
 export function Brand() {
   return (
     <a className="brand" href="./" aria-label="Smoji 首页">
@@ -54,6 +63,7 @@ export function Rail() {
       <div className="rail__foot">
         <HelpButton />
         <ThemeButton />
+        <RepoLink />
       </div>
     </aside>
   )
@@ -85,6 +95,7 @@ export function MobileTop({ onOpenDrawer, drawerOpen }: MobileTopProps) {
         <div className="mtop__tools">
           <HelpButton />
           <ThemeButton />
+          <RepoLink />
         </div>
       </div>
       <nav className="strip" aria-label="分类导航">
