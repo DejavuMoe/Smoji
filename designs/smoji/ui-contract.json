@@ -33,7 +33,11 @@
           "verify-v2.mjs",
           "content-inventory-v2.json",
           "v2-src/src/ui/Sticker.tsx",
-          "v2-src/src/lib/stills.ts"
+          "v2-src/src/lib/stills.ts",
+          "v2-src/src/features/Chrome.tsx",
+          "v2-src/src/ui/primitives.tsx",
+          "v2-src/src/ui/icons.ts",
+          "v2-src/src/styles/base.css"
         ],
         "states": [
           "packs-ready",
